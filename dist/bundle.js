@@ -67,8 +67,28 @@
 /* 0 */
 /***/ (function(module, exports) {
 
-var h1 = document.getElementById('test');
-h1.innerHTML = 'TypeScript is working';
+var c = document.getElementById("canvas");
+var ctx = c.getContext("2d");
+// global variables
+var WIDTH = 1000;
+var HEIGHT = 560;
+var x = 5;
+var y = 10;
+var spdX = 10;
+var spdY = 5;
+function update() {
+    x += spdX;
+    y += spdY;
+    ctx.fillRect(x, y, 40, 20);
+    console.log('x =', x, 'y =', y);
+    if (x > WIDTH || x < 0) {
+        spdX = -spdX;
+    }
+    if (y > HEIGHT || y < 0) {
+        spdY = -spdY;
+    }
+}
+setInterval(update, 600);
 
 
 /***/ })
