@@ -72,22 +72,35 @@ var ctx = c.getContext("2d");
 // global variables
 var WIDTH = 1000;
 var HEIGHT = 560;
-var x = 5;
-var y = 10;
-var spdX = 10;
-var spdY = 5;
-function update() {
-    x += spdX;
-    y += spdY;
-    ctx.fillRect(x, y, 40, 20);
-    console.log('x =', x, 'y =', y);
-    if (x > WIDTH || x < 0) {
-        spdX = -spdX;
+var Unit = (function () {
+    function Unit(x, y, width, height, spdX, spdY) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.spdX = spdX;
+        this.spdY = spdY;
     }
-    if (y > HEIGHT || y < 0) {
-        spdY = -spdY;
+    return Unit;
+}());
+var updateUnit = function (unit) {
+    unit.x += unit.spdX;
+    unit.y += unit.spdY;
+    ctx.fillRect(unit.x, unit.y, unit.width, unit.height);
+    if (unit.x > WIDTH || unit.x < 0) {
+        unit.spdX = -unit.spdX;
     }
-}
+    if (unit.y > HEIGHT || unit.y < 0) {
+        unit.spdY = -unit.spdY;
+    }
+};
+var infantry = new Unit(10, 10, 60, 80, 5, 7);
+var cavalry = new Unit(10, 20, 50, 60, 12, 20);
+var update = function () {
+    ctx.clearRect(0, 0, WIDTH, HEIGHT);
+    updateUnit(infantry);
+    updateUnit(cavalry);
+};
 setInterval(update, 600);
 
 
