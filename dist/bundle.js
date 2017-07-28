@@ -73,7 +73,8 @@ var ctx = c.getContext("2d");
 var WIDTH = 1000;
 var HEIGHT = 560;
 var Unit = (function () {
-    function Unit(x, y, width, height, spdX, spdY) {
+    function Unit(name, x, y, width, height, spdX, spdY) {
+        this.name = name;
         this.x = x;
         this.y = y;
         this.width = width;
@@ -83,25 +84,40 @@ var Unit = (function () {
     }
     return Unit;
 }());
-var updateUnit = function (unit) {
-    unit.x += unit.spdX;
-    unit.y += unit.spdY;
+var units = [];
+var infantry = new Unit('Infantry', 0, 0, 100, 50, 5, 7);
+units.push(infantry);
+var cavalry = new Unit('Cavalry', 100, 80, 50, 60, 12, 20);
+units.push(cavalry);
+var chooseUnit = function (units, x, y) {
+    for (var _i = 0, units_1 = units; _i < units_1.length; _i++) {
+        var unit = units_1[_i];
+        var unitX0 = unit.x;
+        var unitY0 = unit.y;
+        var unitX1 = unitX0 + unit.width;
+        var unitY1 = unitY0 + unit.height;
+        // check if coordinates is equal to unit position
+        if (x >= unitX0 && x <= unitX1 && y >= unitY0 && y <= unitY1) {
+            console.error(unit.name, 'was clicked');
+        }
+        else {
+            console.log('No unit was clicked');
+        }
+    }
+};
+var setUnit = function (unit) {
     ctx.fillRect(unit.x, unit.y, unit.width, unit.height);
-    if (unit.x > WIDTH || unit.x < 0) {
-        unit.spdX = -unit.spdX;
-    }
-    if (unit.y > HEIGHT || unit.y < 0) {
-        unit.spdY = -unit.spdY;
-    }
 };
-var infantry = new Unit(10, 10, 60, 80, 5, 7);
-var cavalry = new Unit(10, 20, 50, 60, 12, 20);
-var update = function () {
-    ctx.clearRect(0, 0, WIDTH, HEIGHT);
-    updateUnit(infantry);
-    updateUnit(cavalry);
-};
-setInterval(update, 600);
+setUnit(infantry);
+setUnit(cavalry);
+// set onClickListener to canvas element
+c.addEventListener('click', function (e) {
+    var x = e.offsetX; // get X
+    var y = e.offsetY; // get Y
+    console.log('Position x', e.offsetX); // get X
+    console.log('Position y', e.offsetY); // get Y
+    chooseUnit(units, x, y);
+});
 
 
 /***/ })
