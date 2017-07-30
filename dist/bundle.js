@@ -110,13 +110,20 @@ var setUnit = function (unit) {
 };
 setUnit(infantry);
 setUnit(cavalry);
-// set onClickListener to canvas element
+// set onClickListener for left mouse event to canvas element
 c.addEventListener('click', function (e) {
     var x = e.offsetX; // get X
     var y = e.offsetY; // get Y
     console.log('Position x', e.offsetX); // get X
     console.log('Position y', e.offsetY); // get Y
     chooseUnit(units, x, y);
+});
+// set onClickListener for right mouse event
+c.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+    var x = e.offsetX; // get X
+    var y = e.offsetY; // get Y
+    console.log('go to x: ' + x + ' y: ' + y);
 });
 
 

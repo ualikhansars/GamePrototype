@@ -53,7 +53,7 @@ let setUnit = (unit) => {
 setUnit(infantry);
 setUnit(cavalry);
 
-// set onClickListener to canvas element
+// set onClickListener for left mouse event to canvas element
 c.addEventListener('click', (e) => {
   let x = e.offsetX; // get X
   let y = e.offsetY; // get Y
@@ -61,3 +61,11 @@ c.addEventListener('click', (e) => {
   console.log('Position y', e.offsetY); // get Y
   chooseUnit(units, x, y);
 });
+
+// set onClickListener for right mouse event
+c.addEventListener('contextmenu', (e) => {
+  e.preventDefault();
+  let x = e.offsetX; // get X
+  let y = e.offsetY; // get Y
+  console.log('go to x: ' + x + ' y: ' + y);
+})
