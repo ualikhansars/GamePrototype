@@ -90,15 +90,21 @@ var Unit = (function () {
     }
     return Unit;
 }());
+var setUnit = function (unit) {
+    ctx.fillRect(unit.x, unit.y, unit.width, unit.height);
+};
 // create Unit and immediatly push it into units array
 var createUnit = function (name, x, y, width, height, spdX, spdY) {
     var unit = new Unit(name, x, y, width, height, spdX, spdY);
     unitStore_1.units.push(unit);
+    setUnit(unit);
     return unit;
 };
 var infantry = createUnit('Infantry', 0, 0, 100, 50, 5, 7);
 var cavalry = createUnit('Cavalry', 100, 80, 50, 60, 12, 20);
+var heavyInfantry = createUnit('heavyInfantry', 300, 180, 100, 120, 2, 2);
 var chooseUnit = function (units, x, y) {
+    var foundedUnit = null;
     for (var _i = 0, units_1 = units; _i < units_1.length; _i++) {
         var unit = units_1[_i];
         var unitX0 = unit.x;
@@ -107,20 +113,17 @@ var chooseUnit = function (units, x, y) {
         var unitY1 = unitY0 + unit.height;
         // check if coordinates is equal to unit position
         if (x >= unitX0 && x <= unitX1 && y >= unitY0 && y <= unitY1) {
-            console.error(unit.name, 'was clicked');
-            unitStore_1.assignCurrentlyChosenUnit(unit);
-            console.log('currentlyChosenUnit', unitStore_1.currentlyChosenUnit);
-        }
-        else {
-            console.log('No unit was clicked');
+            foundedUnit = unit;
+            break;
         }
     }
+    // if unit was found in units array
+    // currentlyChosenUnit is equal to foundedUnit
+    // else is unit is not founded, then
+    // currentlyChosenUnit will be null
+    unitStore_1.assignCurrentlyChosenUnit(foundedUnit);
+    console.log('currentlyChosenUnit', unitStore_1.currentlyChosenUnit);
 };
-var setUnit = function (unit) {
-    ctx.fillRect(unit.x, unit.y, unit.width, unit.height);
-};
-setUnit(infantry);
-setUnit(cavalry);
 // set onClickListener for left mouse event to canvas element
 c.addEventListener('click', function (e) {
     var x = e.offsetX; // get X
@@ -147,9 +150,15 @@ c.addEventListener('contextmenu', function (e) {
 exports.__esModule = true;
 exports.units = [];
 exports.assignCurrentlyChosenUnit = function (unit) {
-    exports.currentlyChosenUnit = unit;
+    // check unit
+    if (unit) {
+        exports.currentlyChosenUnit = unit;
+    }
+    else {
+        exports.currentlyChosenUnit = null;
+    }
 };
-console.log(exports.currentlyChosenUnit);
+exports.currentlyChosenUnit = null;
 
 
 /***/ })

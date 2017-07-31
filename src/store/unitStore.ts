@@ -1,6 +1,11 @@
 export let units = [];
 export const assignCurrentlyChosenUnit = (unit) => {
-  currentlyChosenUnit = unit;
+  // check unit
+  if(unit) {
+      currentlyChosenUnit = unit;
+  } else {
+    currentlyChosenUnit = null;
+  }
+
 }
-export let currentlyChosenUnit;
-console.log(currentlyChosenUnit);
+export let currentlyChosenUnit = null;

@@ -34,18 +34,25 @@ class Unit {
   }
 }
 
+let setUnit = (unit) => {
+    ctx.fillRect(unit.x, unit.y, unit.width, unit.height);
+}
+
 // create Unit and immediatly push it into units array
 let createUnit = (name, x, y, width, height, spdX, spdY) => {
   let unit = new Unit(name, x, y, width, height, spdX, spdY);
   units.push(unit);
+  setUnit(unit);
   return unit;
 }
 
 let infantry = createUnit('Infantry',0, 0, 100, 50, 5, 7);
 let cavalry = createUnit('Cavalry', 100, 80, 50, 60, 12, 20);
+let heavyInfantry = createUnit('heavyInfantry', 300, 180, 100, 120, 2, 2);
 
 
 let chooseUnit = (units, x, y) => {
+  let foundedUnit = null;
   for(let unit of units) {
     let unitX0 = unit.x;
     let unitY0 = unit.y;
@@ -53,22 +60,17 @@ let chooseUnit = (units, x, y) => {
     let unitY1 = unitY0 + unit.height;
     // check if coordinates is equal to unit position
     if(x >= unitX0 && x <= unitX1 && y >= unitY0 && y <= unitY1) {
-      console.error(unit.name, 'was clicked');
-      assignCurrentlyChosenUnit(unit);
-      console.log('currentlyChosenUnit', currentlyChosenUnit);
-    } else {
-      console.log('No unit was clicked');
+      foundedUnit = unit;
+      break;
     }
   }
+  // if unit was found in units array
+  // currentlyChosenUnit is equal to foundedUnit
+  // else is unit is not founded, then
+  // currentlyChosenUnit will be null
+  assignCurrentlyChosenUnit(foundedUnit);
+  console.log('currentlyChosenUnit', currentlyChosenUnit);
 }
-
-
-let setUnit = (unit) => {
-    ctx.fillRect(unit.x, unit.y, unit.width, unit.height);
-}
-
-setUnit(infantry);
-setUnit(cavalry);
 
 // set onClickListener for left mouse event to canvas element
 c.addEventListener('click', (e) => {
