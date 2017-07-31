@@ -77,6 +77,7 @@ var unitStore_1 = __webpack_require__(1);
 // global variables
 var WIDTH = 1000;
 var HEIGHT = 560;
+var chosenUnit;
 var Unit = (function () {
     function Unit(name, x, y, width, height, spdX, spdY) {
         this.name = name;
@@ -89,7 +90,7 @@ var Unit = (function () {
     }
     return Unit;
 }());
-// create Unit and immediatly push it into units array 
+// create Unit and immediatly push it into units array
 var createUnit = function (name, x, y, width, height, spdX, spdY) {
     var unit = new Unit(name, x, y, width, height, spdX, spdY);
     unitStore_1.units.push(unit);
@@ -107,6 +108,8 @@ var chooseUnit = function (units, x, y) {
         // check if coordinates is equal to unit position
         if (x >= unitX0 && x <= unitX1 && y >= unitY0 && y <= unitY1) {
             console.error(unit.name, 'was clicked');
+            unitStore_1.assignCurrentlyChosenUnit(unit);
+            console.log('currentlyChosenUnit', unitStore_1.currentlyChosenUnit);
         }
         else {
             console.log('No unit was clicked');
@@ -143,6 +146,10 @@ c.addEventListener('contextmenu', function (e) {
 
 exports.__esModule = true;
 exports.units = [];
+exports.assignCurrentlyChosenUnit = function (unit) {
+    exports.currentlyChosenUnit = unit;
+};
+console.log(exports.currentlyChosenUnit);
 
 
 /***/ })

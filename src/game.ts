@@ -2,11 +2,17 @@ let c: any = document.getElementById("canvas");
 let ctx = c.getContext("2d");
 
 // import units from store
-import {units} from './store/unitStore';
+import {
+  units,
+  currentlyChosenUnit,
+  assignCurrentlyChosenUnit
+} from './store/unitStore';
 
 // global variables
 const WIDTH: number = 1000;
 const HEIGHT: number = 560;
+
+let chosenUnit;
 
 class Unit {
   name: string;
@@ -28,7 +34,7 @@ class Unit {
   }
 }
 
-// create Unit and immediatly push it into units array 
+// create Unit and immediatly push it into units array
 let createUnit = (name, x, y, width, height, spdX, spdY) => {
   let unit = new Unit(name, x, y, width, height, spdX, spdY);
   units.push(unit);
@@ -48,6 +54,8 @@ let chooseUnit = (units, x, y) => {
     // check if coordinates is equal to unit position
     if(x >= unitX0 && x <= unitX1 && y >= unitY0 && y <= unitY1) {
       console.error(unit.name, 'was clicked');
+      assignCurrentlyChosenUnit(unit);
+      console.log('currentlyChosenUnit', currentlyChosenUnit);
     } else {
       console.log('No unit was clicked');
     }
