@@ -1,6 +1,9 @@
 let c: any = document.getElementById("canvas");
 let ctx = c.getContext("2d");
 
+// import units from store
+import {units} from './store/unitStore';
+
 // global variables
 const WIDTH: number = 1000;
 const HEIGHT: number = 560;
@@ -24,11 +27,17 @@ class Unit {
     this.spdY = spdY;
   }
 }
-let units = [];
-let infantry = new Unit('Infantry',0, 0, 100, 50, 5, 7);
-units.push(infantry);
-let cavalry = new Unit('Cavalry', 100, 80, 50, 60, 12, 20);
-units.push(cavalry);
+
+// create Unit and immediatly push it into units array 
+let createUnit = (name, x, y, width, height, spdX, spdY) => {
+  let unit = new Unit(name, x, y, width, height, spdX, spdY);
+  units.push(unit);
+  return unit;
+}
+
+let infantry = createUnit('Infantry',0, 0, 100, 50, 5, 7);
+let cavalry = createUnit('Cavalry', 100, 80, 50, 60, 12, 20);
+
 
 let chooseUnit = (units, x, y) => {
   for(let unit of units) {
@@ -68,4 +77,4 @@ c.addEventListener('contextmenu', (e) => {
   let x = e.offsetX; // get X
   let y = e.offsetY; // get Y
   console.log('go to x: ' + x + ' y: ' + y);
-})
+});

@@ -65,10 +65,15 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+exports.__esModule = true;
 var c = document.getElementById("canvas");
 var ctx = c.getContext("2d");
+// import units from store
+var unitStore_1 = __webpack_require__(1);
 // global variables
 var WIDTH = 1000;
 var HEIGHT = 560;
@@ -84,11 +89,14 @@ var Unit = (function () {
     }
     return Unit;
 }());
-var units = [];
-var infantry = new Unit('Infantry', 0, 0, 100, 50, 5, 7);
-units.push(infantry);
-var cavalry = new Unit('Cavalry', 100, 80, 50, 60, 12, 20);
-units.push(cavalry);
+// create Unit and immediatly push it into units array 
+var createUnit = function (name, x, y, width, height, spdX, spdY) {
+    var unit = new Unit(name, x, y, width, height, spdX, spdY);
+    unitStore_1.units.push(unit);
+    return unit;
+};
+var infantry = createUnit('Infantry', 0, 0, 100, 50, 5, 7);
+var cavalry = createUnit('Cavalry', 100, 80, 50, 60, 12, 20);
 var chooseUnit = function (units, x, y) {
     for (var _i = 0, units_1 = units; _i < units_1.length; _i++) {
         var unit = units_1[_i];
@@ -116,7 +124,7 @@ c.addEventListener('click', function (e) {
     var y = e.offsetY; // get Y
     console.log('Position x', e.offsetX); // get X
     console.log('Position y', e.offsetY); // get Y
-    chooseUnit(units, x, y);
+    chooseUnit(unitStore_1.units, x, y);
 });
 // set onClickListener for right mouse event
 c.addEventListener('contextmenu', function (e) {
@@ -125,6 +133,16 @@ c.addEventListener('contextmenu', function (e) {
     var y = e.offsetY; // get Y
     console.log('go to x: ' + x + ' y: ' + y);
 });
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+exports.__esModule = true;
+exports.units = [];
 
 
 /***/ })
