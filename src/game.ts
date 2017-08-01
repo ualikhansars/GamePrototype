@@ -3,14 +3,16 @@ let ctx = c.getContext("2d");
 
 // import units from store
 import {
-  units,
-  currentlyChosenUnit,
+  unitsStore,
   assignCurrentlyChosenUnit
-} from './store/unitStore';
+} from './store/unitsStore';
 
 // global variables
 const WIDTH: number = 1000;
 const HEIGHT: number = 560;
+
+// descruct unitsStore
+let {units, currentlyChosenUnit} = unitsStore;
 
 
 class Unit {
