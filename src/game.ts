@@ -12,16 +12,17 @@ import {
 const WIDTH: number = 1000;
 const HEIGHT: number = 560;
 
-let chosenUnit;
 
 class Unit {
   name: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  spdX: number;
-  spdY: number;
+  x: number; // initial X position
+  y: number; // initial Y position
+  width: number; // width of the unit
+  height: number; // height of the unit
+  spdX: number; // speed X
+  spdY: number; // speed Y
+  moveToX: number; // next X postion
+  moveToY: number; // next Y position
 
   constructor(name: string, x: number, y:number, width: number, height:number, spdX:number, spdY:number) {
     this.name = name;
@@ -39,7 +40,7 @@ let setUnit = (unit) => {
 }
 
 // create Unit and immediatly push it into units array
-let createUnit = (name, x, y, width, height, spdX, spdY) => {
+let createUnit = (name:string, x:number, y:number, width:number, height:number, spdX:number, spdY:number) => {
   let unit = new Unit(name, x, y, width, height, spdX, spdY);
   units.push(unit);
   setUnit(unit);
@@ -51,6 +52,9 @@ let cavalry = createUnit('Cavalry', 100, 80, 50, 60, 12, 20);
 let heavyInfantry = createUnit('heavyInfantry', 300, 180, 100, 120, 2, 2);
 
 
+// check if units was clicked by left mouse button
+// x - mouse position X
+// y - mouse position Y
 let chooseUnit = (units, x, y) => {
   let foundedUnit = null;
   for(let unit of units) {
@@ -72,6 +76,13 @@ let chooseUnit = (units, x, y) => {
   console.log('currentlyChosenUnit', currentlyChosenUnit);
 }
 
+// change unit's moveToX, moveToY
+const assignMoveToPosition = (unit, x:number, y:number) => {
+  unit.moveToX = x;
+  unit.moveToY = y;
+  console.log(unit.name + ' is moving to : x:' + unit.moveToX + ' y:' + unit.moveToY);
+}
+
 // set onClickListener for left mouse event to canvas element
 c.addEventListener('click', (e) => {
   let x = e.offsetX; // get X
@@ -86,5 +97,7 @@ c.addEventListener('contextmenu', (e) => {
   e.preventDefault();
   let x = e.offsetX; // get X
   let y = e.offsetY; // get Y
-  console.log('go to x: ' + x + ' y: ' + y);
+  if(currentlyChosenUnit) {
+    assignMoveToPosition(currentlyChosenUnit, x, y); //assign unit's next x and y position
+  }
 });

@@ -77,7 +77,6 @@ var unitStore_1 = __webpack_require__(1);
 // global variables
 var WIDTH = 1000;
 var HEIGHT = 560;
-var chosenUnit;
 var Unit = (function () {
     function Unit(name, x, y, width, height, spdX, spdY) {
         this.name = name;
@@ -103,6 +102,9 @@ var createUnit = function (name, x, y, width, height, spdX, spdY) {
 var infantry = createUnit('Infantry', 0, 0, 100, 50, 5, 7);
 var cavalry = createUnit('Cavalry', 100, 80, 50, 60, 12, 20);
 var heavyInfantry = createUnit('heavyInfantry', 300, 180, 100, 120, 2, 2);
+// check if units was clicked by left mouse button
+// x - mouse position X
+// y - mouse position Y
 var chooseUnit = function (units, x, y) {
     var foundedUnit = null;
     for (var _i = 0, units_1 = units; _i < units_1.length; _i++) {
@@ -124,6 +126,12 @@ var chooseUnit = function (units, x, y) {
     unitStore_1.assignCurrentlyChosenUnit(foundedUnit);
     console.log('currentlyChosenUnit', unitStore_1.currentlyChosenUnit);
 };
+// change unit's moveToX, moveToY
+var assignMoveToPosition = function (unit, x, y) {
+    unit.moveToX = x;
+    unit.moveToY = y;
+    console.log(unit.name + ' is moving to : x:' + unit.moveToX + ' y:' + unit.moveToY);
+};
 // set onClickListener for left mouse event to canvas element
 c.addEventListener('click', function (e) {
     var x = e.offsetX; // get X
@@ -137,7 +145,9 @@ c.addEventListener('contextmenu', function (e) {
     e.preventDefault();
     var x = e.offsetX; // get X
     var y = e.offsetY; // get Y
-    console.log('go to x: ' + x + ' y: ' + y);
+    if (unitStore_1.currentlyChosenUnit) {
+        assignMoveToPosition(unitStore_1.currentlyChosenUnit, x, y); //assign unit's next x and y position
+    }
 });
 
 
