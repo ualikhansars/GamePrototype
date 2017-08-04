@@ -41,7 +41,11 @@ export const assignMoveToPosition = (unit, x:number, y:number) => {
 
 // draw Units in the canvas
 export let setUnit = (unit) => {
+    ctx.save();
+    //ctx.translate(unit.x + unit.width * 0.5, unit.y + unit.height * 0.5); // translate to rectangle center
+    //ctx.rotate(unit.angle);
     ctx.fillRect(unit.x, unit.y, unit.width, unit.height);
+    ctx.restore();
 }
 
 // create Unit and immediatly push it into units array

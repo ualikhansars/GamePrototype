@@ -132,6 +132,9 @@ map_1.canvas.addEventListener('contextmenu', function (e) {
     var y = e.offsetY; // get Y
     if (unitsStore_1.currentlyChosenUnit) {
         unitActions_1.assignMoveToPosition(unitsStore_1.currentlyChosenUnit, x, y); //assign unit's next x and y position
+        unitsStore_1.currentlyChosenUnit.assignAngle();
+        console.error('Unit angle in degree :', unitsStore_1.currentlyChosenUnit.angleInDegree);
+        console.error('Unit angle in radians :', unitsStore_1.currentlyChosenUnit.angleInRadian);
     }
 });
 setInterval(unitActions_1.unitsHaveToMove, 300);
@@ -179,7 +182,11 @@ exports.assignMoveToPosition = function (unit, x, y) {
 };
 // draw Units in the canvas
 exports.setUnit = function (unit) {
+    map_1.ctx.save();
+    //ctx.translate(unit.x + unit.width * 0.5, unit.y + unit.height * 0.5); // translate to rectangle center
+    //ctx.rotate(unit.angle);
     map_1.ctx.fillRect(unit.x, unit.y, unit.width, unit.height);
+    map_1.ctx.restore();
 };
 // create Unit and immediatly push it into units array
 exports.createUnit = function (name, centerX, centerY, width, height, speed) {
@@ -219,6 +226,7 @@ exports.unitsHaveToMove = function () {
 
 exports.__esModule = true;
 var map_1 = __webpack_require__(0);
+var unitMath_1 = __webpack_require__(5);
 var Unit = (function () {
     function Unit(name, centerX, centerY, width, height, speed) {
         this.name = name;
@@ -233,15 +241,24 @@ var Unit = (function () {
         this.moveToY = centerY;
     }
     Unit.prototype.update = function (speedX, speedY) {
+        map_1.ctx.save();
+        // ctx.translate(this.x + this.width * 0.5, this.y + this.height * 0.5); // translate to rectangle center
+        // ctx.rotate(this.angle);
         this.centerX += speedX;
         this.centerY += speedY;
         this.x = this.centerX - (this.width / 2); // change x and y every time when centerX and centerY is changed
         this.y = this.centerY - (this.height / 2);
         map_1.ctx.fillRect(this.x, this.y, this.width, this.height);
+        map_1.ctx.restore();
+    };
+    Unit.prototype.assignAngle = function () {
+        this.angleInRadian = unitMath_1.calcDestinationAngle(this.centerX, this.centerY, this.moveToX, this.moveToY);
+        this.angleInDegree = unitMath_1.calcDestinationAngleInDegrees(this.centerX, this.centerY, this.moveToX, this.moveToY);
     };
     Unit.prototype.moveToPosition = function (speedX, speedY) {
         if (this.centerX !== this.moveToX || this.centerY !== this.moveToY) {
             map_1.ctx.clearRect(this.x, this.y, this.width, this.height);
+            //ctx.clearRect(0, 0, 1224, 768);
             this.update(speedX, speedY);
         }
         console.log(this.name + ' is on position');
@@ -249,6 +266,41 @@ var Unit = (function () {
     return Unit;
 }());
 exports["default"] = Unit;
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/*
+                C
+                *
+            *   *
+        c *     *
+        *       * b
+      *         *
+    *           *
+A  ************** B
+       a
+*/
+exports.__esModule = true;
+// get unit's position and destination position and return angle in radians between unit and destination
+exports.calcDestinationAngle = function (unitX, unitY, destX, destY) {
+    var a = Math.abs(destX - unitX);
+    var b = Math.abs(destY - unitY);
+    var c = Math.sqrt(a * a + b * b);
+    return Math.sin(a / c);
+};
+// get unit's position and destination position and return angle in radians between unit and destination
+exports.calcDestinationAngleInDegrees = function (unitX, unitY, destX, destY) {
+    var a = Math.abs(destX - unitX);
+    var b = Math.abs(destY - unitY);
+    var c = Math.sqrt(a * a + b * b);
+    var angle = Math.sin(a / c);
+    return angle * (180 / Math.PI);
+};
 
 
 /***/ })

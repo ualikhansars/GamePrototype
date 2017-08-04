@@ -1,5 +1,5 @@
 import {ctx} from '../config/map';
-
+import {calcDestinationAngleInDegrees, calcDestinationAngle} from './unitMath';
 class Unit {
   name: string;
   centerX: number; // center of the unit
@@ -11,6 +11,8 @@ class Unit {
   speed: number; // speed of the unit
   moveToX: number; // next X postion
   moveToY: number; // next Y position
+  angleInRadian: number;
+  angleInDegree: number; // current unit's angle
 
 
   constructor(name: string, centerX: number, centerY:number, width: number, height:number, speed:number) {
@@ -27,17 +29,27 @@ class Unit {
   }
 
   update(speedX, speedY) {
+    ctx.save();
+    // ctx.translate(this.x + this.width * 0.5, this.y + this.height * 0.5); // translate to rectangle center
+    // ctx.rotate(this.angle);
     this.centerX += speedX ;
     this.centerY += speedY;
     this.x = this.centerX - (this.width / 2); // change x and y every time when centerX and centerY is changed
     this.y = this.centerY - (this.height / 2);
     ctx.fillRect(this.x, this.y, this.width, this.height);
+    ctx.restore();
+  }
+
+  assignAngle() {
+    this.angleInRadian =  calcDestinationAngle(this.centerX, this.centerY, this.moveToX, this.moveToY)
+    this.angleInDegree = calcDestinationAngleInDegrees(this.centerX, this.centerY, this.moveToX, this.moveToY);
   }
 
   moveToPosition(speedX, speedY) {
     if(this.centerX !== this.moveToX || this.centerY !== this.moveToY) {
-         ctx.clearRect(this.x, this.y, this.width, this.height);
-         this.update(speedX, speedY);
+      ctx.clearRect(this.x, this.y, this.width, this.height);
+      //ctx.clearRect(0, 0, 1224, 768);
+      this.update(speedX, speedY);
     }
     console.log(this.name + ' is on position');
   }

@@ -32,6 +32,9 @@ canvas.addEventListener('contextmenu', (e) => {
   let y = e.offsetY; // get Y
   if(currentlyChosenUnit) {
     assignMoveToPosition(currentlyChosenUnit, x, y); //assign unit's next x and y position
+    currentlyChosenUnit.assignAngle();
+    console.error('Unit angle in degree :', currentlyChosenUnit.angleInDegree);
+    console.error('Unit angle in radians :', currentlyChosenUnit.angleInRadian);
   }
 });
 
