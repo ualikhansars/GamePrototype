@@ -73,35 +73,49 @@ exports.__esModule = true;
 var c = document.getElementById("canvas");
 var ctx = c.getContext("2d");
 // import units from store
-var unitStore_1 = __webpack_require__(1);
+var unitsStore_1 = __webpack_require__(1);
 // global variables
 var WIDTH = 1000;
 var HEIGHT = 560;
 var Unit = (function () {
-    function Unit(name, x, y, width, height, spdX, spdY) {
+    function Unit(name, x, y, width, height, speed) {
         this.name = name;
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        this.spdX = spdX;
-        this.spdY = spdY;
+        this.speed = speed;
+        this.moveToX = x;
+        this.moveToY = y;
     }
+    Unit.prototype.update = function (speedX, speedY) {
+        this.x += speedX;
+        this.y += speedY;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+    };
+    Unit.prototype.moveToPosition = function (speedX, speedY) {
+        if (this.x !== this.moveToX || this.y !== this.moveToY) {
+            ctx.clearRect(this.x, this.y, this.width, this.height);
+            this.update(speedX, speedY);
+        }
+        console.log(this.name + ' is on position');
+    };
     return Unit;
 }());
+// draw Units in the canvas
 var setUnit = function (unit) {
     ctx.fillRect(unit.x, unit.y, unit.width, unit.height);
 };
 // create Unit and immediatly push it into units array
-var createUnit = function (name, x, y, width, height, spdX, spdY) {
-    var unit = new Unit(name, x, y, width, height, spdX, spdY);
-    unitStore_1.units.push(unit);
+var createUnit = function (name, x, y, width, height, speed) {
+    var unit = new Unit(name, x, y, width, height, speed);
+    unitsStore_1.units.push(unit);
     setUnit(unit);
     return unit;
 };
-var infantry = createUnit('Infantry', 0, 0, 100, 50, 5, 7);
-var cavalry = createUnit('Cavalry', 100, 80, 50, 60, 12, 20);
-var heavyInfantry = createUnit('heavyInfantry', 300, 180, 100, 120, 2, 2);
+var infantry = createUnit('Infantry', 0, 0, 100, 50, 3);
+var cavalry = createUnit('Cavalry', 100, 80, 50, 60, 5);
+var heavyInfantry = createUnit('HeavyInfantry', 300, 180, 100, 120, 2);
 // check if units was clicked by left mouse button
 // x - mouse position X
 // y - mouse position Y
@@ -123,8 +137,8 @@ var chooseUnit = function (units, x, y) {
     // currentlyChosenUnit is equal to foundedUnit
     // else is unit is not founded, then
     // currentlyChosenUnit will be null
-    unitStore_1.assignCurrentlyChosenUnit(foundedUnit);
-    console.log('currentlyChosenUnit', unitStore_1.currentlyChosenUnit);
+    unitsStore_1.assignCurrentlyChosenUnit(foundedUnit);
+    console.log('currentlyChosenUnit', unitsStore_1.currentlyChosenUnit);
 };
 // change unit's moveToX, moveToY
 var assignMoveToPosition = function (unit, x, y) {
@@ -132,23 +146,58 @@ var assignMoveToPosition = function (unit, x, y) {
     unit.moveToY = y;
     console.log(unit.name + ' is moving to : x:' + unit.moveToX + ' y:' + unit.moveToY);
 };
+// const updateUnit = (unit) => {
+//   unit.x += unit.speed ;
+//   unit.y += unit.speed;
+//   ctx.fillRect(unit.x, unit.y, unit.width, unit.height);
+//
+//   if(unit.x > WIDTH || unit.x < 0) {
+//     unit.speed = -unit.speed;
+//   }
+//
+//   if(unit.y > HEIGHT || unit.y < 0) {
+//     unit.speed = -unit.speed;
+//   }
+// }
+// change unit's position until it approaches to moveToPosition
+exports.unitsHaveToMove = function () {
+    for (var _i = 0, units_2 = unitsStore_1.units; _i < units_2.length; _i++) {
+        var unit = units_2[_i];
+        if (unit.x !== unit.moveToX || unit.y !== unit.moveToY) {
+            if (unit.x < unit.moveToX && unit.y < unit.moveToY) {
+                unit.moveToPosition(1, 1);
+            }
+            else if (unit.x > unit.moveToX && unit.y > unit.moveToY) {
+                unit.moveToPosition(-1, -1);
+            }
+            else if (unit.x < unit.moveToX && unit.y > unit.moveToY) {
+                unit.moveToPosition(1, -1);
+            }
+            else if (unit.x > unit.moveToX && unit.y < unit.moveToY) {
+                unit.moveToPosition(-1, 1);
+            }
+        }
+        setUnit(unit);
+    }
+};
 // set onClickListener for left mouse event to canvas element
 c.addEventListener('click', function (e) {
     var x = e.offsetX; // get X
     var y = e.offsetY; // get Y
     console.log('Position x', e.offsetX); // get X
     console.log('Position y', e.offsetY); // get Y
-    chooseUnit(unitStore_1.units, x, y);
+    chooseUnit(unitsStore_1.units, x, y);
 });
 // set onClickListener for right mouse event
 c.addEventListener('contextmenu', function (e) {
     e.preventDefault();
     var x = e.offsetX; // get X
     var y = e.offsetY; // get Y
-    if (unitStore_1.currentlyChosenUnit) {
-        assignMoveToPosition(unitStore_1.currentlyChosenUnit, x, y); //assign unit's next x and y position
+    if (unitsStore_1.currentlyChosenUnit) {
+        assignMoveToPosition(unitsStore_1.currentlyChosenUnit, x, y); //assign unit's next x and y position
     }
 });
+setInterval(exports.unitsHaveToMove, 300);
 
 
 /***/ }),
@@ -159,6 +208,7 @@ c.addEventListener('contextmenu', function (e) {
 
 exports.__esModule = true;
 exports.units = [];
+exports.currentlyChosenUnit = null;
 exports.assignCurrentlyChosenUnit = function (unit) {
     // check unit
     if (unit) {
@@ -168,7 +218,6 @@ exports.assignCurrentlyChosenUnit = function (unit) {
         exports.currentlyChosenUnit = null;
     }
 };
-exports.currentlyChosenUnit = null;
 
 
 /***/ })

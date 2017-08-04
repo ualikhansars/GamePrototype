@@ -3,7 +3,8 @@ let ctx = c.getContext("2d");
 
 // import units from store
 import {
-  unitsStore,
+  units,
+  currentlyChosenUnit,
   assignCurrentlyChosenUnit
 } from './store/unitsStore';
 
@@ -11,47 +12,58 @@ import {
 const WIDTH: number = 1000;
 const HEIGHT: number = 560;
 
-// descruct unitsStore
-let {units, currentlyChosenUnit} = unitsStore;
-
-
 class Unit {
   name: string;
   x: number; // initial X position
   y: number; // initial Y position
   width: number; // width of the unit
   height: number; // height of the unit
-  spdX: number; // speed X
-  spdY: number; // speed Y
+  speed: number; // speed of the unit
   moveToX: number; // next X postion
   moveToY: number; // next Y position
 
-  constructor(name: string, x: number, y:number, width: number, height:number, spdX:number, spdY:number) {
+  constructor(name: string, x: number, y:number, width: number, height:number, speed:number) {
     this.name = name;
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
-    this.spdX = spdX;
-    this.spdY = spdY;
+    this.speed = speed;
+    this.moveToX = x;
+    this.moveToY = y
+  }
+
+  update(speedX, speedY) {
+    this.x += speedX ;
+    this.y += speedY;
+    ctx.fillRect(this.x, this.y, this.width, this.height);
+  }
+
+  moveToPosition(speedX, speedY) {
+    if(this.x !== this.moveToX || this.y !== this.moveToY) {
+         ctx.clearRect(this.x, this.y, this.width, this.height);
+         this.update(speedX, speedY);
+    }
+    console.log(this.name + ' is on position');
   }
 }
 
+// draw Units in the canvas
 let setUnit = (unit) => {
     ctx.fillRect(unit.x, unit.y, unit.width, unit.height);
 }
 
 // create Unit and immediatly push it into units array
-let createUnit = (name:string, x:number, y:number, width:number, height:number, spdX:number, spdY:number) => {
-  let unit = new Unit(name, x, y, width, height, spdX, spdY);
+let createUnit = (name:string, x:number, y:number, width:number, height:number, speed: number) => {
+  let unit = new Unit(name, x, y, width, height, speed);
   units.push(unit);
   setUnit(unit);
   return unit;
 }
 
-let infantry = createUnit('Infantry',0, 0, 100, 50, 5, 7);
-let cavalry = createUnit('Cavalry', 100, 80, 50, 60, 12, 20);
-let heavyInfantry = createUnit('heavyInfantry', 300, 180, 100, 120, 2, 2);
+let infantry = createUnit('Infantry',0, 0, 100, 50, 3);
+let cavalry = createUnit('Cavalry', 100, 80, 50, 60, 5);
+let heavyInfantry = createUnit('HeavyInfantry', 300, 180, 100, 120, 2);
 
 
 // check if units was clicked by left mouse button
@@ -85,6 +97,41 @@ const assignMoveToPosition = (unit, x:number, y:number) => {
   console.log(unit.name + ' is moving to : x:' + unit.moveToX + ' y:' + unit.moveToY);
 }
 
+// const updateUnit = (unit) => {
+//   unit.x += unit.speed ;
+//   unit.y += unit.speed;
+//   ctx.fillRect(unit.x, unit.y, unit.width, unit.height);
+//
+//   if(unit.x > WIDTH || unit.x < 0) {
+//     unit.speed = -unit.speed;
+//   }
+//
+//   if(unit.y > HEIGHT || unit.y < 0) {
+//     unit.speed = -unit.speed;
+//   }
+// }
+
+// change unit's position until it approaches to moveToPosition
+export const unitsHaveToMove = () => {
+  for(let unit of units) {
+    if(unit.x !== unit.moveToX || unit.y !== unit.moveToY) {
+      if(unit.x < unit.moveToX && unit.y < unit.moveToY) {
+        unit.moveToPosition(1, 1);
+      }
+      else if(unit.x > unit.moveToX && unit.y > unit.moveToY) {
+          unit.moveToPosition(-1, -1);
+      }
+      else if(unit.x < unit.moveToX && unit.y > unit.moveToY) {
+        unit.moveToPosition(1, -1);
+      }
+      else if(unit.x > unit.moveToX && unit.y < unit.moveToY) {
+        unit.moveToPosition(-1, 1);
+      }
+    }
+    setUnit(unit);
+  }
+}
+
 // set onClickListener for left mouse event to canvas element
 c.addEventListener('click', (e) => {
   let x = e.offsetX; // get X
@@ -103,3 +150,5 @@ c.addEventListener('contextmenu', (e) => {
     assignMoveToPosition(currentlyChosenUnit, x, y); //assign unit's next x and y position
   }
 });
+
+setInterval(unitsHaveToMove, 300);
