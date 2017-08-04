@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -91,10 +91,31 @@ exports.ctx = exports.canvas.getContext("2d");
 "use strict";
 
 exports.__esModule = true;
+exports.units = [];
+exports.currentlyChosenUnit = null;
+exports.assignCurrentlyChosenUnit = function (unit) {
+    // check unit
+    if (unit) {
+        exports.currentlyChosenUnit = unit;
+    }
+    else {
+        exports.currentlyChosenUnit = null;
+    }
+};
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+exports.__esModule = true;
 var map_1 = __webpack_require__(0);
-var unitsStore_1 = __webpack_require__(3);
-var unitActions_1 = __webpack_require__(2);
-var infantry = unitActions_1.createUnit('Infantry', 0, 0, 100, 50, 3);
+var unitsStore_1 = __webpack_require__(1);
+var unitActions_1 = __webpack_require__(3);
+var infantry = unitActions_1.createUnit('Infantry', 200, 40, 100, 50, 3);
+console.log('infantry', infantry);
 var cavalry = unitActions_1.createUnit('Cavalry', 100, 80, 50, 60, 5);
 var heavyInfantry = unitActions_1.createUnit('HeavyInfantry', 300, 180, 100, 120, 2);
 map_1.canvas.addEventListener('click', function (e) {
@@ -117,13 +138,13 @@ setInterval(unitActions_1.unitsHaveToMove, 300);
 
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 exports.__esModule = true;
-var unitsStore_1 = __webpack_require__(3);
+var unitsStore_1 = __webpack_require__(1);
 var map_1 = __webpack_require__(0);
 var Unit_1 = __webpack_require__(4);
 // check if units was clicked by left mouse button
@@ -161,8 +182,8 @@ exports.setUnit = function (unit) {
     map_1.ctx.fillRect(unit.x, unit.y, unit.width, unit.height);
 };
 // create Unit and immediatly push it into units array
-exports.createUnit = function (name, x, y, width, height, speed) {
-    var unit = new Unit_1["default"](name, x, y, width, height, speed);
+exports.createUnit = function (name, centerX, centerY, width, height, speed) {
+    var unit = new Unit_1["default"](name, centerX, centerY, width, height, speed);
     unitsStore_1.units.push(unit);
     exports.setUnit(unit);
     return unit;
@@ -171,41 +192,21 @@ exports.createUnit = function (name, x, y, width, height, speed) {
 exports.unitsHaveToMove = function () {
     for (var _i = 0, units_2 = unitsStore_1.units; _i < units_2.length; _i++) {
         var unit = units_2[_i];
-        if (unit.x !== unit.moveToX || unit.y !== unit.moveToY) {
-            if (unit.x < unit.moveToX && unit.y < unit.moveToY) {
+        if (unit.centerX !== unit.moveToX || unit.centerY !== unit.moveToY) {
+            if (unit.centerX < unit.moveToX && unit.centerY < unit.moveToY) {
                 unit.moveToPosition(1, 1);
             }
-            else if (unit.x > unit.moveToX && unit.y > unit.moveToY) {
+            else if (unit.centerX > unit.moveToX && unit.centerY > unit.moveToY) {
                 unit.moveToPosition(-1, -1);
             }
-            else if (unit.x < unit.moveToX && unit.y > unit.moveToY) {
+            else if (unit.centerX < unit.moveToX && unit.centerY > unit.moveToY) {
                 unit.moveToPosition(1, -1);
             }
-            else if (unit.x > unit.moveToX && unit.y < unit.moveToY) {
+            else if (unit.centerX > unit.moveToX && unit.centerY < unit.moveToY) {
                 unit.moveToPosition(-1, 1);
             }
         }
         exports.setUnit(unit);
-    }
-};
-
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-exports.__esModule = true;
-exports.units = [];
-exports.currentlyChosenUnit = null;
-exports.assignCurrentlyChosenUnit = function (unit) {
-    // check unit
-    if (unit) {
-        exports.currentlyChosenUnit = unit;
-    }
-    else {
-        exports.currentlyChosenUnit = null;
     }
 };
 
@@ -219,23 +220,27 @@ exports.assignCurrentlyChosenUnit = function (unit) {
 exports.__esModule = true;
 var map_1 = __webpack_require__(0);
 var Unit = (function () {
-    function Unit(name, x, y, width, height, speed) {
+    function Unit(name, centerX, centerY, width, height, speed) {
         this.name = name;
-        this.x = x;
-        this.y = y;
+        this.centerX = centerX;
+        this.centerY = centerY;
         this.width = width;
         this.height = height;
+        this.x = this.centerX - (this.width / 2);
+        this.y = this.centerY - (this.height / 2);
         this.speed = speed;
-        this.moveToX = x;
-        this.moveToY = y;
+        this.moveToX = centerX;
+        this.moveToY = centerY;
     }
     Unit.prototype.update = function (speedX, speedY) {
-        this.x += speedX;
-        this.y += speedY;
+        this.centerX += speedX;
+        this.centerY += speedY;
+        this.x = this.centerX - (this.width / 2); // change x and y every time when centerX and centerY is changed
+        this.y = this.centerY - (this.height / 2);
         map_1.ctx.fillRect(this.x, this.y, this.width, this.height);
     };
     Unit.prototype.moveToPosition = function (speedX, speedY) {
-        if (this.x !== this.moveToX || this.y !== this.moveToY) {
+        if (this.centerX !== this.moveToX || this.centerY !== this.moveToY) {
             map_1.ctx.clearRect(this.x, this.y, this.width, this.height);
             this.update(speedX, speedY);
         }

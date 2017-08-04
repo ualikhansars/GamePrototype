@@ -45,8 +45,8 @@ export let setUnit = (unit) => {
 }
 
 // create Unit and immediatly push it into units array
-export let createUnit = (name:string, x:number, y:number, width:number, height:number, speed: number) => {
-  let unit = new Unit(name, x, y, width, height, speed);
+export let createUnit = (name:string, centerX:number, centerY:number, width:number, height:number, speed: number) => {
+  let unit = new Unit(name, centerX, centerY, width, height, speed);
   units.push(unit);
   setUnit(unit);
   return unit;
@@ -55,17 +55,17 @@ export let createUnit = (name:string, x:number, y:number, width:number, height:n
 // change unit's position until it approaches to moveToPosition
 export const unitsHaveToMove = () => {
   for(let unit of units) {
-    if(unit.x !== unit.moveToX || unit.y !== unit.moveToY) {
-      if(unit.x < unit.moveToX && unit.y < unit.moveToY) {
+    if(unit.centerX !== unit.moveToX || unit.centerY !== unit.moveToY) {
+      if(unit.centerX < unit.moveToX && unit.centerY < unit.moveToY) {
         unit.moveToPosition(1, 1);
       }
-      else if(unit.x > unit.moveToX && unit.y > unit.moveToY) {
+      else if(unit.centerX > unit.moveToX && unit.centerY > unit.moveToY) {
           unit.moveToPosition(-1, -1);
       }
-      else if(unit.x < unit.moveToX && unit.y > unit.moveToY) {
+      else if(unit.centerX < unit.moveToX && unit.centerY > unit.moveToY) {
         unit.moveToPosition(1, -1);
       }
-      else if(unit.x > unit.moveToX && unit.y < unit.moveToY) {
+      else if(unit.centerX > unit.moveToX && unit.centerY < unit.moveToY) {
         unit.moveToPosition(-1, 1);
       }
     }

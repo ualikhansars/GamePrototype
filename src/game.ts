@@ -12,7 +12,8 @@ import {
   unitsHaveToMove
 } from './units/unitActions';
 
-let infantry = createUnit('Infantry',0, 0, 100, 50, 3);
+let infantry = createUnit('Infantry',200, 40, 100, 50, 3);
+console.log('infantry', infantry);
 let cavalry = createUnit('Cavalry', 100, 80, 50, 60, 5);
 let heavyInfantry = createUnit('HeavyInfantry', 300, 180, 100, 120, 2);
 
