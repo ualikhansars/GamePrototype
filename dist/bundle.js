@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -70,56 +70,66 @@
 "use strict";
 
 exports.__esModule = true;
-var c = document.getElementById("canvas");
-var ctx = c.getContext("2d");
-// import units from store
-var unitsStore_1 = __webpack_require__(1);
 // global variables
-var WIDTH = 1000;
-var HEIGHT = 560;
-var Unit = (function () {
-    function Unit(name, x, y, width, height, speed) {
-        this.name = name;
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.speed = speed;
-        this.moveToX = x;
-        this.moveToY = y;
+exports.WIDTH = 1224;
+exports.HEIGHT = 768;
+// create Canvas
+exports.canvas = document.createElement('canvas');
+exports.canvas.id = "canvas";
+exports.canvas.width = exports.WIDTH;
+exports.canvas.height = exports.HEIGHT;
+exports.canvas.style.border = "1px solid";
+document.body.appendChild(exports.canvas);
+// define 2d context
+exports.ctx = exports.canvas.getContext("2d");
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+exports.__esModule = true;
+var map_1 = __webpack_require__(0);
+var unitsStore_1 = __webpack_require__(3);
+var unitActions_1 = __webpack_require__(2);
+var infantry = unitActions_1.createUnit('Infantry', 0, 0, 100, 50, 3);
+var cavalry = unitActions_1.createUnit('Cavalry', 100, 80, 50, 60, 5);
+var heavyInfantry = unitActions_1.createUnit('HeavyInfantry', 300, 180, 100, 120, 2);
+map_1.canvas.addEventListener('click', function (e) {
+    var x = e.offsetX; // get X
+    var y = e.offsetY; // get Y
+    console.log('Position x', e.offsetX); // get X
+    console.log('Position y', e.offsetY); // get Y
+    unitActions_1.chooseUnit(unitsStore_1.units, x, y);
+});
+// set onClickListener for right mouse event
+map_1.canvas.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+    var x = e.offsetX; // get X
+    var y = e.offsetY; // get Y
+    if (unitsStore_1.currentlyChosenUnit) {
+        unitActions_1.assignMoveToPosition(unitsStore_1.currentlyChosenUnit, x, y); //assign unit's next x and y position
     }
-    Unit.prototype.update = function (speedX, speedY) {
-        this.x += speedX;
-        this.y += speedY;
-        ctx.fillRect(this.x, this.y, this.width, this.height);
-    };
-    Unit.prototype.moveToPosition = function (speedX, speedY) {
-        if (this.x !== this.moveToX || this.y !== this.moveToY) {
-            ctx.clearRect(this.x, this.y, this.width, this.height);
-            this.update(speedX, speedY);
-        }
-        console.log(this.name + ' is on position');
-    };
-    return Unit;
-}());
-// draw Units in the canvas
-var setUnit = function (unit) {
-    ctx.fillRect(unit.x, unit.y, unit.width, unit.height);
-};
-// create Unit and immediatly push it into units array
-var createUnit = function (name, x, y, width, height, speed) {
-    var unit = new Unit(name, x, y, width, height, speed);
-    unitsStore_1.units.push(unit);
-    setUnit(unit);
-    return unit;
-};
-var infantry = createUnit('Infantry', 0, 0, 100, 50, 3);
-var cavalry = createUnit('Cavalry', 100, 80, 50, 60, 5);
-var heavyInfantry = createUnit('HeavyInfantry', 300, 180, 100, 120, 2);
+});
+setInterval(unitActions_1.unitsHaveToMove, 300);
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+exports.__esModule = true;
+var unitsStore_1 = __webpack_require__(3);
+var map_1 = __webpack_require__(0);
+var Unit_1 = __webpack_require__(4);
 // check if units was clicked by left mouse button
 // x - mouse position X
 // y - mouse position Y
-var chooseUnit = function (units, x, y) {
+exports.chooseUnit = function (units, x, y) {
     var foundedUnit = null;
     for (var _i = 0, units_1 = units; _i < units_1.length; _i++) {
         var unit = units_1[_i];
@@ -141,24 +151,22 @@ var chooseUnit = function (units, x, y) {
     console.log('currentlyChosenUnit', unitsStore_1.currentlyChosenUnit);
 };
 // change unit's moveToX, moveToY
-var assignMoveToPosition = function (unit, x, y) {
+exports.assignMoveToPosition = function (unit, x, y) {
     unit.moveToX = x;
     unit.moveToY = y;
     console.log(unit.name + ' is moving to : x:' + unit.moveToX + ' y:' + unit.moveToY);
 };
-// const updateUnit = (unit) => {
-//   unit.x += unit.speed ;
-//   unit.y += unit.speed;
-//   ctx.fillRect(unit.x, unit.y, unit.width, unit.height);
-//
-//   if(unit.x > WIDTH || unit.x < 0) {
-//     unit.speed = -unit.speed;
-//   }
-//
-//   if(unit.y > HEIGHT || unit.y < 0) {
-//     unit.speed = -unit.speed;
-//   }
-// }
+// draw Units in the canvas
+exports.setUnit = function (unit) {
+    map_1.ctx.fillRect(unit.x, unit.y, unit.width, unit.height);
+};
+// create Unit and immediatly push it into units array
+exports.createUnit = function (name, x, y, width, height, speed) {
+    var unit = new Unit_1["default"](name, x, y, width, height, speed);
+    unitsStore_1.units.push(unit);
+    exports.setUnit(unit);
+    return unit;
+};
 // change unit's position until it approaches to moveToPosition
 exports.unitsHaveToMove = function () {
     for (var _i = 0, units_2 = unitsStore_1.units; _i < units_2.length; _i++) {
@@ -177,31 +185,13 @@ exports.unitsHaveToMove = function () {
                 unit.moveToPosition(-1, 1);
             }
         }
-        setUnit(unit);
+        exports.setUnit(unit);
     }
 };
-// set onClickListener for left mouse event to canvas element
-c.addEventListener('click', function (e) {
-    var x = e.offsetX; // get X
-    var y = e.offsetY; // get Y
-    console.log('Position x', e.offsetX); // get X
-    console.log('Position y', e.offsetY); // get Y
-    chooseUnit(unitsStore_1.units, x, y);
-});
-// set onClickListener for right mouse event
-c.addEventListener('contextmenu', function (e) {
-    e.preventDefault();
-    var x = e.offsetX; // get X
-    var y = e.offsetY; // get Y
-    if (unitsStore_1.currentlyChosenUnit) {
-        assignMoveToPosition(unitsStore_1.currentlyChosenUnit, x, y); //assign unit's next x and y position
-    }
-});
-setInterval(exports.unitsHaveToMove, 300);
 
 
 /***/ }),
-/* 1 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -218,6 +208,42 @@ exports.assignCurrentlyChosenUnit = function (unit) {
         exports.currentlyChosenUnit = null;
     }
 };
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+exports.__esModule = true;
+var map_1 = __webpack_require__(0);
+var Unit = (function () {
+    function Unit(name, x, y, width, height, speed) {
+        this.name = name;
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.speed = speed;
+        this.moveToX = x;
+        this.moveToY = y;
+    }
+    Unit.prototype.update = function (speedX, speedY) {
+        this.x += speedX;
+        this.y += speedY;
+        map_1.ctx.fillRect(this.x, this.y, this.width, this.height);
+    };
+    Unit.prototype.moveToPosition = function (speedX, speedY) {
+        if (this.x !== this.moveToX || this.y !== this.moveToY) {
+            map_1.ctx.clearRect(this.x, this.y, this.width, this.height);
+            this.update(speedX, speedY);
+        }
+        console.log(this.name + ' is on position');
+    };
+    return Unit;
+}());
+exports["default"] = Unit;
 
 
 /***/ })

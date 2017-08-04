@@ -1,4 +1,3 @@
-
 export const units = [];
 export let currentlyChosenUnit = null;
 
