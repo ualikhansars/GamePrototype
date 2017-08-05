@@ -297,12 +297,22 @@ exports.calcDestinationAngle = function (unitX, unitY, destX, destY) {
 };
 // get unit's position and destination position and return angle in radians between unit and destination
 exports.calcDestinationAngleInDegrees = function (unitX, unitY, destX, destY) {
-    var y = Math.abs(destY - unitY);
-    var x = Math.abs(destX - unitX);
-    var c = Math.sqrt(x * x + y * y);
-    ;
-    var angle = Math.atan(y / x);
-    return angle * (180 / Math.PI);
+    var angle;
+    var a = Math.abs(destY - unitY);
+    var b = Math.abs(destX - unitX);
+    var angleInRadian = Math.atan(a / b);
+    // check quater of the circle
+    var degree = angleInRadian * (180 / Math.PI);
+    var quater = exports.getQuater(unitX, unitY, destX, destY);
+    if (quater === 1)
+        angle = degree;
+    if (quater === 2)
+        angle = 90 + (90 - degree);
+    else if (quater === 3)
+        angle = 180 + degree;
+    else if (quater === 4)
+        angle = 270 + (90 - degree);
+    return angle;
 };
 exports.getQuater = function (unitX, unitY, destX, destY) {
     var quater;

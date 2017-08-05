@@ -21,11 +21,18 @@ export const calcDestinationAngle = (unitX:number, unitY:number, destX:number, d
 
 // get unit's position and destination position and return angle in radians between unit and destination
 export const calcDestinationAngleInDegrees = (unitX:number, unitY:number, destX:number, destY:number):number => {
-  let y = Math.abs(destY - unitY);
-  let x = Math.abs(destX - unitX);
-  let c = Math.sqrt(x * x + y * y);;
-  let angle = Math.atan(y / x);
-  return angle * (180 / Math.PI);
+  let angle;
+  let a = Math.abs(destY - unitY);
+  let b = Math.abs(destX - unitX);
+  let angleInRadian = Math.atan(a / b);
+  // check quater of the circle
+  let degree =  angleInRadian * (180 / Math.PI);
+  let quater = getQuater(unitX, unitY, destX, destY);
+  if(quater === 1) angle = degree;
+  if(quater === 2) angle = 90 + (90 - degree);
+  else if(quater === 3) angle = 180 + degree;
+  else if(quater === 4) angle = 270 + (90 - degree);
+  return angle;
 }
 
 export const getQuater = (unitX:number, unitY:number, destX:number, destY:number):number => {
