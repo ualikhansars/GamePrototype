@@ -33,8 +33,10 @@ canvas.addEventListener('contextmenu', (e) => {
   if(currentlyChosenUnit) {
     assignMoveToPosition(currentlyChosenUnit, x, y); //assign unit's next x and y position
     currentlyChosenUnit.assignAngle();
-    console.error('Unit angle in degree :', currentlyChosenUnit.angleInDegree);
-    console.error('Unit angle in radians :', currentlyChosenUnit.angleInRadian);
+    console.error('x:', currentlyChosenUnit.centerX, 'y:', currentlyChosenUnit.y, 'destX:', currentlyChosenUnit.moveToX, 'destY:', currentlyChosenUnit.moveToY);
+    // console.error('Unit angle in degree :', currentlyChosenUnit.angleInDegree);
+    // console.error('Unit angle in radians :', currentlyChosenUnit.angleInRadian);
+    console.error('Unit quater of the desctination :', currentlyChosenUnit.quater);
   }
 });
 

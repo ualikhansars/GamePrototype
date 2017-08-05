@@ -133,8 +133,10 @@ map_1.canvas.addEventListener('contextmenu', function (e) {
     if (unitsStore_1.currentlyChosenUnit) {
         unitActions_1.assignMoveToPosition(unitsStore_1.currentlyChosenUnit, x, y); //assign unit's next x and y position
         unitsStore_1.currentlyChosenUnit.assignAngle();
-        console.error('Unit angle in degree :', unitsStore_1.currentlyChosenUnit.angleInDegree);
-        console.error('Unit angle in radians :', unitsStore_1.currentlyChosenUnit.angleInRadian);
+        console.error('x:', unitsStore_1.currentlyChosenUnit.centerX, 'y:', unitsStore_1.currentlyChosenUnit.y, 'destX:', unitsStore_1.currentlyChosenUnit.moveToX, 'destY:', unitsStore_1.currentlyChosenUnit.moveToY);
+        // console.error('Unit angle in degree :', currentlyChosenUnit.angleInDegree);
+        // console.error('Unit angle in radians :', currentlyChosenUnit.angleInRadian);
+        console.error('Unit quater of the desctination :', unitsStore_1.currentlyChosenUnit.quater);
     }
 });
 setInterval(unitActions_1.unitsHaveToMove, 300);
@@ -254,6 +256,7 @@ var Unit = (function () {
     Unit.prototype.assignAngle = function () {
         this.angleInRadian = unitMath_1.calcDestinationAngle(this.centerX, this.centerY, this.moveToX, this.moveToY);
         this.angleInDegree = unitMath_1.calcDestinationAngleInDegrees(this.centerX, this.centerY, this.moveToX, this.moveToY);
+        this.quater = unitMath_1.getQuater(this.centerX, this.centerY, this.moveToX, this.moveToY);
     };
     Unit.prototype.moveToPosition = function (speedX, speedY) {
         if (this.centerX !== this.moveToX || this.centerY !== this.moveToY) {
@@ -261,7 +264,6 @@ var Unit = (function () {
             //ctx.clearRect(0, 0, 1224, 768);
             this.update(speedX, speedY);
         }
-        console.log(this.name + ' is on position');
     };
     return Unit;
 }());
@@ -300,6 +302,22 @@ exports.calcDestinationAngleInDegrees = function (unitX, unitY, destX, destY) {
     var c = Math.sqrt(a * a + b * b);
     var angle = Math.sin(a / c);
     return angle * (180 / Math.PI);
+};
+exports.getQuater = function (unitX, unitY, destX, destY) {
+    var quater;
+    if (destX > unitX && destY < unitY) {
+        quater = 1;
+    }
+    else if (destX < unitX && destY < unitY) {
+        quater = 2;
+    }
+    else if (destX < unitX && destY > unitY) {
+        quater = 3;
+    }
+    else if (destX > unitX && destY > unitY) {
+        quater = 4;
+    }
+    return quater;
 };
 
 

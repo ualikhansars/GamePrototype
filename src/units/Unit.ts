@@ -1,5 +1,9 @@
 import {ctx} from '../config/map';
-import {calcDestinationAngleInDegrees, calcDestinationAngle} from './unitMath';
+import {
+  calcDestinationAngleInDegrees,
+  calcDestinationAngle,
+  getQuater
+} from './unitMath';
 class Unit {
   name: string;
   centerX: number; // center of the unit
@@ -13,6 +17,7 @@ class Unit {
   moveToY: number; // next Y position
   angleInRadian: number;
   angleInDegree: number; // current unit's angle
+  quater: number; // quater of the destination in axes of ordinates
 
 
   constructor(name: string, centerX: number, centerY:number, width: number, height:number, speed:number) {
@@ -43,6 +48,7 @@ class Unit {
   assignAngle() {
     this.angleInRadian =  calcDestinationAngle(this.centerX, this.centerY, this.moveToX, this.moveToY)
     this.angleInDegree = calcDestinationAngleInDegrees(this.centerX, this.centerY, this.moveToX, this.moveToY);
+    this.quater = getQuater(this.centerX, this.centerY, this.moveToX, this.moveToY);
   }
 
   moveToPosition(speedX, speedY) {
@@ -51,7 +57,6 @@ class Unit {
       //ctx.clearRect(0, 0, 1224, 768);
       this.update(speedX, speedY);
     }
-    console.log(this.name + ' is on position');
   }
 }
 
