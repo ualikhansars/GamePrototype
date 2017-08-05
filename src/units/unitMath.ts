@@ -26,8 +26,8 @@ export const calcDestinationAngleInDegrees = (unitX:number, unitY:number, destX:
   let b = Math.abs(destX - unitX);
   let angleInRadian = Math.atan(a / b);
   // check quater of the circle
-  let degree =  angleInRadian * (180 / Math.PI);
-  let quater = getQuater(unitX, unitY, destX, destY);
+  let degree =  angleInRadian * (180 / Math.PI); // convert radians into degree
+  let quater = getQuater(unitX, unitY, destX, destY); // check quater
   if(quater === 1) angle = degree;
   if(quater === 2) angle = 90 + (90 - degree);
   else if(quater === 3) angle = 180 + degree;

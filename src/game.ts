@@ -9,7 +9,8 @@ import {
   chooseUnit,
   assignMoveToPosition,
   createUnit,
-  unitsHaveToMove
+  unitsHaveToMove,
+  rotateUnit // test
 } from './units/unitActions';
 
 let infantry = createUnit('Infantry',200, 40, 100, 50, 3);
@@ -33,10 +34,12 @@ canvas.addEventListener('contextmenu', (e) => {
   if(currentlyChosenUnit) {
     assignMoveToPosition(currentlyChosenUnit, x, y); //assign unit's next x and y position
     currentlyChosenUnit.assignAngle();
-    console.error('x:', currentlyChosenUnit.centerX, 'y:', currentlyChosenUnit.centerY, 'destX:', currentlyChosenUnit.moveToX, 'destY:', currentlyChosenUnit.moveToY);
-    console.error('Unit angle in degree :', currentlyChosenUnit.angleInDegree);
-    console.error('Unit angle in radians :', currentlyChosenUnit.angleInRadian);
-    console.error('Unit quater of the desctination :', currentlyChosenUnit.quater);
+    rotateUnit(currentlyChosenUnit);
+    // console.error('x:', currentlyChosenUnit.centerX, 'y:', currentlyChosenUnit.centerY, 'destX:', currentlyChosenUnit.moveToX, 'destY:', currentlyChosenUnit.moveToY);
+    // console.error('Unit angle in degree :', currentlyChosenUnit.angleInDegree);
+    // console.error('Unit angle in radians :', currentlyChosenUnit.angleInRadian);
+    console.log('Unit:' ,currentlyChosenUnit.x, currentlyChosenUnit.y);
+    console.log('center:', currentlyChosenUnit.centerX, currentlyChosenUnit.centerY);
   }
 });
 

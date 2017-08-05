@@ -16,8 +16,7 @@ class Unit {
   moveToX: number; // next X postion
   moveToY: number; // next Y position
   angleInRadian: number;
-  angleInDegree: number; // current unit's angle
-  quater: number; // quater of the destination in axes of ordinates
+  angleInDegree: number = 0; // current unit's angle
 
 
   constructor(name: string, centerX: number, centerY:number, width: number, height:number, speed:number) {
@@ -48,7 +47,6 @@ class Unit {
   assignAngle() {
     this.angleInRadian =  calcDestinationAngle(this.centerX, this.centerY, this.moveToX, this.moveToY)
     this.angleInDegree = calcDestinationAngleInDegrees(this.centerX, this.centerY, this.moveToX, this.moveToY);
-    this.quater = getQuater(this.centerX, this.centerY, this.moveToX, this.moveToY);
   }
 
   moveToPosition(speedX, speedY) {

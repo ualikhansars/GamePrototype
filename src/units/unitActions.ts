@@ -56,6 +56,24 @@ export let createUnit = (name:string, centerX:number, centerY:number, width:numb
   return unit;
 }
 
+export const rotateUnit = (unit) => {
+  ctx.save();
+  //clearUnit(unit);
+  ctx.translate(unit.centerX, unit.centerY); // translate to rectangle center
+  ctx.rotate(unit.angleInDegree * (Math.PI / 180));
+  ctx.translate(-unit.centerX, -unit.centerY); // translate to rectangle center
+  ctx.fillRect(unit.x, unit.y, unit.width, unit.height);
+  ctx.restore();
+}
+
+export const clearUnit = (unit) => {
+  ctx.save();
+  ctx.translate(unit.centerX, unit.centerY); // translate to rectangle center
+  ctx.rotate(unit.angleInDegree * (Math.PI / 180));
+  ctx.clearRect(unit.x, unit.y, unit.width, unit.height);
+  ctx.restore();
+}
+
 // change unit's position until it approaches to moveToPosition
 export const unitsHaveToMove = () => {
   for(let unit of units) {

@@ -133,10 +133,12 @@ map_1.canvas.addEventListener('contextmenu', function (e) {
     if (unitsStore_1.currentlyChosenUnit) {
         unitActions_1.assignMoveToPosition(unitsStore_1.currentlyChosenUnit, x, y); //assign unit's next x and y position
         unitsStore_1.currentlyChosenUnit.assignAngle();
-        console.error('x:', unitsStore_1.currentlyChosenUnit.centerX, 'y:', unitsStore_1.currentlyChosenUnit.centerY, 'destX:', unitsStore_1.currentlyChosenUnit.moveToX, 'destY:', unitsStore_1.currentlyChosenUnit.moveToY);
-        console.error('Unit angle in degree :', unitsStore_1.currentlyChosenUnit.angleInDegree);
-        console.error('Unit angle in radians :', unitsStore_1.currentlyChosenUnit.angleInRadian);
-        console.error('Unit quater of the desctination :', unitsStore_1.currentlyChosenUnit.quater);
+        unitActions_1.rotateUnit(unitsStore_1.currentlyChosenUnit);
+        // console.error('x:', currentlyChosenUnit.centerX, 'y:', currentlyChosenUnit.centerY, 'destX:', currentlyChosenUnit.moveToX, 'destY:', currentlyChosenUnit.moveToY);
+        // console.error('Unit angle in degree :', currentlyChosenUnit.angleInDegree);
+        // console.error('Unit angle in radians :', currentlyChosenUnit.angleInRadian);
+        console.log('Unit:', unitsStore_1.currentlyChosenUnit.x, unitsStore_1.currentlyChosenUnit.y);
+        console.log('center:', unitsStore_1.currentlyChosenUnit.centerX, unitsStore_1.currentlyChosenUnit.centerY);
     }
 });
 //setInterval(unitsHaveToMove, 300);
@@ -197,6 +199,22 @@ exports.createUnit = function (name, centerX, centerY, width, height, speed) {
     exports.setUnit(unit);
     return unit;
 };
+exports.rotateUnit = function (unit) {
+    map_1.ctx.save();
+    //clearUnit(unit);
+    map_1.ctx.translate(unit.centerX, unit.centerY); // translate to rectangle center
+    map_1.ctx.rotate(unit.angleInDegree * (Math.PI / 180));
+    map_1.ctx.translate(-unit.centerX, -unit.centerY); // translate to rectangle center
+    map_1.ctx.fillRect(unit.x, unit.y, unit.width, unit.height);
+    map_1.ctx.restore();
+};
+exports.clearUnit = function (unit) {
+    map_1.ctx.save();
+    map_1.ctx.translate(unit.centerX, unit.centerY); // translate to rectangle center
+    map_1.ctx.rotate(unit.angleInDegree * (Math.PI / 180));
+    map_1.ctx.clearRect(unit.x, unit.y, unit.width, unit.height);
+    map_1.ctx.restore();
+};
 // change unit's position until it approaches to moveToPosition
 exports.unitsHaveToMove = function () {
     for (var _i = 0, units_2 = unitsStore_1.units; _i < units_2.length; _i++) {
@@ -231,6 +249,7 @@ var map_1 = __webpack_require__(0);
 var unitMath_1 = __webpack_require__(5);
 var Unit = (function () {
     function Unit(name, centerX, centerY, width, height, speed) {
+        this.angleInDegree = 0; // current unit's angle
         this.name = name;
         this.centerX = centerX;
         this.centerY = centerY;
@@ -256,7 +275,6 @@ var Unit = (function () {
     Unit.prototype.assignAngle = function () {
         this.angleInRadian = unitMath_1.calcDestinationAngle(this.centerX, this.centerY, this.moveToX, this.moveToY);
         this.angleInDegree = unitMath_1.calcDestinationAngleInDegrees(this.centerX, this.centerY, this.moveToX, this.moveToY);
-        this.quater = unitMath_1.getQuater(this.centerX, this.centerY, this.moveToX, this.moveToY);
     };
     Unit.prototype.moveToPosition = function (speedX, speedY) {
         if (this.centerX !== this.moveToX || this.centerY !== this.moveToY) {
@@ -302,8 +320,8 @@ exports.calcDestinationAngleInDegrees = function (unitX, unitY, destX, destY) {
     var b = Math.abs(destX - unitX);
     var angleInRadian = Math.atan(a / b);
     // check quater of the circle
-    var degree = angleInRadian * (180 / Math.PI);
-    var quater = exports.getQuater(unitX, unitY, destX, destY);
+    var degree = angleInRadian * (180 / Math.PI); // convert radians into degree
+    var quater = exports.getQuater(unitX, unitY, destX, destY); // check quater
     if (quater === 1)
         angle = degree;
     if (quater === 2)
