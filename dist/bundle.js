@@ -133,13 +133,13 @@ map_1.canvas.addEventListener('contextmenu', function (e) {
     if (unitsStore_1.currentlyChosenUnit) {
         unitActions_1.assignMoveToPosition(unitsStore_1.currentlyChosenUnit, x, y); //assign unit's next x and y position
         unitsStore_1.currentlyChosenUnit.assignAngle();
-        console.error('x:', unitsStore_1.currentlyChosenUnit.centerX, 'y:', unitsStore_1.currentlyChosenUnit.y, 'destX:', unitsStore_1.currentlyChosenUnit.moveToX, 'destY:', unitsStore_1.currentlyChosenUnit.moveToY);
-        // console.error('Unit angle in degree :', currentlyChosenUnit.angleInDegree);
-        // console.error('Unit angle in radians :', currentlyChosenUnit.angleInRadian);
+        console.error('x:', unitsStore_1.currentlyChosenUnit.centerX, 'y:', unitsStore_1.currentlyChosenUnit.centerY, 'destX:', unitsStore_1.currentlyChosenUnit.moveToX, 'destY:', unitsStore_1.currentlyChosenUnit.moveToY);
+        console.error('Unit angle in degree :', unitsStore_1.currentlyChosenUnit.angleInDegree);
+        console.error('Unit angle in radians :', unitsStore_1.currentlyChosenUnit.angleInRadian);
         console.error('Unit quater of the desctination :', unitsStore_1.currentlyChosenUnit.quater);
     }
 });
-setInterval(unitActions_1.unitsHaveToMove, 300);
+//setInterval(unitsHaveToMove, 300);
 
 
 /***/ }),
@@ -281,40 +281,41 @@ exports["default"] = Unit;
                 *
             *   *
         c *     *
-        *       * b
+        *       * a
       *         *
     *           *
 A  ************** B
-       a
+       b
 */
 exports.__esModule = true;
 // get unit's position and destination position and return angle in radians between unit and destination
 exports.calcDestinationAngle = function (unitX, unitY, destX, destY) {
-    var a = Math.abs(destX - unitX);
-    var b = Math.abs(destY - unitY);
+    var a = Math.abs(destY - unitY);
+    var b = Math.abs(destX - unitX);
     var c = Math.sqrt(a * a + b * b);
-    return Math.sin(a / c);
+    return a / c;
 };
 // get unit's position and destination position and return angle in radians between unit and destination
 exports.calcDestinationAngleInDegrees = function (unitX, unitY, destX, destY) {
-    var a = Math.abs(destX - unitX);
-    var b = Math.abs(destY - unitY);
-    var c = Math.sqrt(a * a + b * b);
-    var angle = Math.sin(a / c);
+    var y = Math.abs(destY - unitY);
+    var x = Math.abs(destX - unitX);
+    var c = Math.sqrt(x * x + y * y);
+    ;
+    var angle = Math.atan(y / x);
     return angle * (180 / Math.PI);
 };
 exports.getQuater = function (unitX, unitY, destX, destY) {
     var quater;
-    if (destX > unitX && destY < unitY) {
+    if (destX >= unitX && destY < unitY) {
         quater = 1;
     }
-    else if (destX < unitX && destY < unitY) {
+    else if (destX < unitX && destY <= unitY) {
         quater = 2;
     }
-    else if (destX < unitX && destY > unitY) {
+    else if (destX <= unitX && destY > unitY) {
         quater = 3;
     }
-    else if (destX > unitX && destY > unitY) {
+    else if (destX > unitX && destY >= unitY) {
         quater = 4;
     }
     return quater;
