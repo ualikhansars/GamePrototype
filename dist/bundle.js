@@ -65,80 +65,90 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
-exports.__esModule = true;
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return canvas; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return ctx; });
 // global variables
-exports.WIDTH = 1224;
-exports.HEIGHT = 768;
+const WIDTH = 1224;
+/* unused harmony export WIDTH */
+
+const HEIGHT = 768;
+/* unused harmony export HEIGHT */
+
 // create Canvas
-exports.canvas = document.createElement('canvas');
-exports.canvas.id = "canvas";
-exports.canvas.width = exports.WIDTH;
-exports.canvas.height = exports.HEIGHT;
-exports.canvas.style.border = "1px solid";
-document.body.appendChild(exports.canvas);
+let canvas = document.createElement('canvas');
+canvas.id = "canvas";
+canvas.width = WIDTH;
+canvas.height = HEIGHT;
+canvas.style.border = "1px solid";
+document.body.appendChild(canvas);
 // define 2d context
-exports.ctx = exports.canvas.getContext("2d");
+let ctx = canvas.getContext("2d");
 
 
 /***/ }),
 /* 1 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return currentlyChosenUnit; });
+const units = [];
+/* harmony export (immutable) */ __webpack_exports__["c"] = units;
 
-exports.__esModule = true;
-exports.units = [];
-exports.currentlyChosenUnit = null;
-exports.assignCurrentlyChosenUnit = function (unit) {
+let currentlyChosenUnit = null;
+const assignCurrentlyChosenUnit = (unit) => {
     // check unit
     if (unit) {
-        exports.currentlyChosenUnit = unit;
+        currentlyChosenUnit = unit;
     }
     else {
-        exports.currentlyChosenUnit = null;
+        currentlyChosenUnit = null;
     }
 };
+/* harmony export (immutable) */ __webpack_exports__["a"] = assignCurrentlyChosenUnit;
+
 
 
 /***/ }),
 /* 2 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__config_map__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__store_unitsStore__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__units_unitActions__ = __webpack_require__(3);
 
-exports.__esModule = true;
-var map_1 = __webpack_require__(0);
-var unitsStore_1 = __webpack_require__(1);
-var unitActions_1 = __webpack_require__(3);
-var infantry = unitActions_1.createUnit('Infantry', 200, 40, 100, 50, 3);
+
+
+let infantry = Object(__WEBPACK_IMPORTED_MODULE_2__units_unitActions__["c" /* createUnit */])('Infantry', 200, 40, 100, 50, 3);
 console.log('infantry', infantry);
-var cavalry = unitActions_1.createUnit('Cavalry', 100, 80, 50, 60, 5);
-var heavyInfantry = unitActions_1.createUnit('HeavyInfantry', 300, 180, 100, 120, 2);
-map_1.canvas.addEventListener('click', function (e) {
-    var x = e.offsetX; // get X
-    var y = e.offsetY; // get Y
+let cavalry = Object(__WEBPACK_IMPORTED_MODULE_2__units_unitActions__["c" /* createUnit */])('Cavalry', 100, 80, 50, 60, 5);
+let heavyInfantry = Object(__WEBPACK_IMPORTED_MODULE_2__units_unitActions__["c" /* createUnit */])('HeavyInfantry', 300, 180, 160, 120, 2);
+__WEBPACK_IMPORTED_MODULE_0__config_map__["a" /* canvas */].addEventListener('click', (e) => {
+    let x = e.offsetX; // get X
+    let y = e.offsetY; // get Y
     console.log('Position x', e.offsetX); // get X
     console.log('Position y', e.offsetY); // get Y
-    unitActions_1.chooseUnit(unitsStore_1.units, x, y);
+    Object(__WEBPACK_IMPORTED_MODULE_2__units_unitActions__["b" /* chooseUnit */])(__WEBPACK_IMPORTED_MODULE_1__store_unitsStore__["c" /* units */], x, y);
 });
 // set onClickListener for right mouse event
-map_1.canvas.addEventListener('contextmenu', function (e) {
+__WEBPACK_IMPORTED_MODULE_0__config_map__["a" /* canvas */].addEventListener('contextmenu', (e) => {
     e.preventDefault();
-    var x = e.offsetX; // get X
-    var y = e.offsetY; // get Y
-    if (unitsStore_1.currentlyChosenUnit) {
-        unitActions_1.assignMoveToPosition(unitsStore_1.currentlyChosenUnit, x, y); //assign unit's next x and y position
-        unitsStore_1.currentlyChosenUnit.assignAngle();
-        unitActions_1.rotateUnit(unitsStore_1.currentlyChosenUnit);
+    let x = e.offsetX; // get X
+    let y = e.offsetY; // get Y
+    if (__WEBPACK_IMPORTED_MODULE_1__store_unitsStore__["b" /* currentlyChosenUnit */]) {
+        Object(__WEBPACK_IMPORTED_MODULE_2__units_unitActions__["a" /* assignMoveToPosition */])(__WEBPACK_IMPORTED_MODULE_1__store_unitsStore__["b" /* currentlyChosenUnit */], x, y); //assign unit's next x and y position
+        __WEBPACK_IMPORTED_MODULE_1__store_unitsStore__["b" /* currentlyChosenUnit */].assignAngle(); // assign angle to the unit
+        Object(__WEBPACK_IMPORTED_MODULE_2__units_unitActions__["d" /* rotateUnit */])(__WEBPACK_IMPORTED_MODULE_1__store_unitsStore__["b" /* currentlyChosenUnit */]); // rotate unit
         // console.error('x:', currentlyChosenUnit.centerX, 'y:', currentlyChosenUnit.centerY, 'destX:', currentlyChosenUnit.moveToX, 'destY:', currentlyChosenUnit.moveToY);
-        // console.error('Unit angle in degree :', currentlyChosenUnit.angleInDegree);
-        // console.error('Unit angle in radians :', currentlyChosenUnit.angleInRadian);
-        console.log('Unit:', unitsStore_1.currentlyChosenUnit.x, unitsStore_1.currentlyChosenUnit.y);
-        console.log('center:', unitsStore_1.currentlyChosenUnit.centerX, unitsStore_1.currentlyChosenUnit.centerY);
+        console.error('Unit angle in degree :', __WEBPACK_IMPORTED_MODULE_1__store_unitsStore__["b" /* currentlyChosenUnit */].angleInDegree);
+        console.error('Unit previosAngleInDegree:', __WEBPACK_IMPORTED_MODULE_1__store_unitsStore__["b" /* currentlyChosenUnit */].previosAngleInDegree);
+        //console.error('Unit angle in radians :', currentlyChosenUnit.angleInRadian);
+        //console.log('Unit:' ,currentlyChosenUnit.x, currentlyChosenUnit.y);
+        //console.log('center:', currentlyChosenUnit.centerX, currentlyChosenUnit.centerY);
     }
 });
 //setInterval(unitsHaveToMove, 300);
@@ -146,25 +156,30 @@ map_1.canvas.addEventListener('contextmenu', function (e) {
 
 /***/ }),
 /* 3 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return chooseUnit; });
+/* unused harmony export setUnit */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return createUnit; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__store_unitsStore__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__config_map__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Unit__ = __webpack_require__(4);
 
-exports.__esModule = true;
-var unitsStore_1 = __webpack_require__(1);
-var map_1 = __webpack_require__(0);
-var Unit_1 = __webpack_require__(4);
+
+
+// let unitImage = new Image();
+// unitImage.src = '../../img/unit.svg';
 // check if units was clicked by left mouse button
 // x - mouse position X
 // y - mouse position Y
-exports.chooseUnit = function (units, x, y) {
-    var foundedUnit = null;
-    for (var _i = 0, units_1 = units; _i < units_1.length; _i++) {
-        var unit = units_1[_i];
-        var unitX0 = unit.x;
-        var unitY0 = unit.y;
-        var unitX1 = unitX0 + unit.width;
-        var unitY1 = unitY0 + unit.height;
+let chooseUnit = (units, x, y) => {
+    let foundedUnit = null;
+    for (let unit of units) {
+        let unitX0 = unit.x;
+        let unitY0 = unit.y;
+        let unitX1 = unitX0 + unit.width;
+        let unitY1 = unitY0 + unit.height;
         // check if coordinates is equal to unit position
         if (x >= unitX0 && x <= unitX1 && y >= unitY0 && y <= unitY1) {
             foundedUnit = unit;
@@ -175,50 +190,82 @@ exports.chooseUnit = function (units, x, y) {
     // currentlyChosenUnit is equal to foundedUnit
     // else is unit is not founded, then
     // currentlyChosenUnit will be null
-    unitsStore_1.assignCurrentlyChosenUnit(foundedUnit);
-    console.log('currentlyChosenUnit', unitsStore_1.currentlyChosenUnit);
+    Object(__WEBPACK_IMPORTED_MODULE_0__store_unitsStore__["a" /* assignCurrentlyChosenUnit */])(foundedUnit);
+    console.log('currentlyChosenUnit', __WEBPACK_IMPORTED_MODULE_0__store_unitsStore__["b" /* currentlyChosenUnit */]);
 };
 // change unit's moveToX, moveToY
-exports.assignMoveToPosition = function (unit, x, y) {
+const assignMoveToPosition = (unit, x, y) => {
     unit.moveToX = x;
     unit.moveToY = y;
     console.log(unit.name + ' is moving to : x:' + unit.moveToX + ' y:' + unit.moveToY);
 };
+/* harmony export (immutable) */ __webpack_exports__["a"] = assignMoveToPosition;
+
 // draw Units in the canvas
-exports.setUnit = function (unit) {
-    map_1.ctx.save();
+let setUnit = (unit) => {
+    __WEBPACK_IMPORTED_MODULE_1__config_map__["b" /* ctx */].save();
     //ctx.translate(unit.x + unit.width * 0.5, unit.y + unit.height * 0.5); // translate to rectangle center
     //ctx.rotate(unit.angle);
-    map_1.ctx.fillRect(unit.x, unit.y, unit.width, unit.height);
-    map_1.ctx.restore();
+    //ctx.fillRect(unit.x, unit.y, unit.width, unit.height);
+    let img = new Image();
+    //img.src = '../../img/unit.svg';
+    img.src = unit.imgPath;
+    img.onload = () => {
+        __WEBPACK_IMPORTED_MODULE_1__config_map__["b" /* ctx */].drawImage(img, unit.x, unit.y, unit.width, unit.height);
+    };
+    __WEBPACK_IMPORTED_MODULE_1__config_map__["b" /* ctx */].restore();
 };
 // create Unit and immediatly push it into units array
-exports.createUnit = function (name, centerX, centerY, width, height, speed) {
-    var unit = new Unit_1["default"](name, centerX, centerY, width, height, speed);
-    unitsStore_1.units.push(unit);
-    exports.setUnit(unit);
+let createUnit = (name, centerX, centerY, width, height, speed, imgPath = '../../img/unit.svg') => {
+    let unit = new __WEBPACK_IMPORTED_MODULE_2__Unit__["a" /* default */](name, centerX, centerY, width, height, speed, imgPath);
+    __WEBPACK_IMPORTED_MODULE_0__store_unitsStore__["c" /* units */].push(unit);
+    setUnit(unit);
     return unit;
 };
-exports.rotateUnit = function (unit) {
-    map_1.ctx.save();
-    //clearUnit(unit);
-    map_1.ctx.translate(unit.centerX, unit.centerY); // translate to rectangle center
-    map_1.ctx.rotate(unit.angleInDegree * (Math.PI / 180));
-    map_1.ctx.translate(-unit.centerX, -unit.centerY); // translate to rectangle center
-    map_1.ctx.fillRect(unit.x, unit.y, unit.width, unit.height);
-    map_1.ctx.restore();
+// load image
+const loadImage = (imgPath, callback) => {
+    let img = new Image;
+    img.onload = () => {
+        callback(null, img);
+    };
+    img.onerror = () => {
+        let msg = 'Cannot load the image at ' + imgPath;
+        callback(new Error(msg));
+    };
+    img.src = imgPath;
 };
-exports.clearUnit = function (unit) {
-    map_1.ctx.save();
-    map_1.ctx.translate(unit.centerX, unit.centerY); // translate to rectangle center
-    map_1.ctx.rotate(unit.angleInDegree * (Math.PI / 180));
-    map_1.ctx.clearRect(unit.x, unit.y, unit.width, unit.height);
-    map_1.ctx.restore();
+/* unused harmony export loadImage */
+
+const rotateUnit = (unit) => {
+    loadImage(unit.imgPath, (err, img) => {
+        if (err)
+            throw err;
+        __WEBPACK_IMPORTED_MODULE_1__config_map__["b" /* ctx */].save();
+        clearUnit(unit); // delete previos drawing unit
+        __WEBPACK_IMPORTED_MODULE_1__config_map__["b" /* ctx */].translate(unit.centerX, unit.centerY); // translate to rectangle center
+        let angle = (90 - unit.angleInDegree) * (Math.PI / 180);
+        __WEBPACK_IMPORTED_MODULE_1__config_map__["b" /* ctx */].rotate(angle); // rotate to look straight to the destination position
+        __WEBPACK_IMPORTED_MODULE_1__config_map__["b" /* ctx */].translate(-unit.centerX, -unit.centerY); // translate to rectangle center
+        __WEBPACK_IMPORTED_MODULE_1__config_map__["b" /* ctx */].drawImage(img, unit.x, unit.y, unit.width, unit.height);
+        __WEBPACK_IMPORTED_MODULE_1__config_map__["b" /* ctx */].restore();
+    });
 };
+/* harmony export (immutable) */ __webpack_exports__["d"] = rotateUnit;
+
+const clearUnit = (unit) => {
+    __WEBPACK_IMPORTED_MODULE_1__config_map__["b" /* ctx */].save();
+    __WEBPACK_IMPORTED_MODULE_1__config_map__["b" /* ctx */].translate(unit.centerX, unit.centerY); // translate to rectangle center
+    let angle = (90 - unit.previosAngleInDegree) * (Math.PI / 180);
+    __WEBPACK_IMPORTED_MODULE_1__config_map__["b" /* ctx */].rotate(angle); // rotate unit
+    __WEBPACK_IMPORTED_MODULE_1__config_map__["b" /* ctx */].translate(-unit.centerX, -unit.centerY); // translate to rectangle center
+    __WEBPACK_IMPORTED_MODULE_1__config_map__["b" /* ctx */].clearRect(unit.x, unit.y, unit.width, unit.height);
+    __WEBPACK_IMPORTED_MODULE_1__config_map__["b" /* ctx */].restore();
+};
+/* unused harmony export clearUnit */
+
 // change unit's position until it approaches to moveToPosition
-exports.unitsHaveToMove = function () {
-    for (var _i = 0, units_2 = unitsStore_1.units; _i < units_2.length; _i++) {
-        var unit = units_2[_i];
+const unitsHaveToMove = () => {
+    for (let unit of __WEBPACK_IMPORTED_MODULE_0__store_unitsStore__["c" /* units */]) {
         if (unit.centerX !== unit.moveToX || unit.centerY !== unit.moveToY) {
             if (unit.centerX < unit.moveToX && unit.centerY < unit.moveToY) {
                 unit.moveToPosition(1, 1);
@@ -233,23 +280,25 @@ exports.unitsHaveToMove = function () {
                 unit.moveToPosition(-1, 1);
             }
         }
-        exports.setUnit(unit);
+        //setUnit(unit);
     }
 };
+/* unused harmony export unitsHaveToMove */
+
 
 
 /***/ }),
 /* 4 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__config_map__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__unitMath__ = __webpack_require__(5);
 
-exports.__esModule = true;
-var map_1 = __webpack_require__(0);
-var unitMath_1 = __webpack_require__(5);
-var Unit = (function () {
-    function Unit(name, centerX, centerY, width, height, speed) {
-        this.angleInDegree = 0; // current unit's angle
+
+class Unit {
+    constructor(name, centerX, centerY, width, height, speed, imgPath) {
+        this.angleInDegree = 90; // current unit's angle
         this.name = name;
         this.centerX = centerX;
         this.centerY = centerY;
@@ -260,40 +309,41 @@ var Unit = (function () {
         this.speed = speed;
         this.moveToX = centerX;
         this.moveToY = centerY;
+        this.imgPath = imgPath;
     }
-    Unit.prototype.update = function (speedX, speedY) {
-        map_1.ctx.save();
+    update(speedX, speedY) {
+        __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].save();
         // ctx.translate(this.x + this.width * 0.5, this.y + this.height * 0.5); // translate to rectangle center
         // ctx.rotate(this.angle);
-        this.centerX += speedX;
-        this.centerY += speedY;
-        this.x = this.centerX - (this.width / 2); // change x and y every time when centerX and centerY is changed
-        this.y = this.centerY - (this.height / 2);
-        map_1.ctx.fillRect(this.x, this.y, this.width, this.height);
-        map_1.ctx.restore();
-    };
-    Unit.prototype.assignAngle = function () {
-        this.angleInRadian = unitMath_1.calcDestinationAngle(this.centerX, this.centerY, this.moveToX, this.moveToY);
-        this.angleInDegree = unitMath_1.calcDestinationAngleInDegrees(this.centerX, this.centerY, this.moveToX, this.moveToY);
-    };
-    Unit.prototype.moveToPosition = function (speedX, speedY) {
+        // this.centerX += speedX ;
+        // this.centerY += speedY;
+        // this.x = this.centerX - (this.width / 2); // change x and y every time when centerX and centerY is changed
+        // this.y = this.centerY - (this.height / 2);
+        __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].fillRect(this.x, this.y, this.width, this.height);
+        __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].restore();
+    }
+    assignAngle() {
+        this.previosAngleInDegree = this.angleInDegree;
+        this.previosAngleInRadian = this.angleInRadian;
+        this.angleInRadian = Object(__WEBPACK_IMPORTED_MODULE_1__unitMath__["a" /* calcDestinationAngle */])(this.centerX, this.centerY, this.moveToX, this.moveToY);
+        this.angleInDegree = Object(__WEBPACK_IMPORTED_MODULE_1__unitMath__["b" /* calcDestinationAngleInDegrees */])(this.centerX, this.centerY, this.moveToX, this.moveToY);
+    }
+    moveToPosition(speedX, speedY) {
         if (this.centerX !== this.moveToX || this.centerY !== this.moveToY) {
-            map_1.ctx.clearRect(this.x, this.y, this.width, this.height);
+            __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].clearRect(this.x, this.y, this.width, this.height);
             //ctx.clearRect(0, 0, 1224, 768);
             this.update(speedX, speedY);
         }
-    };
-    return Unit;
-}());
-exports["default"] = Unit;
+    }
+}
+/* harmony default export */ __webpack_exports__["a"] = (Unit);
 
 
 /***/ }),
 /* 5 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
 /*
                 C
                 *
@@ -305,23 +355,30 @@ exports["default"] = Unit;
 A  ************** B
        b
 */
-exports.__esModule = true;
 // get unit's position and destination position and return angle in radians between unit and destination
-exports.calcDestinationAngle = function (unitX, unitY, destX, destY) {
-    var a = Math.abs(destY - unitY);
-    var b = Math.abs(destX - unitX);
-    var c = Math.sqrt(a * a + b * b);
-    return a / c;
+const calcDestinationAngle = (unitX, unitY, destX, destY) => {
+    let a = Math.abs(destY - unitY);
+    let b = Math.abs(destX - unitX);
+    let c = Math.sqrt(a * a + b * b);
+    let angle;
+    let quater = getQuater(unitX, unitY, destX, destY); // check quater
+    if (quater === 1 || quater === 2)
+        angle = a / c;
+    else if (quater === 3 || quater === 4)
+        angle = -(a / c);
+    return angle;
 };
+/* harmony export (immutable) */ __webpack_exports__["a"] = calcDestinationAngle;
+
 // get unit's position and destination position and return angle in radians between unit and destination
-exports.calcDestinationAngleInDegrees = function (unitX, unitY, destX, destY) {
-    var angle;
-    var a = Math.abs(destY - unitY);
-    var b = Math.abs(destX - unitX);
-    var angleInRadian = Math.atan(a / b);
+const calcDestinationAngleInDegrees = (unitX, unitY, destX, destY) => {
+    let angle;
+    let a = Math.abs(destY - unitY);
+    let b = Math.abs(destX - unitX);
+    let angleInRadian = Math.atan(a / b);
     // check quater of the circle
-    var degree = angleInRadian * (180 / Math.PI); // convert radians into degree
-    var quater = exports.getQuater(unitX, unitY, destX, destY); // check quater
+    let degree = angleInRadian * (180 / Math.PI); // convert radians into degree
+    let quater = getQuater(unitX, unitY, destX, destY); // check quater
     if (quater === 1)
         angle = degree;
     if (quater === 2)
@@ -330,10 +387,32 @@ exports.calcDestinationAngleInDegrees = function (unitX, unitY, destX, destY) {
         angle = 180 + degree;
     else if (quater === 4)
         angle = 270 + (90 - degree);
-    return angle;
+    return Math.round(angle);
 };
-exports.getQuater = function (unitX, unitY, destX, destY) {
-    var quater;
+/* harmony export (immutable) */ __webpack_exports__["b"] = calcDestinationAngleInDegrees;
+
+const calcCanvasAngle = (unitX, unitY, destX, destY) => {
+    let angle;
+    let a = Math.abs(destY - unitY);
+    let b = Math.abs(destX - unitX);
+    let angleInRadian = Math.atan(a / b);
+    // check quater of the circle
+    let degree = angleInRadian * (180 / Math.PI); // convert radians into degree
+    let quater = getQuater(unitX, unitY, destX, destY); // check quater
+    if (quater === 1)
+        angle = 90 - degree;
+    if (quater === 2)
+        angle = 90 + degree;
+    else if (quater === 3)
+        angle = 180 + (90 - degree);
+    else if (quater === 4)
+        angle = 270 + degree;
+    return Math.round(angle);
+};
+/* unused harmony export calcCanvasAngle */
+
+const getQuater = (unitX, unitY, destX, destY) => {
+    let quater;
     if (destX >= unitX && destY < unitY) {
         quater = 1;
     }
@@ -348,6 +427,8 @@ exports.getQuater = function (unitX, unitY, destX, destY) {
     }
     return quater;
 };
+/* unused harmony export getQuater */
+
 
 
 /***/ })

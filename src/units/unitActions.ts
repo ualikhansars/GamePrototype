@@ -4,9 +4,12 @@ import {
   assignCurrentlyChosenUnit
 } from '../store/unitsStore';
 
-import {ctx} from '../config/map';
+import {ctx, WIDTH, HEIGHT} from '../config/map';
 
 import Unit from './Unit';
+
+// let unitImage = new Image();
+// unitImage.src = '../../img/unit.svg';
 
 // check if units was clicked by left mouse button
 // x - mouse position X
@@ -44,32 +47,58 @@ export let setUnit = (unit) => {
     ctx.save();
     //ctx.translate(unit.x + unit.width * 0.5, unit.y + unit.height * 0.5); // translate to rectangle center
     //ctx.rotate(unit.angle);
-    ctx.fillRect(unit.x, unit.y, unit.width, unit.height);
+    //ctx.fillRect(unit.x, unit.y, unit.width, unit.height);
+    let img = new Image();
+    //img.src = '../../img/unit.svg';
+    img.src = unit.imgPath;
+    img.onload = () => {
+      ctx.drawImage(img, unit.x, unit.y, unit.width, unit.height);
+    }
     ctx.restore();
 }
 
 // create Unit and immediatly push it into units array
-export let createUnit = (name:string, centerX:number, centerY:number, width:number, height:number, speed: number) => {
-  let unit = new Unit(name, centerX, centerY, width, height, speed);
+export let createUnit = (name:string, centerX:number, centerY:number, width:number, height:number, speed: number, imgPath: string='../../img/unit.svg') => {
+  let unit = new Unit(name, centerX, centerY, width, height, speed, imgPath);
   units.push(unit);
   setUnit(unit);
   return unit;
 }
 
-export const rotateUnit = (unit) => {
-  ctx.save();
-  //clearUnit(unit);
-  ctx.translate(unit.centerX, unit.centerY); // translate to rectangle center
-  ctx.rotate(unit.angleInDegree * (Math.PI / 180));
-  ctx.translate(-unit.centerX, -unit.centerY); // translate to rectangle center
-  ctx.fillRect(unit.x, unit.y, unit.width, unit.height);
-  ctx.restore();
+// load image
+export const loadImage = (imgPath: string, callback) => {
+    let img = new Image;
+    img.onload = () => {
+      callback(null, img);
+    }
+    img.onerror = () => {
+      let msg = 'Cannot load the image at ' + imgPath;
+      callback(new Error(msg));
+    }
+    img.src = imgPath;
 }
+
+export const rotateUnit = (unit) => {
+  loadImage(unit.imgPath, (err, img) => {
+    if(err) throw err;
+    ctx.save();
+    clearUnit(unit); // delete previos drawing unit
+    ctx.translate(unit.centerX, unit.centerY); // translate to rectangle center
+    let angle = (90 - unit.angleInDegree) * (Math.PI / 180);
+    ctx.rotate(angle); // rotate to look straight to the destination position
+    ctx.translate(-unit.centerX, -unit.centerY); // translate to rectangle center
+    ctx.drawImage(img, unit.x, unit.y, unit.width, unit.height);
+    ctx.restore();
+  });
+}
+
 
 export const clearUnit = (unit) => {
   ctx.save();
   ctx.translate(unit.centerX, unit.centerY); // translate to rectangle center
-  ctx.rotate(unit.angleInDegree * (Math.PI / 180));
+  let angle = (90 - unit.previosAngleInDegree) * (Math.PI / 180);
+  ctx.rotate(angle); // rotate unit
+  ctx.translate(-unit.centerX, -unit.centerY); // translate to rectangle center
   ctx.clearRect(unit.x, unit.y, unit.width, unit.height);
   ctx.restore();
 }
@@ -91,6 +120,6 @@ export const unitsHaveToMove = () => {
         unit.moveToPosition(-1, 1);
       }
     }
-    setUnit(unit);
+    //setUnit(unit);
   }
 }

@@ -1,4 +1,4 @@
-import {canvas} from './config/map';
+import {canvas, ctx} from './config/map';
 
 import {
   units,
@@ -6,17 +6,18 @@ import {
 } from './store/unitsStore';
 
 import {
+  setUnit,
   chooseUnit,
   assignMoveToPosition,
   createUnit,
   unitsHaveToMove,
-  rotateUnit // test
+  rotateUnit, // test
 } from './units/unitActions';
 
-let infantry = createUnit('Infantry',200, 40, 100, 50, 3);
+let infantry = createUnit('Infantry',200, 40, 100, 50, 3, );
 console.log('infantry', infantry);
 let cavalry = createUnit('Cavalry', 100, 80, 50, 60, 5);
-let heavyInfantry = createUnit('HeavyInfantry', 300, 180, 100, 120, 2);
+let heavyInfantry = createUnit('HeavyInfantry', 300, 180, 160, 120, 2);
 
 canvas.addEventListener('click', (e) => {
   let x = e.offsetX; // get X
@@ -33,13 +34,14 @@ canvas.addEventListener('contextmenu', (e) => {
   let y = e.offsetY; // get Y
   if(currentlyChosenUnit) {
     assignMoveToPosition(currentlyChosenUnit, x, y); //assign unit's next x and y position
-    currentlyChosenUnit.assignAngle();
-    rotateUnit(currentlyChosenUnit);
+    currentlyChosenUnit.assignAngle(); // assign angle to the unit
+    rotateUnit(currentlyChosenUnit); // rotate unit
     // console.error('x:', currentlyChosenUnit.centerX, 'y:', currentlyChosenUnit.centerY, 'destX:', currentlyChosenUnit.moveToX, 'destY:', currentlyChosenUnit.moveToY);
-    // console.error('Unit angle in degree :', currentlyChosenUnit.angleInDegree);
-    // console.error('Unit angle in radians :', currentlyChosenUnit.angleInRadian);
-    console.log('Unit:' ,currentlyChosenUnit.x, currentlyChosenUnit.y);
-    console.log('center:', currentlyChosenUnit.centerX, currentlyChosenUnit.centerY);
+    console.error('Unit angle in degree :', currentlyChosenUnit.angleInDegree);
+    console.error('Unit previosAngleInDegree:', currentlyChosenUnit.previosAngleInDegree);
+    //console.error('Unit angle in radians :', currentlyChosenUnit.angleInRadian);
+    //console.log('Unit:' ,currentlyChosenUnit.x, currentlyChosenUnit.y);
+    //console.log('center:', currentlyChosenUnit.centerX, currentlyChosenUnit.centerY);
   }
 });
 

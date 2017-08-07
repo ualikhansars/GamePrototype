@@ -2,7 +2,8 @@ import {ctx} from '../config/map';
 import {
   calcDestinationAngleInDegrees,
   calcDestinationAngle,
-  getQuater
+  getQuater,
+  calcCanvasAngle
 } from './unitMath';
 class Unit {
   name: string;
@@ -16,10 +17,12 @@ class Unit {
   moveToX: number; // next X postion
   moveToY: number; // next Y position
   angleInRadian: number;
-  angleInDegree: number = 0; // current unit's angle
+  angleInDegree: number = 90; // current unit's angle
+  previosAngleInDegree: number;
+  previosAngleInRadian: number;
+  imgPath: string;
 
-
-  constructor(name: string, centerX: number, centerY:number, width: number, height:number, speed:number) {
+  constructor(name: string, centerX: number, centerY:number, width: number, height:number, speed:number, imgPath:string) {
     this.name = name;
     this.centerX = centerX;
     this.centerY = centerY;
@@ -30,21 +33,24 @@ class Unit {
     this.speed = speed;
     this.moveToX = centerX;
     this.moveToY = centerY;
+    this.imgPath = imgPath;
   }
 
   update(speedX, speedY) {
     ctx.save();
     // ctx.translate(this.x + this.width * 0.5, this.y + this.height * 0.5); // translate to rectangle center
     // ctx.rotate(this.angle);
-    this.centerX += speedX ;
-    this.centerY += speedY;
-    this.x = this.centerX - (this.width / 2); // change x and y every time when centerX and centerY is changed
-    this.y = this.centerY - (this.height / 2);
+    // this.centerX += speedX ;
+    // this.centerY += speedY;
+    // this.x = this.centerX - (this.width / 2); // change x and y every time when centerX and centerY is changed
+    // this.y = this.centerY - (this.height / 2);
     ctx.fillRect(this.x, this.y, this.width, this.height);
     ctx.restore();
   }
 
   assignAngle() {
+    this.previosAngleInDegree = this.angleInDegree;
+    this.previosAngleInRadian = this.angleInRadian;
     this.angleInRadian =  calcDestinationAngle(this.centerX, this.centerY, this.moveToX, this.moveToY)
     this.angleInDegree = calcDestinationAngleInDegrees(this.centerX, this.centerY, this.moveToX, this.moveToY);
   }
