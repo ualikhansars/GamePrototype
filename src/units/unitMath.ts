@@ -1,4 +1,6 @@
 /*
+
+Standart
                 C
                 *
             *   *
@@ -8,6 +10,24 @@
     *           *
 A  ************** B
        b
+
+
+Canvas rotation
+
+        b
+A  **************** B
+    *             *
+      *           *
+        *         *
+      c   *       * a
+            *     *
+              *   *
+                * *
+                  *
+                  C
+
+  a = descY - centerY
+  b = descX - center X
 */
 
 
@@ -47,10 +67,10 @@ export const calcCanvasAngle = (unitX:number, unitY:number, destX:number, destY:
   // check quater of the circle
   let degree =  angleInRadian * (180 / Math.PI); // convert radians into degree
   let quater = getQuater(unitX, unitY, destX, destY); // check quater
-  if(quater === 1) angle = 90 - degree;
-  if(quater === 2) angle = 90 + degree;
-  else if(quater === 3) angle = 180 + (90 - degree);
-  else if(quater === 4) angle = 270 + degree;
+  if(quater === 1) angle = angle = 90 - degree;
+  if(quater === 2) angle = angle = 270 + degree;
+  else if(quater === 3) angle = angle = 180 + (90 - degree);
+  else if(quater === 4) angle = angle = 90 + degree;
   return Math.round(angle);
 }
 

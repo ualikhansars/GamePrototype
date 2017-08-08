@@ -8,9 +8,6 @@ import {ctx, WIDTH, HEIGHT} from '../config/map';
 
 import Unit from './Unit';
 
-// let unitImage = new Image();
-// unitImage.src = '../../img/unit.svg';
-
 // check if units was clicked by left mouse button
 // x - mouse position X
 // y - mouse position Y
@@ -79,19 +76,19 @@ export const loadImage = (imgPath: string, callback) => {
 }
 
 export const rotateUnit = (unit) => {
-  loadImage(unit.imgPath, (err, img) => {
+  loadImage(unit.imgPath, (err, img) => { // load image, then rotate unit
     if(err) throw err;
     ctx.save();
     clearUnit(unit); // delete previos drawing unit
     ctx.translate(unit.centerX, unit.centerY); // translate to rectangle center
-    let angle = (90 - unit.angleInDegree) * (Math.PI / 180);
+    //let angle = (90 - unit.angleInDegree) * (Math.PI / 180);
+    let angle = unit.canvasAngleInDegree * (Math.PI / 180);
     ctx.rotate(angle); // rotate to look straight to the destination position
     ctx.translate(-unit.centerX, -unit.centerY); // translate to rectangle center
     ctx.drawImage(img, unit.x, unit.y, unit.width, unit.height);
     ctx.restore();
   });
 }
-
 
 export const clearUnit = (unit) => {
   ctx.save();

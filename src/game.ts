@@ -38,7 +38,8 @@ canvas.addEventListener('contextmenu', (e) => {
     rotateUnit(currentlyChosenUnit); // rotate unit
     // console.error('x:', currentlyChosenUnit.centerX, 'y:', currentlyChosenUnit.centerY, 'destX:', currentlyChosenUnit.moveToX, 'destY:', currentlyChosenUnit.moveToY);
     console.error('Unit angle in degree :', currentlyChosenUnit.angleInDegree);
-    console.error('Unit previosAngleInDegree:', currentlyChosenUnit.previosAngleInDegree);
+    //console.error('Unit previosAngleInDegree:', currentlyChosenUnit.previosAngleInDegree);
+    console.error('Canvas angle', currentlyChosenUnit.canvasAngleInDegree);
     //console.error('Unit angle in radians :', currentlyChosenUnit.angleInRadian);
     //console.log('Unit:' ,currentlyChosenUnit.x, currentlyChosenUnit.y);
     //console.log('center:', currentlyChosenUnit.centerX, currentlyChosenUnit.centerY);

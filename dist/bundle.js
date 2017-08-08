@@ -145,7 +145,8 @@ __WEBPACK_IMPORTED_MODULE_0__config_map__["a" /* canvas */].addEventListener('co
         Object(__WEBPACK_IMPORTED_MODULE_2__units_unitActions__["d" /* rotateUnit */])(__WEBPACK_IMPORTED_MODULE_1__store_unitsStore__["b" /* currentlyChosenUnit */]); // rotate unit
         // console.error('x:', currentlyChosenUnit.centerX, 'y:', currentlyChosenUnit.centerY, 'destX:', currentlyChosenUnit.moveToX, 'destY:', currentlyChosenUnit.moveToY);
         console.error('Unit angle in degree :', __WEBPACK_IMPORTED_MODULE_1__store_unitsStore__["b" /* currentlyChosenUnit */].angleInDegree);
-        console.error('Unit previosAngleInDegree:', __WEBPACK_IMPORTED_MODULE_1__store_unitsStore__["b" /* currentlyChosenUnit */].previosAngleInDegree);
+        //console.error('Unit previosAngleInDegree:', currentlyChosenUnit.previosAngleInDegree);
+        console.error('Canvas angle', __WEBPACK_IMPORTED_MODULE_1__store_unitsStore__["b" /* currentlyChosenUnit */].canvasAngleInDegree);
         //console.error('Unit angle in radians :', currentlyChosenUnit.angleInRadian);
         //console.log('Unit:' ,currentlyChosenUnit.x, currentlyChosenUnit.y);
         //console.log('center:', currentlyChosenUnit.centerX, currentlyChosenUnit.centerY);
@@ -168,8 +169,6 @@ __WEBPACK_IMPORTED_MODULE_0__config_map__["a" /* canvas */].addEventListener('co
 
 
 
-// let unitImage = new Image();
-// unitImage.src = '../../img/unit.svg';
 // check if units was clicked by left mouse button
 // x - mouse position X
 // y - mouse position Y
@@ -243,7 +242,8 @@ const rotateUnit = (unit) => {
         __WEBPACK_IMPORTED_MODULE_1__config_map__["b" /* ctx */].save();
         clearUnit(unit); // delete previos drawing unit
         __WEBPACK_IMPORTED_MODULE_1__config_map__["b" /* ctx */].translate(unit.centerX, unit.centerY); // translate to rectangle center
-        let angle = (90 - unit.angleInDegree) * (Math.PI / 180);
+        //let angle = (90 - unit.angleInDegree) * (Math.PI / 180);
+        let angle = unit.canvasAngleInDegree * (Math.PI / 180);
         __WEBPACK_IMPORTED_MODULE_1__config_map__["b" /* ctx */].rotate(angle); // rotate to look straight to the destination position
         __WEBPACK_IMPORTED_MODULE_1__config_map__["b" /* ctx */].translate(-unit.centerX, -unit.centerY); // translate to rectangle center
         __WEBPACK_IMPORTED_MODULE_1__config_map__["b" /* ctx */].drawImage(img, unit.x, unit.y, unit.width, unit.height);
@@ -299,6 +299,7 @@ const unitsHaveToMove = () => {
 class Unit {
     constructor(name, centerX, centerY, width, height, speed, imgPath) {
         this.angleInDegree = 90; // current unit's angle
+        this.previousCanvasAngleInDegree = 0;
         this.name = name;
         this.centerX = centerX;
         this.centerY = centerY;
@@ -325,8 +326,10 @@ class Unit {
     assignAngle() {
         this.previosAngleInDegree = this.angleInDegree;
         this.previosAngleInRadian = this.angleInRadian;
-        this.angleInRadian = Object(__WEBPACK_IMPORTED_MODULE_1__unitMath__["a" /* calcDestinationAngle */])(this.centerX, this.centerY, this.moveToX, this.moveToY);
-        this.angleInDegree = Object(__WEBPACK_IMPORTED_MODULE_1__unitMath__["b" /* calcDestinationAngleInDegrees */])(this.centerX, this.centerY, this.moveToX, this.moveToY);
+        this.previousCanvasAngleInDegree = this.canvasAngleInDegree;
+        this.angleInRadian = Object(__WEBPACK_IMPORTED_MODULE_1__unitMath__["b" /* calcDestinationAngle */])(this.centerX, this.centerY, this.moveToX, this.moveToY);
+        this.angleInDegree = Object(__WEBPACK_IMPORTED_MODULE_1__unitMath__["c" /* calcDestinationAngleInDegrees */])(this.centerX, this.centerY, this.moveToX, this.moveToY);
+        this.canvasAngleInDegree = Object(__WEBPACK_IMPORTED_MODULE_1__unitMath__["a" /* calcCanvasAngle */])(this.centerX, this.centerY, this.moveToX, this.moveToY);
     }
     moveToPosition(speedX, speedY) {
         if (this.centerX !== this.moveToX || this.centerY !== this.moveToY) {
@@ -345,6 +348,8 @@ class Unit {
 
 "use strict";
 /*
+
+Standart
                 C
                 *
             *   *
@@ -354,6 +359,24 @@ class Unit {
     *           *
 A  ************** B
        b
+
+
+Canvas rotation
+
+        b
+A  **************** B
+    *             *
+      *           *
+        *         *
+      c   *       * a
+            *     *
+              *   *
+                * *
+                  *
+                  C
+
+  a = descY - centerY
+  b = descX - center X
 */
 // get unit's position and destination position and return angle in radians between unit and destination
 const calcDestinationAngle = (unitX, unitY, destX, destY) => {
@@ -368,7 +391,7 @@ const calcDestinationAngle = (unitX, unitY, destX, destY) => {
         angle = -(a / c);
     return angle;
 };
-/* harmony export (immutable) */ __webpack_exports__["a"] = calcDestinationAngle;
+/* harmony export (immutable) */ __webpack_exports__["b"] = calcDestinationAngle;
 
 // get unit's position and destination position and return angle in radians between unit and destination
 const calcDestinationAngleInDegrees = (unitX, unitY, destX, destY) => {
@@ -389,7 +412,7 @@ const calcDestinationAngleInDegrees = (unitX, unitY, destX, destY) => {
         angle = 270 + (90 - degree);
     return Math.round(angle);
 };
-/* harmony export (immutable) */ __webpack_exports__["b"] = calcDestinationAngleInDegrees;
+/* harmony export (immutable) */ __webpack_exports__["c"] = calcDestinationAngleInDegrees;
 
 const calcCanvasAngle = (unitX, unitY, destX, destY) => {
     let angle;
@@ -400,16 +423,16 @@ const calcCanvasAngle = (unitX, unitY, destX, destY) => {
     let degree = angleInRadian * (180 / Math.PI); // convert radians into degree
     let quater = getQuater(unitX, unitY, destX, destY); // check quater
     if (quater === 1)
-        angle = 90 - degree;
+        angle = angle = 90 - degree;
     if (quater === 2)
-        angle = 90 + degree;
+        angle = angle = 270 + degree;
     else if (quater === 3)
-        angle = 180 + (90 - degree);
+        angle = angle = 180 + (90 - degree);
     else if (quater === 4)
-        angle = 270 + degree;
+        angle = angle = 90 + degree;
     return Math.round(angle);
 };
-/* unused harmony export calcCanvasAngle */
+/* harmony export (immutable) */ __webpack_exports__["a"] = calcCanvasAngle;
 
 const getQuater = (unitX, unitY, destX, destY) => {
     let quater;

@@ -5,6 +5,8 @@ import {
   getQuater,
   calcCanvasAngle
 } from './unitMath';
+
+
 class Unit {
   name: string;
   centerX: number; // center of the unit
@@ -20,6 +22,8 @@ class Unit {
   angleInDegree: number = 90; // current unit's angle
   previosAngleInDegree: number;
   previosAngleInRadian: number;
+  canvasAngleInDegree: number;
+  previousCanvasAngleInDegree: number = 0;
   imgPath: string;
 
   constructor(name: string, centerX: number, centerY:number, width: number, height:number, speed:number, imgPath:string) {
@@ -51,8 +55,10 @@ class Unit {
   assignAngle() {
     this.previosAngleInDegree = this.angleInDegree;
     this.previosAngleInRadian = this.angleInRadian;
+    this.previousCanvasAngleInDegree = this.canvasAngleInDegree;
     this.angleInRadian =  calcDestinationAngle(this.centerX, this.centerY, this.moveToX, this.moveToY)
     this.angleInDegree = calcDestinationAngleInDegrees(this.centerX, this.centerY, this.moveToX, this.moveToY);
+    this.canvasAngleInDegree = calcCanvasAngle(this.centerX, this.centerY, this.moveToX, this.moveToY);
   }
 
   moveToPosition(speedX, speedY) {
