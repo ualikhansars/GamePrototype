@@ -11,7 +11,6 @@ import {
   assignMoveToPosition,
   createUnit,
   unitsHaveToMove,
-  rotateUnit, // test
   smoothlyRotateUnit // test
 } from './units/unitActions';
 

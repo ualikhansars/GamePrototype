@@ -24,6 +24,7 @@ class Unit {
   previousAngleInRadian: number;
   currentCanvasAngle: number = 0;
   previousCanvasAngle: number;
+  angleToRemove: number;
   imgPath: string;
 
   constructor(name: string, centerX: number, centerY:number, width: number, height:number, speed:number, imgPath:string) {
@@ -59,6 +60,10 @@ class Unit {
     this.angleInRadian =  calcDestinationAngle(this.centerX, this.centerY, this.moveToX, this.moveToY)
     this.angleInDegree = calcDestinationAngleInDegrees(this.centerX, this.centerY, this.moveToX, this.moveToY);
     this.currentCanvasAngle = calcCanvasAngle(this.centerX, this.centerY, this.moveToX, this.moveToY);
+  }
+
+  setAngleToRemove(newAngle) {
+    this.angleToRemove = newAngle;
   }
 
   moveToPosition(speedX, speedY) {
