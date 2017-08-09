@@ -20,10 +20,10 @@ class Unit {
   moveToY: number; // next Y position
   angleInRadian: number;
   angleInDegree: number = 90; // current unit's angle
-  previosAngleInDegree: number;
-  previosAngleInRadian: number;
-  canvasAngleInDegree: number;
-  previousCanvasAngleInDegree: number = 0;
+  previousAngleInDegree: number;
+  previousAngleInRadian: number;
+  currentCanvasAngle: number = 0;
+  previousCanvasAngle: number;
   imgPath: string;
 
   constructor(name: string, centerX: number, centerY:number, width: number, height:number, speed:number, imgPath:string) {
@@ -53,12 +53,12 @@ class Unit {
   }
 
   assignAngle() {
-    this.previosAngleInDegree = this.angleInDegree;
-    this.previosAngleInRadian = this.angleInRadian;
-    this.previousCanvasAngleInDegree = this.canvasAngleInDegree;
+    this.previousAngleInDegree = this.angleInDegree;
+    this.previousAngleInRadian = this.angleInRadian;
+    this.previousCanvasAngle = this.currentCanvasAngle;
     this.angleInRadian =  calcDestinationAngle(this.centerX, this.centerY, this.moveToX, this.moveToY)
     this.angleInDegree = calcDestinationAngleInDegrees(this.centerX, this.centerY, this.moveToX, this.moveToY);
-    this.canvasAngleInDegree = calcCanvasAngle(this.centerX, this.centerY, this.moveToX, this.moveToY);
+    this.currentCanvasAngle = calcCanvasAngle(this.centerX, this.centerY, this.moveToX, this.moveToY);
   }
 
   moveToPosition(speedX, speedY) {

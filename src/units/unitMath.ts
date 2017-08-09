@@ -59,6 +59,7 @@ export const calcDestinationAngleInDegrees = (unitX:number, unitY:number, destX:
   return Math.round(angle);
 }
 
+// calculate rotate angle in canvas degrees
 export const calcCanvasAngle = (unitX:number, unitY:number, destX:number, destY:number):number => {
   let angle;
   let a = Math.abs(destY - unitY);
@@ -67,10 +68,10 @@ export const calcCanvasAngle = (unitX:number, unitY:number, destX:number, destY:
   // check quater of the circle
   let degree =  angleInRadian * (180 / Math.PI); // convert radians into degree
   let quater = getQuater(unitX, unitY, destX, destY); // check quater
-  if(quater === 1) angle = angle = 90 - degree;
-  if(quater === 2) angle = angle = 270 + degree;
-  else if(quater === 3) angle = angle = 180 + (90 - degree);
-  else if(quater === 4) angle = angle = 90 + degree;
+  if(quater === 1) angle = angle = 90 - degree; // I === I
+  if(quater === 2) angle = angle = 270 + degree; // II == IV
+  else if(quater === 3) angle = angle = 180 + (90 - degree); // III = III
+  else if(quater === 4) angle = angle = 90 + degree; // IV = II
   return Math.round(angle);
 }
 

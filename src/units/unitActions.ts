@@ -82,7 +82,7 @@ export const rotateUnit = (unit) => {
     clearUnit(unit); // delete previos drawing unit
     ctx.translate(unit.centerX, unit.centerY); // translate to rectangle center
     //let angle = (90 - unit.angleInDegree) * (Math.PI / 180);
-    let angle = unit.canvasAngleInDegree * (Math.PI / 180);
+    let angle = unit.currentCanvasAngle * (Math.PI / 180);
     ctx.rotate(angle); // rotate to look straight to the destination position
     ctx.translate(-unit.centerX, -unit.centerY); // translate to rectangle center
     ctx.drawImage(img, unit.x, unit.y, unit.width, unit.height);
@@ -90,10 +90,85 @@ export const rotateUnit = (unit) => {
   });
 }
 
+export const changeAngle = (unit,img, previous, current) => {
+  return new Promise(resolve => {
+    ctx.save();
+    clearUnit(unit); // delete previos drawing unit
+    ctx.translate(unit.centerX, unit.centerY); // translate to rectangle center
+    //let angle = (90 - unit.angleInDegree) * (Math.PI / 180);
+    let angle = previous * (Math.PI / 180);
+    ctx.rotate(angle); // rotate to look straight to the destination position
+    ctx.translate(-unit.centerX, -unit.centerY); // translate to rectangle center
+    ctx.drawImage(img, unit.x, unit.y, unit.width, unit.height);
+    ctx.restore();
+    resolve();
+  });
+}
+
+export const timeout = (time, i) => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      console.log('timeout', i);
+      resolve('done');
+    }, time);
+  })
+}
+
+
+export const smoothlyRotateUnit = (unit) => {
+  loadImage(unit.imgPath, (err, img) => { // load image, then rotate unit
+    if(err) throw err;
+    let rotationDirection;
+    if(unit.currentCanvasAngle > unit.previousCanvasAngle) {
+      rotationDirection = 1;
+    }
+    else if(unit.currentCanvasAngle < unit.previousCanvasAngle) {
+      rotationDirection = -1;
+    }
+    console.log(rotationDirection);
+    let previous = unit.previousCanvasAngle;
+    let current = unit.currentCanvasAngle;
+    console.log('difference', previous + ":" + current);
+    makeRotation(unit, img, previous, current, rotationDirection, 20);
+
+    // for(let i = previous; i!== current; i+=rotationSpeed) {
+    //   (function(){    // create a closure (new scope)
+    //   var _i = i;   // make a local copy of `i` from the outer scope
+    //   timeout().then(() => changeAngle(unit, img, _i, current))
+    //   .then(() => speed += rotationSpeed);
+    //   console.log(_i);
+    //   })();
+    // }
+    // while(previous !== current) {
+    //   (function() {
+    //     let _previous = previous;
+    //     timeout().then(() => changeAngle(unit, img, _previous, current))
+    //     .then(() => {
+    //       console.log('rotation speed increase');
+    //       previous += rotationSpeed;
+    //     });
+    //   })();
+    // }
+  });
+}
+
+const makeRotation = (unit, img, previous, current, rotationDirection, rotationSpeed) => {
+  if(previous !== current) {
+    (function() {
+      let _previous = previous;
+      timeout(rotationSpeed, previous).then(() => changeAngle(unit, img, _previous, current))
+      .then(() => {
+        console.log('make rotation');
+        makeRotation(unit, img, previous += rotationDirection, current, rotationDirection, rotationSpeed);
+      })
+    })()
+  }
+}
+
 export const clearUnit = (unit) => {
   ctx.save();
   ctx.translate(unit.centerX, unit.centerY); // translate to rectangle center
-  let angle = (90 - unit.previosAngleInDegree) * (Math.PI / 180);
+  let angle = unit.previousCanvasAngle * (Math.PI / 180);
   ctx.rotate(angle); // rotate unit
   ctx.translate(-unit.centerX, -unit.centerY); // translate to rectangle center
   ctx.clearRect(unit.x, unit.y, unit.width, unit.height);

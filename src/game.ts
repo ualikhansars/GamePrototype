@@ -12,6 +12,7 @@ import {
   createUnit,
   unitsHaveToMove,
   rotateUnit, // test
+  smoothlyRotateUnit // test
 } from './units/unitActions';
 
 let infantry = createUnit('Infantry',200, 40, 100, 50, 3, );
@@ -35,11 +36,13 @@ canvas.addEventListener('contextmenu', (e) => {
   if(currentlyChosenUnit) {
     assignMoveToPosition(currentlyChosenUnit, x, y); //assign unit's next x and y position
     currentlyChosenUnit.assignAngle(); // assign angle to the unit
-    rotateUnit(currentlyChosenUnit); // rotate unit
+    smoothlyRotateUnit(currentlyChosenUnit); // rotate unit
+    //rotateUnit(currentlyChosenUnit);
     // console.error('x:', currentlyChosenUnit.centerX, 'y:', currentlyChosenUnit.centerY, 'destX:', currentlyChosenUnit.moveToX, 'destY:', currentlyChosenUnit.moveToY);
     console.error('Unit angle in degree :', currentlyChosenUnit.angleInDegree);
     //console.error('Unit previosAngleInDegree:', currentlyChosenUnit.previosAngleInDegree);
-    console.error('Canvas angle', currentlyChosenUnit.canvasAngleInDegree);
+    console.log('previousCanvasAngle', currentlyChosenUnit.previousCanvasAngle);
+    console.error('Canvas angle', currentlyChosenUnit.currentCanvasAngle);
     //console.error('Unit angle in radians :', currentlyChosenUnit.angleInRadian);
     //console.log('Unit:' ,currentlyChosenUnit.x, currentlyChosenUnit.y);
     //console.log('center:', currentlyChosenUnit.centerX, currentlyChosenUnit.centerY);
