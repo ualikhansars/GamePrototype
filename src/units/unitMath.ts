@@ -91,3 +91,10 @@ export const getQuater = (unitX:number, unitY:number, destX:number, destY:number
   }
   return quater;
 }
+
+export const getCanvasAngleQuater = (canvasAngle) => {
+  if(canvasAngle >= 0 && canvasAngle < 90) return 1;
+  else if(canvasAngle >= 90 && canvasAngle < 180) return 4;
+  else if(canvasAngle >= 180 && canvasAngle < 270) return 3;
+  else if(canvasAngle >= 270 && canvasAngle < 360) return 2;
+}

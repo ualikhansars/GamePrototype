@@ -11,12 +11,13 @@ import {
   assignMoveToPosition,
   createUnit,
   unitsHaveToMove,
-  smoothlyRotateUnit // test
+  smoothlyRotateUnit, // test
+  chooseRotationDirection, // test
 } from './units/unitActions';
 
 let infantry = createUnit('Infantry',200, 40, 100, 50, 3, );
 console.log('infantry', infantry);
-let cavalry = createUnit('Cavalry', 100, 80, 50, 60, 5);
+let cavalry = createUnit('Cavalry', 100, 300, 50, 30, 5);
 let heavyInfantry = createUnit('HeavyInfantry', 300, 180, 160, 120, 2);
 
 canvas.addEventListener('click', (e) => {
@@ -36,6 +37,7 @@ canvas.addEventListener('contextmenu', (e) => {
     assignMoveToPosition(currentlyChosenUnit, x, y); //assign unit's next x and y position
     currentlyChosenUnit.assignAngle(); // assign angle to the unit
     smoothlyRotateUnit(currentlyChosenUnit); // rotate unit
+    chooseRotationDirection(currentlyChosenUnit);
     //rotateUnit(currentlyChosenUnit);
     // console.error('x:', currentlyChosenUnit.centerX, 'y:', currentlyChosenUnit.centerY, 'destX:', currentlyChosenUnit.moveToX, 'destY:', currentlyChosenUnit.moveToY);
     console.error('Unit angle in degree :', currentlyChosenUnit.angleInDegree);

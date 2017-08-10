@@ -4,6 +4,8 @@ import {
   assignCurrentlyChosenUnit
 } from '../store/unitsStore';
 
+import {getCanvasAngleQuater} from './unitMath';
+
 import {ctx, WIDTH, HEIGHT} from '../config/map';
 
 import Unit from './Unit';
@@ -82,7 +84,7 @@ export const changeAngle = (unit,img, changingAngle, current) => {
     dynamiclyClearUnit(unit); // delete previos drawing unit
     ctx.translate(unit.centerX, unit.centerY); // translate to rectangle center
     let angle = changingAngle * (Math.PI / 180);
-    console.log('draw unit degree:', changingAngle);
+    // console.log('draw unit degree:', changingAngle);
     ctx.rotate(angle); // rotate to look straight to the destination position
     ctx.translate(-unit.centerX, -unit.centerY); // translate to rectangle center
     ctx.drawImage(img, unit.x, unit.y, unit.width, unit.height);
@@ -90,7 +92,6 @@ export const changeAngle = (unit,img, changingAngle, current) => {
     resolve();
   });
 }
-
 
 export const smoothlyRotateUnit = (unit) => {
   loadImage(unit.imgPath, (err, img) => { // load image, then rotate unit
@@ -111,7 +112,7 @@ export const smoothlyRotateUnit = (unit) => {
 }
 
 const makeRotation2 = (unit, img, startAngle, changingAngle, finishAngle, rotationDirection, rotationSpeed) => {
-  console.log('changingAngle', changingAngle, 'finishAngle', finishAngle)
+  // console.log('changingAngle', changingAngle, 'finishAngle', finishAngle)
   let previous = changingAngle - rotationDirection;
   unit.setAngleToRemove(previous); // set angle that has to be removed
   if(changingAngle === finishAngle) {
@@ -122,8 +123,8 @@ const makeRotation2 = (unit, img, startAngle, changingAngle, finishAngle, rotati
   else {
     if(startAngle !== changingAngle) previous = changingAngle - rotationDirection;
       unit.setAngleToRemove(previous);
-      console.error('changingAngle', changingAngle);
-      console.error('previosAngle', previous);
+      // console.error('changingAngle', changingAngle);
+      // console.error('previosAngle', previous);
       timeout(rotationSpeed, changingAngle).then(() => changeAngle(unit, img, changingAngle, finishAngle))
       .then(() => {
       makeRotation2(unit, img, startAngle, changingAngle += rotationDirection, finishAngle, rotationDirection, rotationSpeed);
@@ -135,11 +136,46 @@ export const dynamiclyClearUnit = (unit) => {
   ctx.save();
   ctx.translate(unit.centerX, unit.centerY); // translate to rectangle center
   let angle = unit.angleToRemove * (Math.PI / 180);
-  console.log('unit angle to remove:', unit.angleToRemove);
+  // console.log('unit angle to remove:', unit.angleToRemove);
   ctx.rotate(angle); // rotate unit
   ctx.translate(-unit.centerX, -unit.centerY); // translate to rectangle center
   ctx.clearRect(unit.x, unit.y, unit.width, unit.height);
   ctx.restore();
+}
+
+// calculate path in both directions
+// and decide in what direction unit has to rotate
+export const chooseRotationDirection = (unit) => {
+  let positiveStartAngle, positiveFinishAngle;
+  let negativeStartAngle, negativeFinishAngle;
+  positiveStartAngle = unit.previousCanvasAngle;
+  positiveFinishAngle =  unit.currentCanvasAngle;
+  if(positiveStartAngle === 0) {
+      negativeStartAngle = 0; // use 0 instead of 360
+  }  else {
+    negativeStartAngle = positiveStartAngle - 360;
+  }
+
+  if(positiveFinishAngle === 0) {
+      negativeFinishAngle = 0;
+  }  else {
+    negativeFinishAngle = positiveFinishAngle - 360;
+  }
+
+  let startQuater = getCanvasAngleQuater(positiveStartAngle);
+  let finishQuater = getCanvasAngleQuater(positiveFinishAngle);
+
+  console.log('Positive ', positiveStartAngle,' => ', positiveFinishAngle);
+  console.log('Negative ', negativeStartAngle,' => ', negativeFinishAngle);
+  let positivePath, negativePath;
+  if(startQuater === 2 || startQuater === 3) {
+      negativePath = Math.abs(negativeStartAngle) + Math.abs(positiveFinishAngle);
+  } else {
+      negativePath = Math.abs(positiveStartAngle) + Math.abs(negativeFinishAngle);
+  }
+  positivePath = Math.abs(positiveFinishAngle - positiveStartAngle);
+  console.log('positivePath', positivePath);
+  console.log('negativePath', negativePath);
 }
 
 // export const clearUnit = (unit) => {
