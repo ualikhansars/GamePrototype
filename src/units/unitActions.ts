@@ -57,8 +57,8 @@ export let setUnit = (unit) => {
 }
 
 // create Unit and immediatly push it into units array
-export let createUnit = (name:string, centerX:number, centerY:number, width:number, height:number, speed: number, imgPath: string='../../img/unit.svg') => {
-  let unit = new Unit(name, centerX, centerY, width, height, speed, imgPath);
+export let createUnit = (name:string, centerX:number, centerY:number, width:number, height:number, speed: number, imgPath: string='../../img/unit.svg', rotationSpeed) => {
+  let unit = new Unit(name, centerX, centerY, width, height, speed, imgPath, rotationSpeed);
   units.push(unit);
   setUnit(unit);
   return unit;
@@ -99,7 +99,7 @@ export const smoothlyRotateUnit = (unit) => {
     let {startAngle, finishAngle, rotationDirection} = chooseRotationDirection(unit);
     let changingAngle = startAngle;
     console.error('startAngle:', startAngle, 'finishAngle:', finishAngle, 'direction:', rotationDirection);
-    makeRotation2(unit, img, changingAngle, changingAngle, finishAngle, rotationDirection, 20);
+    makeRotation2(unit, img, startAngle, changingAngle, finishAngle, rotationDirection, 20);
   });
 }
 

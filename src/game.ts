@@ -15,10 +15,10 @@ import {
   chooseRotationDirection, // test
 } from './units/unitActions';
 
-let infantry = createUnit('Infantry',200, 40, 100, 50, 3, );
+let infantry = createUnit('Infantry',200, 40, 100, 50, 3, undefined ,20);
 console.log('infantry', infantry);
-let cavalry = createUnit('Cavalry', 100, 300, 50, 30, 5);
-let heavyInfantry = createUnit('HeavyInfantry', 300, 180, 160, 120, 2);
+let cavalry = createUnit('Cavalry', 100, 300, 50, 30, 5, undefined, 15);
+let heavyInfantry = createUnit('HeavyInfantry', 300, 180, 160, 120, 2, undefined, 30);
 
 canvas.addEventListener('click', (e) => {
   let x = e.offsetX; // get X

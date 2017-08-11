@@ -26,8 +26,9 @@ class Unit {
   previousCanvasAngle: number;
   angleToRemove: number;
   imgPath: string;
+  rotationSpeed: number;
 
-  constructor(name: string, centerX: number, centerY:number, width: number, height:number, speed:number, imgPath:string) {
+  constructor(name: string, centerX: number, centerY:number, width: number, height:number, speed:number, imgPath:string, rotationSpeed: number) {
     this.name = name;
     this.centerX = centerX;
     this.centerY = centerY;
@@ -39,6 +40,7 @@ class Unit {
     this.moveToX = centerX;
     this.moveToY = centerY;
     this.imgPath = imgPath;
+    this.rotationSpeed = rotationSpeed;
   }
 
   update(speedX, speedY) {

@@ -248,10 +248,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 
-let infantry = Object(__WEBPACK_IMPORTED_MODULE_2__units_unitActions__["d" /* createUnit */])('Infantry', 200, 40, 100, 50, 3);
+let infantry = Object(__WEBPACK_IMPORTED_MODULE_2__units_unitActions__["d" /* createUnit */])('Infantry', 200, 40, 100, 50, 3, undefined, 20);
 console.log('infantry', infantry);
-let cavalry = Object(__WEBPACK_IMPORTED_MODULE_2__units_unitActions__["d" /* createUnit */])('Cavalry', 100, 300, 50, 30, 5);
-let heavyInfantry = Object(__WEBPACK_IMPORTED_MODULE_2__units_unitActions__["d" /* createUnit */])('HeavyInfantry', 300, 180, 160, 120, 2);
+let cavalry = Object(__WEBPACK_IMPORTED_MODULE_2__units_unitActions__["d" /* createUnit */])('Cavalry', 100, 300, 50, 30, 5, undefined, 15);
+let heavyInfantry = Object(__WEBPACK_IMPORTED_MODULE_2__units_unitActions__["d" /* createUnit */])('HeavyInfantry', 300, 180, 160, 120, 2, undefined, 30);
 __WEBPACK_IMPORTED_MODULE_0__config_map__["a" /* canvas */].addEventListener('click', (e) => {
     let x = e.offsetX; // get X
     let y = e.offsetY; // get Y
@@ -345,8 +345,8 @@ let setUnit = (unit) => {
     __WEBPACK_IMPORTED_MODULE_2__config_map__["b" /* ctx */].restore();
 };
 // create Unit and immediatly push it into units array
-let createUnit = (name, centerX, centerY, width, height, speed, imgPath = '../../img/unit.svg') => {
-    let unit = new __WEBPACK_IMPORTED_MODULE_3__Unit__["a" /* default */](name, centerX, centerY, width, height, speed, imgPath);
+let createUnit = (name, centerX, centerY, width, height, speed, imgPath = '../../img/unit.svg', rotationSpeed) => {
+    let unit = new __WEBPACK_IMPORTED_MODULE_3__Unit__["a" /* default */](name, centerX, centerY, width, height, speed, imgPath, rotationSpeed);
     __WEBPACK_IMPORTED_MODULE_0__store_unitsStore__["c" /* units */].push(unit);
     setUnit(unit);
     return unit;
@@ -389,7 +389,7 @@ const smoothlyRotateUnit = (unit) => {
         let { startAngle, finishAngle, rotationDirection } = chooseRotationDirection(unit);
         let changingAngle = startAngle;
         console.error('startAngle:', startAngle, 'finishAngle:', finishAngle, 'direction:', rotationDirection);
-        makeRotation2(unit, img, changingAngle, changingAngle, finishAngle, rotationDirection, 20);
+        makeRotation2(unit, img, startAngle, changingAngle, finishAngle, rotationDirection, 20);
     });
 };
 /* harmony export (immutable) */ __webpack_exports__["e"] = smoothlyRotateUnit;
@@ -566,7 +566,7 @@ const timeout = (time, i) => {
 
 
 class Unit {
-    constructor(name, centerX, centerY, width, height, speed, imgPath) {
+    constructor(name, centerX, centerY, width, height, speed, imgPath, rotationSpeed) {
         this.angleInDegree = 90; // current unit's angle
         this.currentCanvasAngle = 0;
         this.name = name;
@@ -580,6 +580,7 @@ class Unit {
         this.moveToX = centerX;
         this.moveToY = centerY;
         this.imgPath = imgPath;
+        this.rotationSpeed = rotationSpeed;
     }
     update(speedX, speedY) {
         __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].save();
