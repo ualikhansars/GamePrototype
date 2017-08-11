@@ -96,23 +96,14 @@ export const changeAngle = (unit,img, changingAngle, current) => {
 export const smoothlyRotateUnit = (unit) => {
   loadImage(unit.imgPath, (err, img) => { // load image, then rotate unit
     if(err) throw err;
-    let rotationDirection;
-    if(unit.currentCanvasAngle > unit.previousCanvasAngle) {
-      rotationDirection = 1;
-    }
-    else if(unit.currentCanvasAngle < unit.previousCanvasAngle) {
-      rotationDirection = -1;
-    }
-    console.log(rotationDirection);
-    let changingAngle = unit.previousCanvasAngle;
-    let finishAngle = unit.currentCanvasAngle;
-    console.log('difference', changingAngle + ":" + finishAngle);
+    let {startAngle, finishAngle, rotationDirection} = chooseRotationDirection(unit);
+    let changingAngle = startAngle;
+    console.error('startAngle:', startAngle, 'finishAngle:', finishAngle, 'direction:', rotationDirection);
     makeRotation2(unit, img, changingAngle, changingAngle, finishAngle, rotationDirection, 20);
   });
 }
 
 const makeRotation2 = (unit, img, startAngle, changingAngle, finishAngle, rotationDirection, rotationSpeed) => {
-  // console.log('changingAngle', changingAngle, 'finishAngle', finishAngle)
   let previous = changingAngle - rotationDirection;
   unit.setAngleToRemove(previous); // set angle that has to be removed
   if(changingAngle === finishAngle) {
@@ -123,8 +114,6 @@ const makeRotation2 = (unit, img, startAngle, changingAngle, finishAngle, rotati
   else {
     if(startAngle !== changingAngle) previous = changingAngle - rotationDirection;
       unit.setAngleToRemove(previous);
-      // console.error('changingAngle', changingAngle);
-      // console.error('previosAngle', previous);
       timeout(rotationSpeed, changingAngle).then(() => changeAngle(unit, img, changingAngle, finishAngle))
       .then(() => {
       makeRotation2(unit, img, startAngle, changingAngle += rotationDirection, finishAngle, rotationDirection, rotationSpeed);
@@ -145,11 +134,15 @@ export const dynamiclyClearUnit = (unit) => {
 
 // calculate path in both directions
 // and decide in what direction unit has to rotate
+// return startAngle, finishAngle, rotationDirection
 export const chooseRotationDirection = (unit) => {
+  let startQuater, finishQuater;
+  let startAngle, finishAngle, rotationDirection;
   let positiveStartAngle, positiveFinishAngle;
   let negativeStartAngle, negativeFinishAngle;
   positiveStartAngle = unit.previousCanvasAngle;
   positiveFinishAngle =  unit.currentCanvasAngle;
+
   if(positiveStartAngle === 0) {
       negativeStartAngle = 0; // use 0 instead of 360
   }  else {
@@ -162,11 +155,9 @@ export const chooseRotationDirection = (unit) => {
     negativeFinishAngle = positiveFinishAngle - 360;
   }
 
-  let startQuater = getCanvasAngleQuater(positiveStartAngle);
-  let finishQuater = getCanvasAngleQuater(positiveFinishAngle);
+  startQuater = getCanvasAngleQuater(positiveStartAngle);
+  finishQuater = getCanvasAngleQuater(positiveFinishAngle);
 
-  console.log('Positive ', positiveStartAngle,' => ', positiveFinishAngle);
-  console.log('Negative ', negativeStartAngle,' => ', negativeFinishAngle);
   let positivePath, negativePath;
   if(startQuater === 2 || startQuater === 3) {
       negativePath = Math.abs(negativeStartAngle) + Math.abs(positiveFinishAngle);
@@ -174,8 +165,28 @@ export const chooseRotationDirection = (unit) => {
       negativePath = Math.abs(positiveStartAngle) + Math.abs(negativeFinishAngle);
   }
   positivePath = Math.abs(positiveFinishAngle - positiveStartAngle);
-  console.log('positivePath', positivePath);
-  console.log('negativePath', negativePath);
+
+  if(positivePath <= negativePath) {
+    startAngle = positiveStartAngle;
+    finishAngle = positiveFinishAngle;
+    if(positiveStartAngle > positiveFinishAngle) rotationDirection = -1;
+    if(positiveStartAngle < positiveFinishAngle) rotationDirection = 1;
+  } else { // negativePath > positivePath
+    if(startQuater === 2 || startQuater === 3) {
+      startAngle = negativeStartAngle;
+      finishAngle = positiveFinishAngle;
+      rotationDirection = 1;
+    } else {
+      startAngle = positiveStartAngle;
+      finishAngle = negativeFinishAngle;
+      rotationDirection = -1;
+    }
+  }
+  return {
+    startAngle,
+    finishAngle,
+    rotationDirection
+  }
 }
 
 // export const clearUnit = (unit) => {
