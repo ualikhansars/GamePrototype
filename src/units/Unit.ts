@@ -18,15 +18,19 @@ class Unit {
   speed: number; // speed of the unit
   moveToX: number; // next X postion
   moveToY: number; // next Y position
-  angleInRadian: number;
-  angleInDegree: number = 90; // current unit's angle
-  previousAngleInDegree: number;
-  previousAngleInRadian: number;
-  currentCanvasAngle: number = 0;
+  destinationCanvasAngle: number = 0;
+  currentCanvasAngle: number;
   previousCanvasAngle: number;
   angleToRemove: number;
   imgPath: string;
   rotationSpeed: number;
+  isRotating: boolean = false;
+  stoppedAngle: number = null;
+  // rotation. test
+  currentRotationPrevAngle: number = null;
+  currentRotationNextAngle: number = null;
+  nextRotationPrevAngle: number = null;
+  nextRotationNextAngle: number = null;
 
   constructor(name: string, centerX: number, centerY:number, width: number, height:number, speed:number, imgPath:string, rotationSpeed: number) {
     this.name = name;
@@ -56,16 +60,56 @@ class Unit {
   }
 
   assignAngle() {
-    this.previousAngleInDegree = this.angleInDegree;
-    this.previousAngleInRadian = this.angleInRadian;
-    this.previousCanvasAngle = this.currentCanvasAngle;
-    this.angleInRadian =  calcDestinationAngle(this.centerX, this.centerY, this.moveToX, this.moveToY)
-    this.angleInDegree = calcDestinationAngleInDegrees(this.centerX, this.centerY, this.moveToX, this.moveToY);
-    this.currentCanvasAngle = calcCanvasAngle(this.centerX, this.centerY, this.moveToX, this.moveToY);
+    this.previousCanvasAngle = this.destinationCanvasAngle;
+    this.destinationCanvasAngle = calcCanvasAngle(this.centerX, this.centerY, this.moveToX, this.moveToY);
+    this.nextRotationPrevAngle = this.previousCanvasAngle;   //assign next rotation
+    this.nextRotationNextAngle = this.destinationCanvasAngle;
+
+    console.log('CLASS UNIT: new desctination has been assign, angle =', this.destinationCanvasAngle);
   }
 
-  setAngleToRemove(newAngle) {
-    this.angleToRemove = newAngle;
+  setAngleToRemove(newAngle:number) {
+    let angleToRemove = this.makeAnglePositive(newAngle);
+    this.angleToRemove = angleToRemove;
+  }
+
+  setDestinationCanvasAngle(newAngle) {
+    let updatedAngle = this.makeAnglePositive(newAngle);
+    this.destinationCanvasAngle = updatedAngle;
+  }
+
+  setCurrentCanvasAngle(newAngle:number) {
+    let updatedAngle = this.makeAnglePositive(newAngle);
+    this.currentCanvasAngle = updatedAngle;
+  }
+
+  setPreviousCanvasAngle(newAngle: number) {
+    let updatedAngle = this.makeAnglePositive(newAngle);
+    this.previousCanvasAngle = updatedAngle;
+  }
+
+  setIsRotating(newValue: boolean) {
+    this.isRotating = newValue;
+  }
+
+  setStoppedAngle(newAngle: number) {
+    this.stoppedAngle = this.makeAnglePositive(newAngle);
+  }
+
+  setCurrentRotation(startAngle: number, finishAngle: number) {
+    let updatedStartAngle = this.makeAnglePositive(startAngle);
+    let updatedFinishAngle = this.makeAnglePositive(finishAngle);
+    this.currentRotationPrevAngle = updatedStartAngle;
+    this.currentRotationNextAngle = updatedFinishAngle;
+  }
+
+  makeAnglePositive(angle: number):number {
+    if(angle < 0) {
+      return angle + 360;
+    }
+    else if(angle >= 0) {
+        return angle;
+    }
   }
 
   moveToPosition(speedX, speedY) {

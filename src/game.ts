@@ -12,7 +12,6 @@ import {
   createUnit,
   unitsHaveToMove,
   smoothlyRotateUnit, // test
-  chooseRotationDirection, // test
 } from './units/unitActions';
 
 let infantry = createUnit('Infantry',200, 40, 100, 50, 3, undefined ,20);
@@ -37,16 +36,20 @@ canvas.addEventListener('contextmenu', (e) => {
     assignMoveToPosition(currentlyChosenUnit, x, y); //assign unit's next x and y position
     currentlyChosenUnit.assignAngle(); // assign angle to the unit
     smoothlyRotateUnit(currentlyChosenUnit); // rotate unit
-    chooseRotationDirection(currentlyChosenUnit);
+
+    // assignMoveToPosition(currentlyChosenUnit, x, y); //assign unit's next x and y position
+    // currentlyChosenUnit.assignAngle(); // assign angle to the unit
+    // smoothlyRotateUnit(currentlyChosenUnit); // rotate unit
     //rotateUnit(currentlyChosenUnit);
     // console.error('x:', currentlyChosenUnit.centerX, 'y:', currentlyChosenUnit.centerY, 'destX:', currentlyChosenUnit.moveToX, 'destY:', currentlyChosenUnit.moveToY);
-    console.error('Unit angle in degree :', currentlyChosenUnit.angleInDegree);
-    //console.error('Unit previosAngleInDegree:', currentlyChosenUnit.previosAngleInDegree);
-    console.log('previousCanvasAngle', currentlyChosenUnit.previousCanvasAngle);
-    console.error('Canvas angle', currentlyChosenUnit.currentCanvasAngle);
-    //console.error('Unit angle in radians :', currentlyChosenUnit.angleInRadian);
+
+    console.log('GAME: previousCanvasAngle', currentlyChosenUnit.previousCanvasAngle);
+    console.error('GAME: desctinationCanvasAngle', currentlyChosenUnit.destinationCanvasAngle);
+    console.log('currentRotation prev:', currentlyChosenUnit.currentRotationPrevAngle, 'next:',currentlyChosenUnit.currentRotationNextAngle);
+    console.log('nextRotation prev:', currentlyChosenUnit.nextRotationPrevAngle, 'next:',currentlyChosenUnit.nextRotationNextAngle);
     //console.log('Unit:' ,currentlyChosenUnit.x, currentlyChosenUnit.y);
     //console.log('center:', currentlyChosenUnit.centerX, currentlyChosenUnit.centerY);
+    console.log('stoppedAngle', currentlyChosenUnit.stoppedAngle);
   }
 });
 

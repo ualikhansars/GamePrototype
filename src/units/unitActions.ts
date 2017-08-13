@@ -96,27 +96,96 @@ export const changeAngle = (unit,img, changingAngle, current) => {
 export const smoothlyRotateUnit = (unit) => {
   loadImage(unit.imgPath, (err, img) => { // load image, then rotate unit
     if(err) throw err;
-    let {startAngle, finishAngle, rotationDirection} = chooseRotationDirection(unit);
+    let isRotating = unit.isRotating;
+    let rotationSpeed = unit.rotationSpeed;
+    let initialStartAngle = unit.previousCanvasAngle;
+    let initialFinishAngle = unit.destinationCanvasAngle;
+    let {startAngle, finishAngle, rotationDirection} = chooseRotationDirection(initialStartAngle, initialFinishAngle);
     let changingAngle = startAngle;
-    console.error('startAngle:', startAngle, 'finishAngle:', finishAngle, 'direction:', rotationDirection);
-    makeRotation2(unit, img, startAngle, changingAngle, finishAngle, rotationDirection, 20);
+    console.error('ROTATE UNIT: startAngle:', startAngle, 'finishAngle:', finishAngle, 'direction:', rotationDirection);
+    // if(!isRotating) { // unit is not moving
+    //   unit.setIsRotating(true);
+    //   unit.setStoppedAngle(null);
+    //   unit.setCurrentRotation(startAngle, finishAngle);
+    //   makeRotation2(unit, img, startAngle, changingAngle, finishAngle, rotationDirection, rotationSpeed);
+    // } else { // unit currently make another rotation
+    //     while(unit.stoppedAngle != true) {
+    //       startAngle = unit.stoppedAngle; // start rotation where previous rotation has been stopped
+    //       changingAngle = unit.stoppedAngle;
+    //       unit.setIsRotating(true);
+    //       unit.setCurrentRotation(startAngle, finishAngle); // set current rotation fron stopped to desc Angle
+    //       makeRotation2(unit, img, startAngle, changingAngle, finishAngle, rotationDirection, rotationSpeed);
+    //     }
+    // }
+    if(!isRotating) {
+      unit.setIsRotating(true);
+      makeRotation2(unit, img, startAngle, changingAngle, finishAngle, rotationDirection, rotationSpeed);
+    }
+
   });
 }
 
-const makeRotation2 = (unit, img, startAngle, changingAngle, finishAngle, rotationDirection, rotationSpeed) => {
+const makeRotation2 = (unit, img, startAngle, changingAngle, finishAngle, rotationDirection, rotationSpeed, previousStartAngle=null, previousFinishAngle=null) => {
+  unit.setCurrentCanvasAngle(changingAngle); // set currentCanvasAngle
   let previous = changingAngle - rotationDirection;
   unit.setAngleToRemove(previous); // set angle that has to be removed
-  if(changingAngle === finishAngle) {
+  let checkFinishAngle; // angle to compare with unit.destinationCanvasAngle
+  if(finishAngle < 0) checkFinishAngle = finishAngle + 360; // make angle positive
+  if(finishAngle >= 0) checkFinishAngle = finishAngle;
+
+  console.log('1rec startAngle', startAngle);
+  console.log('1rec finishAngle', finishAngle);
+  console.log('previousStartAngle', previousStartAngle);
+
+  if(startAngle === previousStartAngle) { // stopped previous rotation
+    console.log('previous recursion stopped');
+    return;
+  }
+
+
+  //unit.setCurrentCanvasAngle(positiveChangingAngle);
+  //console.log('angleToRemove', angleToRemove);
+  if(checkFinishAngle !== unit.destinationCanvasAngle) {  // if another desctination has been clicked
+    // save previous rotation
+    previousStartAngle = startAngle;
+    previousFinishAngle = finishAngle;
+    changingAngle = makeAnglePositive(changingAngle);
+    finishAngle = makeAnglePositive(unit.destinationCanvasAngle);
+    checkFinishAngle = finishAngle;
+    let {
+      startAngle: newStartAngle,
+      finishAngle: newFinishAngle,
+      rotationDirection: newRotationDirection
+    } = chooseRotationDirection(changingAngle, finishAngle);
+    let newChangingAngle = newStartAngle;
+    console.log('new rotation has been chosen');
+    console.log('previousStartAngle', previousStartAngle);
+    console.log('previousFinishAngle', previousFinishAngle);
+    console.log('newStartAngle', newStartAngle);
+    console.log('newChangingAngle', newChangingAngle);
+    console.log('newFinishAngle', newFinishAngle);
+
+    console.log('changingAngle', changingAngle, 'finishAngle', finishAngle);
+    console.log('rotationDirection', newRotationDirection);
+    // unit.setPreviousCanvasAngle(changingAngle); // update destinationCanvasAngle
+    // unit.setStoppedAngle(changingAngle);
+    makeRotation2(unit, img, newStartAngle, newChangingAngle, newFinishAngle, newRotationDirection, rotationSpeed, previousStartAngle, previousFinishAngle);
+  }
+  if(changingAngle === finishAngle) { // rotation is finished
       console.log('rotation finish');
       console.error('unit angle to remove', unit.angleToRemove);
+      unit.setIsRotating(false);
+      //unit.setStoppedAngle(null);
       return;
   }
   else {
+    console.log('rotation. startAngle', startAngle, 'finishAngle', finishAngle);
+    console.error('changingAngle', changingAngle);
     if(startAngle !== changingAngle) previous = changingAngle - rotationDirection;
       unit.setAngleToRemove(previous);
       timeout(rotationSpeed, changingAngle).then(() => changeAngle(unit, img, changingAngle, finishAngle))
       .then(() => {
-      makeRotation2(unit, img, startAngle, changingAngle += rotationDirection, finishAngle, rotationDirection, rotationSpeed);
+      makeRotation2(unit, img, startAngle, changingAngle += rotationDirection, finishAngle, rotationDirection, rotationSpeed, previousStartAngle, previousFinishAngle);
     })
   }
 }
@@ -135,13 +204,13 @@ export const dynamiclyClearUnit = (unit) => {
 // calculate path in both directions
 // and decide in what direction unit has to rotate
 // return startAngle, finishAngle, rotationDirection
-export const chooseRotationDirection = (unit) => {
+export const chooseRotationDirection = (initialStartAngle, initialFinishAngle) => {
   let startQuater, finishQuater;
   let startAngle, finishAngle, rotationDirection;
   let positiveStartAngle, positiveFinishAngle;
   let negativeStartAngle, negativeFinishAngle;
-  positiveStartAngle = unit.previousCanvasAngle;
-  positiveFinishAngle =  unit.currentCanvasAngle;
+  positiveStartAngle = initialStartAngle;
+  positiveFinishAngle =initialFinishAngle;
 
   if(positiveStartAngle === 0) {
       negativeStartAngle = 0; // use 0 instead of 360
@@ -243,6 +312,15 @@ export const timeout = (time, i) => {
       resolve('done');
     }, time);
   })
+}
+
+const makeAnglePositive = (angle: number):number => {
+  if(angle < 0) {
+    return angle + 360;
+  }
+  else if(angle >= 0) {
+      return angle;
+  }
 }
 
 // export const rotateUnit = (unit) => {
