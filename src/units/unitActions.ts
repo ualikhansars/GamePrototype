@@ -84,7 +84,7 @@ export const changeAngle = (unit,img, changingAngle, current) => {
     dynamiclyClearUnit(unit); // delete previos drawing unit
     ctx.translate(unit.centerX, unit.centerY); // translate to rectangle center
     let angle = changingAngle * (Math.PI / 180);
-    // console.log('draw unit degree:', changingAngle);
+    console.log('CHANGE ANGLE: draw unit degree:', changingAngle);
     ctx.rotate(angle); // rotate to look straight to the destination position
     ctx.translate(-unit.centerX, -unit.centerY); // translate to rectangle center
     ctx.drawImage(img, unit.x, unit.y, unit.width, unit.height);
@@ -103,20 +103,6 @@ export const smoothlyRotateUnit = (unit) => {
     let {startAngle, finishAngle, rotationDirection} = chooseRotationDirection(initialStartAngle, initialFinishAngle);
     let changingAngle = startAngle;
     console.error('ROTATE UNIT: startAngle:', startAngle, 'finishAngle:', finishAngle, 'direction:', rotationDirection);
-    // if(!isRotating) { // unit is not moving
-    //   unit.setIsRotating(true);
-    //   unit.setStoppedAngle(null);
-    //   unit.setCurrentRotation(startAngle, finishAngle);
-    //   makeRotation2(unit, img, startAngle, changingAngle, finishAngle, rotationDirection, rotationSpeed);
-    // } else { // unit currently make another rotation
-    //     while(unit.stoppedAngle != true) {
-    //       startAngle = unit.stoppedAngle; // start rotation where previous rotation has been stopped
-    //       changingAngle = unit.stoppedAngle;
-    //       unit.setIsRotating(true);
-    //       unit.setCurrentRotation(startAngle, finishAngle); // set current rotation fron stopped to desc Angle
-    //       makeRotation2(unit, img, startAngle, changingAngle, finishAngle, rotationDirection, rotationSpeed);
-    //     }
-    // }
     if(!isRotating) {
       unit.setIsRotating(true);
       makeRotation2(unit, img, startAngle, changingAngle, finishAngle, rotationDirection, rotationSpeed);
@@ -126,8 +112,7 @@ export const smoothlyRotateUnit = (unit) => {
 }
 
 const makeRotation2 = (unit, img, startAngle, changingAngle, finishAngle, rotationDirection, rotationSpeed, previousStartAngle=null, previousFinishAngle=null) => {
-  unit.setCurrentCanvasAngle(changingAngle); // set currentCanvasAngle
-  let previous = changingAngle - rotationDirection;
+  let previous = changingAngle - rotationDirection; // previous angle state
   unit.setAngleToRemove(previous); // set angle that has to be removed
   let checkFinishAngle; // angle to compare with unit.destinationCanvasAngle
   if(finishAngle < 0) checkFinishAngle = finishAngle + 360; // make angle positive
@@ -145,13 +130,12 @@ const makeRotation2 = (unit, img, startAngle, changingAngle, finishAngle, rotati
 
   //unit.setCurrentCanvasAngle(positiveChangingAngle);
   //console.log('angleToRemove', angleToRemove);
-  if(checkFinishAngle !== unit.destinationCanvasAngle) {  // if another desctination has been clicked
-    // save previous rotation
-    previousStartAngle = startAngle;
+  if(checkFinishAngle !== unit.destinationCanvasAngle) {  // if another desctination has been chosen
+    previousStartAngle = startAngle; // save previous rotation
     previousFinishAngle = finishAngle;
-    changingAngle = makeAnglePositive(changingAngle);
-    finishAngle = makeAnglePositive(unit.destinationCanvasAngle);
-    checkFinishAngle = finishAngle;
+    changingAngle = makeAnglePositive(changingAngle); // argumenent for chooseRotationDirection()
+    finishAngle = makeAnglePositive(unit.destinationCanvasAngle); // argumenent for chooseRotationDirection()
+    //checkFinishAngle = finishAngle;
     let {
       startAngle: newStartAngle,
       finishAngle: newFinishAngle,
@@ -181,8 +165,9 @@ const makeRotation2 = (unit, img, startAngle, changingAngle, finishAngle, rotati
   else {
     console.log('rotation. startAngle', startAngle, 'finishAngle', finishAngle);
     console.error('changingAngle', changingAngle);
-    if(startAngle !== changingAngle) previous = changingAngle - rotationDirection;
-      unit.setAngleToRemove(previous);
+    console.log('angle to remove', unit.angleToRemove);
+    //if(startAngle !== changingAngle) previous = changingAngle - rotationDirection;
+      //unit.setAngleToRemove(previous);
       timeout(rotationSpeed, changingAngle).then(() => changeAngle(unit, img, changingAngle, finishAngle))
       .then(() => {
       makeRotation2(unit, img, startAngle, changingAngle += rotationDirection, finishAngle, rotationDirection, rotationSpeed, previousStartAngle, previousFinishAngle);
@@ -194,10 +179,10 @@ export const dynamiclyClearUnit = (unit) => {
   ctx.save();
   ctx.translate(unit.centerX, unit.centerY); // translate to rectangle center
   let angle = unit.angleToRemove * (Math.PI / 180);
-  // console.log('unit angle to remove:', unit.angleToRemove);
+  console.log('REMOVE ANGLE: angle to remove:', unit.angleToRemove);
   ctx.rotate(angle); // rotate unit
   ctx.translate(-unit.centerX, -unit.centerY); // translate to rectangle center
-  ctx.clearRect(unit.x, unit.y, unit.width, unit.height);
+  ctx.clearRect(unit.x - 1, unit.y - 1, unit.width + 2, unit.height + 2);
   ctx.restore();
 }
 
@@ -258,16 +243,6 @@ export const chooseRotationDirection = (initialStartAngle, initialFinishAngle) =
   }
 }
 
-// export const clearUnit = (unit) => {
-//   ctx.save();
-//   ctx.translate(unit.centerX, unit.centerY); // translate to rectangle center
-//   let angle = unit.previousCanvasAngle * (Math.PI / 180);
-//   ctx.rotate(angle); // rotate unit
-//   ctx.translate(-unit.centerX, -unit.centerY); // translate to rectangle center
-//   ctx.clearRect(unit.x, unit.y, unit.width, unit.height);
-//   ctx.restore();
-// }
-
 // change unit's position until it approaches to moveToPosition
 export const unitsHaveToMove = () => {
   for(let unit of units) {
@@ -289,21 +264,21 @@ export const unitsHaveToMove = () => {
   }
 }
 
-// const makeRotation = (unit, img, previousAngle, changingAngle, current, rotationDirection, rotationSpeed) => {
-//   if(changingAngle !== current) {
-//     (function() {
-//       let _changingAngle = changingAngle;
-//       let previous = changingAngle;
-//       if(previousAngle !== changingAngle) previous = changingAngle - rotationDirection;
-//       console.error('changingAngle', _changingAngle);
-//       console.error('previosAngle', previous);
-//       timeout(rotationSpeed, changingAngle).then(() => changeAngle(unit, img, _changingAngle, current))
-//       .then(() => {
-//         makeRotation(unit, img, previousAngle, _changingAngle += rotationDirection, current, rotationDirection, rotationSpeed);
-//       })
-//     })()
-//   }
-// }
+const makeRotation = (unit, img, previousAngle, changingAngle, current, rotationDirection, rotationSpeed) => {
+  if(changingAngle !== current) {
+    (function() {
+      let _changingAngle = changingAngle;
+      let previous = changingAngle;
+      if(previousAngle !== changingAngle) previous = changingAngle - rotationDirection;
+      console.error('changingAngle', _changingAngle);
+      console.error('previosAngle', previous);
+      timeout(rotationSpeed, changingAngle).then(() => changeAngle(unit, img, _changingAngle, current))
+      .then(() => {
+        makeRotation(unit, img, previousAngle, _changingAngle += rotationDirection, current, rotationDirection, rotationSpeed);
+      })
+    })()
+  }
+}
 
 // setTimeout as a Promise
 export const timeout = (time, i) => {
@@ -323,6 +298,20 @@ const makeAnglePositive = (angle: number):number => {
   }
 }
 
+// export const clearUnitPromise = (unit) => {
+//   return new Promise(resolve => {
+//     ctx.save();
+//     ctx.translate(unit.centerX, unit.centerY); // translate to rectangle center
+//     let angle = unit.angleToRemove * (Math.PI / 180);
+//     console.log('REMOVE ANGLE: angle to remove:', unit.angleToRemove);
+//     ctx.rotate(angle); // rotate unit
+//     ctx.translate(-unit.centerX, -unit.centerY); // translate to rectangle center
+//     ctx.clearRect(unit.x, unit.y, unit.width, unit.height);
+//     ctx.restore();
+//     resolve();
+//   })
+// }
+
 // export const rotateUnit = (unit) => {
 //   loadImage(unit.imgPath, (err, img) => { // load image, then rotate unit
 //     if(err) throw err;
@@ -330,10 +319,20 @@ const makeAnglePositive = (angle: number):number => {
 //     clearUnit(unit); // delete previos drawing unit
 //     ctx.translate(unit.centerX, unit.centerY); // translate to rectangle center
 //     //let angle = (90 - unit.angleInDegree) * (Math.PI / 180);
-//     let angle = unit.currentCanvasAngle * (Math.PI / 180);
+//     let angle = unit.destinationCanvasAngle * (Math.PI / 180);
 //     ctx.rotate(angle); // rotate to look straight to the destination position
 //     ctx.translate(-unit.centerX, -unit.centerY); // translate to rectangle center
 //     ctx.drawImage(img, unit.x, unit.y, unit.width, unit.height);
 //     ctx.restore();
 //   });
+// }
+//
+// export const clearUnit = (unit) => {
+//   ctx.save();
+//   ctx.translate(unit.centerX, unit.centerY); // translate to rectangle center
+//   let angle = unit.previousCanvasAngle * (Math.PI / 180);
+//   ctx.rotate(angle); // rotate unit
+//   ctx.translate(-unit.centerX, -unit.centerY); // translate to rectangle center
+//   ctx.clearRect(unit.x, unit.y, unit.width, unit.height);
+//   ctx.restore();
 // }

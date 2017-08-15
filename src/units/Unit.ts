@@ -19,18 +19,11 @@ class Unit {
   moveToX: number; // next X postion
   moveToY: number; // next Y position
   destinationCanvasAngle: number = 0;
-  currentCanvasAngle: number;
   previousCanvasAngle: number;
   angleToRemove: number;
   imgPath: string;
   rotationSpeed: number;
   isRotating: boolean = false;
-  stoppedAngle: number = null;
-  // rotation. test
-  currentRotationPrevAngle: number = null;
-  currentRotationNextAngle: number = null;
-  nextRotationPrevAngle: number = null;
-  nextRotationNextAngle: number = null;
 
   constructor(name: string, centerX: number, centerY:number, width: number, height:number, speed:number, imgPath:string, rotationSpeed: number) {
     this.name = name;
@@ -62,9 +55,6 @@ class Unit {
   assignAngle() {
     this.previousCanvasAngle = this.destinationCanvasAngle;
     this.destinationCanvasAngle = calcCanvasAngle(this.centerX, this.centerY, this.moveToX, this.moveToY);
-    this.nextRotationPrevAngle = this.previousCanvasAngle;   //assign next rotation
-    this.nextRotationNextAngle = this.destinationCanvasAngle;
-
     console.log('CLASS UNIT: new desctination has been assign, angle =', this.destinationCanvasAngle);
   }
 
@@ -78,11 +68,6 @@ class Unit {
     this.destinationCanvasAngle = updatedAngle;
   }
 
-  setCurrentCanvasAngle(newAngle:number) {
-    let updatedAngle = this.makeAnglePositive(newAngle);
-    this.currentCanvasAngle = updatedAngle;
-  }
-
   setPreviousCanvasAngle(newAngle: number) {
     let updatedAngle = this.makeAnglePositive(newAngle);
     this.previousCanvasAngle = updatedAngle;
@@ -92,15 +77,9 @@ class Unit {
     this.isRotating = newValue;
   }
 
-  setStoppedAngle(newAngle: number) {
-    this.stoppedAngle = this.makeAnglePositive(newAngle);
-  }
-
   setCurrentRotation(startAngle: number, finishAngle: number) {
     let updatedStartAngle = this.makeAnglePositive(startAngle);
     let updatedFinishAngle = this.makeAnglePositive(finishAngle);
-    this.currentRotationPrevAngle = updatedStartAngle;
-    this.currentRotationNextAngle = updatedFinishAngle;
   }
 
   makeAnglePositive(angle: number):number {

@@ -45,11 +45,8 @@ canvas.addEventListener('contextmenu', (e) => {
 
     console.log('GAME: previousCanvasAngle', currentlyChosenUnit.previousCanvasAngle);
     console.error('GAME: desctinationCanvasAngle', currentlyChosenUnit.destinationCanvasAngle);
-    console.log('currentRotation prev:', currentlyChosenUnit.currentRotationPrevAngle, 'next:',currentlyChosenUnit.currentRotationNextAngle);
-    console.log('nextRotation prev:', currentlyChosenUnit.nextRotationPrevAngle, 'next:',currentlyChosenUnit.nextRotationNextAngle);
     //console.log('Unit:' ,currentlyChosenUnit.x, currentlyChosenUnit.y);
     //console.log('center:', currentlyChosenUnit.centerX, currentlyChosenUnit.centerY);
-    console.log('stoppedAngle', currentlyChosenUnit.stoppedAngle);
   }
 });
 
