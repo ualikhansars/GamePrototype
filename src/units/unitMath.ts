@@ -59,6 +59,15 @@ export const calcDestinationAngleInDegrees = (unitX:number, unitY:number, destX:
   return Math.round(angle);
 }
 
+export const makeAnglePositive = (angle: number):number => {
+  if(angle < 0) {
+    return angle + 360;
+  }
+  else if(angle >= 0) {
+      return angle;
+  }
+}
+
 // calculate rotate angle in canvas degrees
 export const calcCanvasAngle = (unitX:number, unitY:number, destX:number, destY:number):number => {
   let angle;
@@ -97,4 +106,61 @@ export const getCanvasAngleQuater = (canvasAngle) => {
   else if(canvasAngle >= 90 && canvasAngle < 180) return 4;
   else if(canvasAngle >= 180 && canvasAngle < 270) return 3;
   else if(canvasAngle >= 270 && canvasAngle < 360) return 2;
+}
+
+// calculate path in both directions
+// and decide in what direction unit has to rotate
+// return startAngle, finishAngle, rotationDirection
+export const chooseRotationDirection = (initialStartAngle, initialFinishAngle) => {
+  let startQuater, finishQuater;
+  let startAngle, finishAngle, rotationDirection;
+  let positiveStartAngle, positiveFinishAngle;
+  let negativeStartAngle, negativeFinishAngle;
+  positiveStartAngle = initialStartAngle;
+  positiveFinishAngle =initialFinishAngle;
+
+  if(positiveStartAngle === 0) {
+      negativeStartAngle = 0; // use 0 instead of 360
+  }  else {
+    negativeStartAngle = positiveStartAngle - 360;
+  }
+
+  if(positiveFinishAngle === 0) {
+      negativeFinishAngle = 0;
+  }  else {
+    negativeFinishAngle = positiveFinishAngle - 360;
+  }
+
+  startQuater = getCanvasAngleQuater(positiveStartAngle);
+  finishQuater = getCanvasAngleQuater(positiveFinishAngle);
+
+  let positivePath, negativePath;
+  if(startQuater === 2 || startQuater === 3) {
+      negativePath = Math.abs(negativeStartAngle) + Math.abs(positiveFinishAngle);
+  } else {
+      negativePath = Math.abs(positiveStartAngle) + Math.abs(negativeFinishAngle);
+  }
+  positivePath = Math.abs(positiveFinishAngle - positiveStartAngle);
+
+  if(positivePath <= negativePath) {
+    startAngle = positiveStartAngle;
+    finishAngle = positiveFinishAngle;
+    if(positiveStartAngle > positiveFinishAngle) rotationDirection = -1;
+    if(positiveStartAngle < positiveFinishAngle) rotationDirection = 1;
+  } else { // negativePath > positivePath
+    if(startQuater === 2 || startQuater === 3) {
+      startAngle = negativeStartAngle;
+      finishAngle = positiveFinishAngle;
+      rotationDirection = 1;
+    } else {
+      startAngle = positiveStartAngle;
+      finishAngle = negativeFinishAngle;
+      rotationDirection = -1;
+    }
+  }
+  return {
+    startAngle,
+    finishAngle,
+    rotationDirection
+  }
 }

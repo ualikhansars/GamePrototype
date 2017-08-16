@@ -5,13 +5,13 @@ import {
   currentlyChosenUnit
 } from './store/unitsStore';
 
+import {rotateUnit} from './units/unitRotation';
+
 import {
   setUnit,
   chooseUnit,
   assignMoveToPosition,
   createUnit,
-  unitsHaveToMove,
-  smoothlyRotateUnit, // test
 } from './units/unitActions';
 
 let infantry = createUnit('Infantry',200, 40, 100, 50, 3, undefined ,20);
@@ -35,7 +35,7 @@ canvas.addEventListener('contextmenu', (e) => {
   if(currentlyChosenUnit) {
     assignMoveToPosition(currentlyChosenUnit, x, y); //assign unit's next x and y position
     currentlyChosenUnit.assignAngle(); // assign angle to the unit
-    smoothlyRotateUnit(currentlyChosenUnit); // rotate unit
+    rotateUnit(currentlyChosenUnit); // rotate unit
 
     // assignMoveToPosition(currentlyChosenUnit, x, y); //assign unit's next x and y position
     // currentlyChosenUnit.assignAngle(); // assign angle to the unit
