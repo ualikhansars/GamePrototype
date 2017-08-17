@@ -6,6 +6,9 @@ import {
 } from './store/unitsStore';
 
 import {rotateUnit} from './units/unitRotation';
+import {
+  moveToPosition,
+} from './units/unitMovement';
 
 import {
   setUnit,
@@ -36,7 +39,6 @@ canvas.addEventListener('contextmenu', (e) => {
     assignMoveToPosition(currentlyChosenUnit, x, y); //assign unit's next x and y position
     currentlyChosenUnit.assignAngle(); // assign angle to the unit
     rotateUnit(currentlyChosenUnit); // rotate unit
-
     // assignMoveToPosition(currentlyChosenUnit, x, y); //assign unit's next x and y position
     // currentlyChosenUnit.assignAngle(); // assign angle to the unit
     // smoothlyRotateUnit(currentlyChosenUnit); // rotate unit
@@ -49,6 +51,3 @@ canvas.addEventListener('contextmenu', (e) => {
     //console.log('center:', currentlyChosenUnit.centerX, currentlyChosenUnit.centerY);
   }
 });
-
-
-//setInterval(unitsHaveToMove, 300);

@@ -314,8 +314,8 @@ const chooseRotationDirection = (initialStartAngle, initialFinishAngle) => {
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__config_map__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__store_unitsStore__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__units_unitRotation__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__units_unitActions__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__units_unitRotation__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__units_unitActions__ = __webpack_require__(7);
 
 
 
@@ -351,11 +351,151 @@ __WEBPACK_IMPORTED_MODULE_0__config_map__["a" /* canvas */].addEventListener('co
         //console.log('center:', currentlyChosenUnit.centerX, currentlyChosenUnit.centerY);
     }
 });
-//setInterval(unitsHaveToMove, 300);
 
 
 /***/ }),
 /* 4 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__config_map__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_loadImage__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_timeout__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__unitMath__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__unitMovement__ = __webpack_require__(9);
+
+
+
+
+
+// change angle depends on received data
+const changeAngle = (unit, img, changingAngle, current) => {
+    return new Promise(resolve => {
+        __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].save();
+        clearUnit(unit); // delete previos drawing unit
+        __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].translate(unit.centerX, unit.centerY); // translate to rectangle center
+        let angle = changingAngle * (Math.PI / 180);
+        //console.log('CHANGE ANGLE: draw unit degree:', changingAngle);
+        __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].rotate(angle); // rotate to look straight to the destination position
+        __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].translate(-unit.centerX, -unit.centerY); // translate to rectangle center
+        __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].drawImage(img, unit.x, unit.y, unit.width, unit.height);
+        __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].restore();
+        resolve();
+    });
+};
+/* unused harmony export changeAngle */
+
+const rotateUnit = (unit) => {
+    console.error('rotateUnit');
+    return new Promise(resolve => {
+        Object(__WEBPACK_IMPORTED_MODULE_1__utils_loadImage__["a" /* loadImage */])(unit.imgPath, (err, img) => {
+            if (err)
+                throw err;
+            let isRotating = unit.isRotating;
+            let rotationSpeed = unit.rotationSpeed;
+            let initialStartAngle = unit.previousCanvasAngle;
+            let initialFinishAngle = unit.destinationCanvasAngle;
+            let { startAngle, finishAngle, rotationDirection } = Object(__WEBPACK_IMPORTED_MODULE_3__unitMath__["b" /* chooseRotationDirection */])(initialStartAngle, initialFinishAngle);
+            let changingAngle = startAngle;
+            //console.error('ROTATE UNIT: startAngle:', startAngle, 'finishAngle:', finishAngle, 'direction:', rotationDirection);
+            if (!isRotating) {
+                unit.setIsRotating(true);
+                makeRotation(unit, img, startAngle, changingAngle, finishAngle, rotationDirection, rotationSpeed);
+            }
+        });
+        resolve();
+    });
+};
+/* harmony export (immutable) */ __webpack_exports__["a"] = rotateUnit;
+
+const clearUnit = (unit) => {
+    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].save();
+    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].translate(unit.centerX, unit.centerY); // translate to rectangle center
+    let angle = unit.angleToRemove * (Math.PI / 180);
+    //console.log('REMOVE ANGLE: angle to remove:', unit.angleToRemove);
+    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].rotate(angle); // rotate unit
+    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].translate(-unit.centerX, -unit.centerY); // translate to rectangle center
+    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].clearRect(unit.x - 1, unit.y - 1, unit.width + 2, unit.height + 2);
+    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].restore();
+};
+/* unused harmony export clearUnit */
+
+const makeRotation = (unit, img, startAngle, changingAngle, finishAngle, rotationDirection, rotationSpeed, previousStartAngle = null, previousFinishAngle = null) => {
+    let previous = changingAngle - rotationDirection; // previous angle state
+    unit.setAngleToRemove(previous); // set angle that has to be removed
+    let checkFinishAngle; // angle to compare with unit.destinationCanvasAngle
+    if (finishAngle < 0)
+        checkFinishAngle = finishAngle + 360; // make angle positive
+    if (finishAngle >= 0)
+        checkFinishAngle = finishAngle;
+    if (startAngle === previousStartAngle) {
+        return;
+    }
+    if (checkFinishAngle !== unit.destinationCanvasAngle) {
+        previousStartAngle = startAngle; // save previous rotation
+        previousFinishAngle = finishAngle;
+        changingAngle = Object(__WEBPACK_IMPORTED_MODULE_3__unitMath__["c" /* makeAnglePositive */])(changingAngle); // argumenent for chooseRotationDirection()
+        finishAngle = Object(__WEBPACK_IMPORTED_MODULE_3__unitMath__["c" /* makeAnglePositive */])(unit.destinationCanvasAngle); // argumenent for chooseRotationDirection()
+        let { startAngle: newStartAngle, finishAngle: newFinishAngle, rotationDirection: newRotationDirection } = Object(__WEBPACK_IMPORTED_MODULE_3__unitMath__["b" /* chooseRotationDirection */])(changingAngle, finishAngle);
+        let newChangingAngle = newStartAngle;
+        makeRotation(unit, img, newStartAngle, newChangingAngle, newFinishAngle, newRotationDirection, rotationSpeed, previousStartAngle, previousFinishAngle);
+    }
+    if (changingAngle === finishAngle) {
+        console.error('rotation finished');
+        unit.setIsRotating(false);
+        Object(__WEBPACK_IMPORTED_MODULE_4__unitMovement__["a" /* move */])(unit); // make movement
+        return;
+    }
+    else {
+        Object(__WEBPACK_IMPORTED_MODULE_2__utils_timeout__["a" /* timeout */])(rotationSpeed).then(() => changeAngle(unit, img, changingAngle, finishAngle))
+            .then(() => {
+            makeRotation(unit, img, startAngle, changingAngle += rotationDirection, finishAngle, rotationDirection, rotationSpeed, previousStartAngle, previousFinishAngle);
+        });
+    }
+};
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+// load image
+const loadImage = (imgPath, callback) => {
+    let img = new Image;
+    img.onload = () => {
+        callback(null, img);
+    };
+    img.onerror = () => {
+        let msg = 'Cannot load the image at ' + imgPath;
+        callback(new Error(msg));
+    };
+    img.src = imgPath;
+};
+/* harmony export (immutable) */ __webpack_exports__["a"] = loadImage;
+
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+// setTimeout as a Promise
+const timeout = (time) => {
+    console.log('timeout');
+    return new Promise(resolve => {
+        setTimeout(() => {
+            resolve();
+        }, time);
+    });
+};
+/* harmony export (immutable) */ __webpack_exports__["a"] = timeout;
+
+
+
+/***/ }),
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -364,7 +504,7 @@ __WEBPACK_IMPORTED_MODULE_0__config_map__["a" /* canvas */].addEventListener('co
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return createUnit; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__store_unitsStore__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__config_map__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Unit__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Unit__ = __webpack_require__(8);
 
 
 
@@ -419,7 +559,7 @@ let createUnit = (name, centerX, centerY, width, height, speed, imgPath = '../..
 
 
 /***/ }),
-/* 5 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -499,162 +639,121 @@ class Unit {
 
 
 /***/ }),
-/* 6 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__config_map__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_loadImage__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_timeout__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__unitMath__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_timeout__ = __webpack_require__(6);
 
 
-
-
-// change angle depends on received data
-const changeAngle = (unit, img, changingAngle, current) => {
-    return new Promise(resolve => {
-        __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].save();
-        clearUnit(unit); // delete previos drawing unit
-        __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].translate(unit.centerX, unit.centerY); // translate to rectangle center
-        let angle = changingAngle * (Math.PI / 180);
-        console.log('CHANGE ANGLE: draw unit degree:', changingAngle);
-        __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].rotate(angle); // rotate to look straight to the destination position
-        __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].translate(-unit.centerX, -unit.centerY); // translate to rectangle center
-        __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].drawImage(img, unit.x, unit.y, unit.width, unit.height);
-        __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].restore();
-        resolve();
-    });
+// change unit's position until it approaches to moveToPosition
+const moveToPosition = () => {
+    console.log('moveToPosition');
 };
-/* unused harmony export changeAngle */
+/* unused harmony export moveToPosition */
 
-const rotateUnit = (unit) => {
-    return new Promise(resolve => {
-        Object(__WEBPACK_IMPORTED_MODULE_1__utils_loadImage__["a" /* loadImage */])(unit.imgPath, (err, img) => {
-            if (err)
-                throw err;
-            let isRotating = unit.isRotating;
-            let rotationSpeed = unit.rotationSpeed;
-            let initialStartAngle = unit.previousCanvasAngle;
-            let initialFinishAngle = unit.destinationCanvasAngle;
-            let { startAngle, finishAngle, rotationDirection } = Object(__WEBPACK_IMPORTED_MODULE_3__unitMath__["b" /* chooseRotationDirection */])(initialStartAngle, initialFinishAngle);
-            let changingAngle = startAngle;
-            console.error('ROTATE UNIT: startAngle:', startAngle, 'finishAngle:', finishAngle, 'direction:', rotationDirection);
-            if (!isRotating) {
-                unit.setIsRotating(true);
-                makeRotation(unit, img, startAngle, changingAngle, finishAngle, rotationDirection, rotationSpeed);
-            }
-        });
-        resolve();
-    });
+const calcSpeed = (unit) => {
+    console.log('calcSpeed');
+    let speedX, speedY;
+    if (unit.centerX !== unit.moveToX || unit.centerY !== unit.moveToY) {
+        if (unit.centerX < unit.moveToX && unit.centerY < unit.moveToY) {
+            speedX = 1;
+            speedY = 1;
+        }
+        else if (unit.centerX > unit.moveToX && unit.centerY > unit.moveToY) {
+            speedX = -1;
+            speedY = -1;
+        }
+        else if (unit.centerX < unit.moveToX && unit.centerY > unit.moveToY) {
+            speedX = 1;
+            speedY = -1;
+        }
+        else if (unit.centerX > unit.moveToX && unit.centerY < unit.moveToY) {
+            speedX = -1;
+            speedY = 1;
+        }
+    }
+    return {
+        speedX,
+        speedY
+    };
 };
-/* harmony export (immutable) */ __webpack_exports__["a"] = rotateUnit;
+/* unused harmony export calcSpeed */
 
-const clearUnit = (unit) => {
+const move = (unit) => {
+    let { speedX, speedY } = calcSpeed(unit);
+    makeMovement2(unit, speedX, speedY);
+};
+/* harmony export (immutable) */ __webpack_exports__["a"] = move;
+
+const makeMovement = (unit, speedX, speedY) => {
+    console.log('makeMovement');
+    while (unit.centerX !== unit.moveToX || unit.centerY !== unit.moveToY) {
+        if (unit.centerX === unit.moveToX)
+            speedX = 0;
+        if (unit.centerY === unit.moveToY)
+            speedY = 0;
+        clearMovementUnit(unit);
+        update(unit, speedX, speedY);
+    }
+};
+/* unused harmony export makeMovement */
+
+const makeMovement2 = (unit, speedX, speedY) => {
+    let movementSpeed = 15;
+    if (unit.centerX === unit.moveToX)
+        speedX = 0;
+    if (unit.centerY === unit.moveToY)
+        speedY = 0;
+    clearMovementUnit(unit);
     __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].save();
     __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].translate(unit.centerX, unit.centerY); // translate to rectangle center
-    let angle = unit.angleToRemove * (Math.PI / 180);
-    console.log('REMOVE ANGLE: angle to remove:', unit.angleToRemove);
-    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].rotate(angle); // rotate unit
+    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].rotate(unit.destinationCanvasAngle);
     __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].translate(-unit.centerX, -unit.centerY); // translate to rectangle center
-    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].clearRect(unit.x - 1, unit.y - 1, unit.width + 2, unit.height + 2);
+    unit.centerX += speedX;
+    unit.centerY += speedY;
+    unit.x = unit.centerX - (unit.width / 2); // change x and y every time when centerX and centerY is changed
+    unit.y = unit.centerY - (unit.height / 2);
+    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].fillRect(unit.x, unit.y, unit.width, unit.height);
     __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].restore();
-};
-/* unused harmony export clearUnit */
-
-const makeRotation = (unit, img, startAngle, changingAngle, finishAngle, rotationDirection, rotationSpeed, previousStartAngle = null, previousFinishAngle = null) => {
-    let previous = changingAngle - rotationDirection; // previous angle state
-    unit.setAngleToRemove(previous); // set angle that has to be removed
-    let checkFinishAngle; // angle to compare with unit.destinationCanvasAngle
-    if (finishAngle < 0)
-        checkFinishAngle = finishAngle + 360; // make angle positive
-    if (finishAngle >= 0)
-        checkFinishAngle = finishAngle;
-    console.log('1rec startAngle', startAngle);
-    console.log('1rec finishAngle', finishAngle);
-    console.log('previousStartAngle', previousStartAngle);
-    if (startAngle === previousStartAngle) {
-        console.log('previous recursion stopped');
-        return;
-    }
-    //unit.setCurrentCanvasAngle(positiveChangingAngle);
-    //console.log('angleToRemove', angleToRemove);
-    if (checkFinishAngle !== unit.destinationCanvasAngle) {
-        previousStartAngle = startAngle; // save previous rotation
-        previousFinishAngle = finishAngle;
-        changingAngle = Object(__WEBPACK_IMPORTED_MODULE_3__unitMath__["c" /* makeAnglePositive */])(changingAngle); // argumenent for chooseRotationDirection()
-        finishAngle = Object(__WEBPACK_IMPORTED_MODULE_3__unitMath__["c" /* makeAnglePositive */])(unit.destinationCanvasAngle); // argumenent for chooseRotationDirection()
-        //checkFinishAngle = finishAngle;
-        let { startAngle: newStartAngle, finishAngle: newFinishAngle, rotationDirection: newRotationDirection } = Object(__WEBPACK_IMPORTED_MODULE_3__unitMath__["b" /* chooseRotationDirection */])(changingAngle, finishAngle);
-        let newChangingAngle = newStartAngle;
-        console.log('new rotation has been chosen');
-        console.log('previousStartAngle', previousStartAngle);
-        console.log('previousFinishAngle', previousFinishAngle);
-        console.log('newStartAngle', newStartAngle);
-        console.log('newChangingAngle', newChangingAngle);
-        console.log('newFinishAngle', newFinishAngle);
-        console.log('changingAngle', changingAngle, 'finishAngle', finishAngle);
-        console.log('rotationDirection', newRotationDirection);
-        // unit.setPreviousCanvasAngle(changingAngle); // update destinationCanvasAngle
-        // unit.setStoppedAngle(changingAngle);
-        makeRotation(unit, img, newStartAngle, newChangingAngle, newFinishAngle, newRotationDirection, rotationSpeed, previousStartAngle, previousFinishAngle);
-    }
-    if (changingAngle === finishAngle) {
-        console.log('rotation finish');
-        console.error('unit angle to remove', unit.angleToRemove);
-        unit.setIsRotating(false);
-        //unit.setStoppedAngle(null);
+    console.log('makeMovement');
+    if (unit.centerX === unit.moveToX && unit.centerY === unit.moveToY) {
         return;
     }
     else {
-        console.log('rotation. startAngle', startAngle, 'finishAngle', finishAngle);
-        console.error('changingAngle', changingAngle);
-        console.log('angle to remove', unit.angleToRemove);
-        //if(startAngle !== changingAngle) previous = changingAngle - rotationDirection;
-        //unit.setAngleToRemove(previous);
-        Object(__WEBPACK_IMPORTED_MODULE_2__utils_timeout__["a" /* timeout */])(rotationSpeed, changingAngle).then(() => changeAngle(unit, img, changingAngle, finishAngle))
+        Object(__WEBPACK_IMPORTED_MODULE_1__utils_timeout__["a" /* timeout */])(movementSpeed)
             .then(() => {
-            makeRotation(unit, img, startAngle, changingAngle += rotationDirection, finishAngle, rotationDirection, rotationSpeed, previousStartAngle, previousFinishAngle);
+            makeMovement2(unit, speedX, speedY);
         });
     }
 };
+/* unused harmony export makeMovement2 */
 
-
-/***/ }),
-/* 7 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-// load image
-const loadImage = (imgPath, callback) => {
-    let img = new Image;
-    img.onload = () => {
-        callback(null, img);
-    };
-    img.onerror = () => {
-        let msg = 'Cannot load the image at ' + imgPath;
-        callback(new Error(msg));
-    };
-    img.src = imgPath;
+const update = (unit, speedX, speedY) => {
+    console.log('update');
+    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].save();
+    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].translate(unit.centerX, unit.centerY); // translate to rectangle center
+    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].rotate(unit.destinationCanvasAngle);
+    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].translate(-unit.centerX, -unit.centerY); // translate to rectangle center
+    unit.centerX += speedX;
+    unit.centerY += speedY;
+    unit.x = unit.centerX - (unit.width / 2); // change x and y every time when centerX and centerY is changed
+    unit.y = unit.centerY - (unit.height / 2);
+    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].fillRect(unit.x, unit.y, unit.width, unit.height);
+    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].restore();
 };
-/* harmony export (immutable) */ __webpack_exports__["a"] = loadImage;
-
-
-
-/***/ }),
-/* 8 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-// setTimeout as a Promise
-const timeout = (time, i) => {
-    return new Promise(resolve => {
-        setTimeout(() => {
-            resolve('done');
-        }, time);
-    });
+const clearMovementUnit = (unit) => {
+    console.log('clearMovementUnit');
+    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].save();
+    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].translate(unit.centerX, unit.centerY); // translate to rectangle center
+    let angle = unit.destinationCanvasAngle * (Math.PI / 180);
+    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].rotate(angle); // rotate unit
+    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].translate(-unit.centerX, -unit.centerY); // translate to rectangle center
+    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].clearRect(unit.x, unit.y, unit.width, unit.height);
+    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].restore();
 };
-/* harmony export (immutable) */ __webpack_exports__["a"] = timeout;
+/* unused harmony export clearMovementUnit */
 
 
 
