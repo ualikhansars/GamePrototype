@@ -6,9 +6,6 @@ import {
 } from './store/unitsStore';
 
 import {rotateUnit} from './units/unitRotation';
-import {
-  moveToPosition,
-} from './units/unitMovement';
 
 import {
   setUnit,

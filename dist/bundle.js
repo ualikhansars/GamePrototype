@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 4);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -113,6 +113,24 @@ const assignCurrentlyChosenUnit = (unit) => {
 
 /***/ }),
 /* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+// setTimeout as a Promise
+const timeout = (time) => {
+    console.log('timeout');
+    return new Promise(resolve => {
+        setTimeout(() => {
+            resolve();
+        }, time);
+    });
+};
+/* harmony export (immutable) */ __webpack_exports__["a"] = timeout;
+
+
+
+/***/ }),
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -307,15 +325,15 @@ const chooseRotationDirection = (initialStartAngle, initialFinishAngle) => {
 
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__config_map__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__store_unitsStore__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__units_unitRotation__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__units_unitActions__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__units_unitRotation__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__units_unitActions__ = __webpack_require__(8);
 
 
 
@@ -354,15 +372,15 @@ __WEBPACK_IMPORTED_MODULE_0__config_map__["a" /* canvas */].addEventListener('co
 
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__config_map__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_loadImage__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_timeout__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__unitMath__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__unitMovement__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_loadImage__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_timeout__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__unitMath__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__unitMovement__ = __webpack_require__(7);
 
 
 
@@ -456,7 +474,7 @@ const makeRotation = (unit, img, startAngle, changingAngle, finishAngle, rotatio
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -477,25 +495,102 @@ const loadImage = (imgPath, callback) => {
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-// setTimeout as a Promise
-const timeout = (time) => {
-    console.log('timeout');
-    return new Promise(resolve => {
-        setTimeout(() => {
-            resolve();
-        }, time);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__config_map__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_timeout__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_loadImage__ = __webpack_require__(6);
+
+
+
+// move unit to the destination position
+const move = (unit) => {
+    let { speedX, speedY } = calcSpeed(unit);
+    makeMovement(unit, speedX, speedY);
+};
+/* harmony export (immutable) */ __webpack_exports__["a"] = move;
+
+// draw unit every movement speed until unitCenter position is not equal to
+// moveTo position
+const makeMovement = (unit, speedX, speedY) => {
+    Object(__WEBPACK_IMPORTED_MODULE_2__utils_loadImage__["a" /* loadImage */])(unit.imgPath, (err, img) => {
+        let movementSpeed = 50;
+        if (unit.centerX === unit.moveToX)
+            speedX = 0;
+        if (unit.centerY === unit.moveToY)
+            speedY = 0;
+        __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].save();
+        clearMovementUnit(unit);
+        __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].translate(unit.centerX, unit.centerY); // translate to rectangle center
+        let angle = unit.destinationCanvasAngle * (Math.PI / 180);
+        __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].rotate(angle);
+        __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].translate(-unit.centerX, -unit.centerY); // translate to rectangle center
+        unit.centerX += speedX;
+        unit.centerY += speedY;
+        unit.x = unit.centerX - (unit.width / 2); // change x and y every time when centerX and centerY is changed
+        unit.y = unit.centerY - (unit.height / 2);
+        __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].drawImage(img, unit.x, unit.y, unit.width, unit.height);
+        __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].restore();
+        console.log('makeMovement');
+        if (unit.centerX === unit.moveToX && unit.centerY === unit.moveToY) {
+            return;
+        }
+        else {
+            Object(__WEBPACK_IMPORTED_MODULE_1__utils_timeout__["a" /* timeout */])(movementSpeed)
+                .then(() => {
+                makeMovement(unit, speedX, speedY); // recursively call makeMovement
+            });
+        }
     });
 };
-/* harmony export (immutable) */ __webpack_exports__["a"] = timeout;
+/* unused harmony export makeMovement */
+
+const clearMovementUnit = (unit) => {
+    console.log('clearMovementUnit');
+    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].save();
+    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].translate(unit.centerX, unit.centerY); // translate to rectangle center
+    let angle = unit.destinationCanvasAngle * (Math.PI / 180);
+    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].rotate(angle); // rotate unit
+    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].translate(-unit.centerX, -unit.centerY); // translate to rectangle center
+    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].clearRect(unit.x, unit.y, unit.width, unit.height);
+    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].restore();
+};
+/* unused harmony export clearMovementUnit */
+
+const calcSpeed = (unit) => {
+    console.log('calcSpeed');
+    let speedX, speedY;
+    if (unit.centerX !== unit.moveToX || unit.centerY !== unit.moveToY) {
+        if (unit.centerX < unit.moveToX && unit.centerY < unit.moveToY) {
+            speedX = 1;
+            speedY = 1;
+        }
+        else if (unit.centerX > unit.moveToX && unit.centerY > unit.moveToY) {
+            speedX = -1;
+            speedY = -1;
+        }
+        else if (unit.centerX < unit.moveToX && unit.centerY > unit.moveToY) {
+            speedX = 1;
+            speedY = -1;
+        }
+        else if (unit.centerX > unit.moveToX && unit.centerY < unit.moveToY) {
+            speedX = -1;
+            speedY = 1;
+        }
+    }
+    return {
+        speedX,
+        speedY
+    };
+};
+/* unused harmony export calcSpeed */
 
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -504,7 +599,7 @@ const timeout = (time) => {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return createUnit; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__store_unitsStore__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__config_map__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Unit__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Unit__ = __webpack_require__(9);
 
 
 
@@ -559,12 +654,12 @@ let createUnit = (name, centerX, centerY, width, height, speed, imgPath = '../..
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__config_map__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__unitMath__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__unitMath__ = __webpack_require__(3);
 
 
 class Unit {
@@ -636,125 +731,6 @@ class Unit {
     }
 }
 /* harmony default export */ __webpack_exports__["a"] = (Unit);
-
-
-/***/ }),
-/* 9 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__config_map__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_timeout__ = __webpack_require__(6);
-
-
-// change unit's position until it approaches to moveToPosition
-const moveToPosition = () => {
-    console.log('moveToPosition');
-};
-/* unused harmony export moveToPosition */
-
-const calcSpeed = (unit) => {
-    console.log('calcSpeed');
-    let speedX, speedY;
-    if (unit.centerX !== unit.moveToX || unit.centerY !== unit.moveToY) {
-        if (unit.centerX < unit.moveToX && unit.centerY < unit.moveToY) {
-            speedX = 1;
-            speedY = 1;
-        }
-        else if (unit.centerX > unit.moveToX && unit.centerY > unit.moveToY) {
-            speedX = -1;
-            speedY = -1;
-        }
-        else if (unit.centerX < unit.moveToX && unit.centerY > unit.moveToY) {
-            speedX = 1;
-            speedY = -1;
-        }
-        else if (unit.centerX > unit.moveToX && unit.centerY < unit.moveToY) {
-            speedX = -1;
-            speedY = 1;
-        }
-    }
-    return {
-        speedX,
-        speedY
-    };
-};
-/* unused harmony export calcSpeed */
-
-const move = (unit) => {
-    let { speedX, speedY } = calcSpeed(unit);
-    makeMovement2(unit, speedX, speedY);
-};
-/* harmony export (immutable) */ __webpack_exports__["a"] = move;
-
-const makeMovement = (unit, speedX, speedY) => {
-    console.log('makeMovement');
-    while (unit.centerX !== unit.moveToX || unit.centerY !== unit.moveToY) {
-        if (unit.centerX === unit.moveToX)
-            speedX = 0;
-        if (unit.centerY === unit.moveToY)
-            speedY = 0;
-        clearMovementUnit(unit);
-        update(unit, speedX, speedY);
-    }
-};
-/* unused harmony export makeMovement */
-
-const makeMovement2 = (unit, speedX, speedY) => {
-    let movementSpeed = 15;
-    if (unit.centerX === unit.moveToX)
-        speedX = 0;
-    if (unit.centerY === unit.moveToY)
-        speedY = 0;
-    clearMovementUnit(unit);
-    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].save();
-    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].translate(unit.centerX, unit.centerY); // translate to rectangle center
-    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].rotate(unit.destinationCanvasAngle);
-    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].translate(-unit.centerX, -unit.centerY); // translate to rectangle center
-    unit.centerX += speedX;
-    unit.centerY += speedY;
-    unit.x = unit.centerX - (unit.width / 2); // change x and y every time when centerX and centerY is changed
-    unit.y = unit.centerY - (unit.height / 2);
-    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].fillRect(unit.x, unit.y, unit.width, unit.height);
-    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].restore();
-    console.log('makeMovement');
-    if (unit.centerX === unit.moveToX && unit.centerY === unit.moveToY) {
-        return;
-    }
-    else {
-        Object(__WEBPACK_IMPORTED_MODULE_1__utils_timeout__["a" /* timeout */])(movementSpeed)
-            .then(() => {
-            makeMovement2(unit, speedX, speedY);
-        });
-    }
-};
-/* unused harmony export makeMovement2 */
-
-const update = (unit, speedX, speedY) => {
-    console.log('update');
-    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].save();
-    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].translate(unit.centerX, unit.centerY); // translate to rectangle center
-    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].rotate(unit.destinationCanvasAngle);
-    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].translate(-unit.centerX, -unit.centerY); // translate to rectangle center
-    unit.centerX += speedX;
-    unit.centerY += speedY;
-    unit.x = unit.centerX - (unit.width / 2); // change x and y every time when centerX and centerY is changed
-    unit.y = unit.centerY - (unit.height / 2);
-    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].fillRect(unit.x, unit.y, unit.width, unit.height);
-    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].restore();
-};
-const clearMovementUnit = (unit) => {
-    console.log('clearMovementUnit');
-    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].save();
-    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].translate(unit.centerX, unit.centerY); // translate to rectangle center
-    let angle = unit.destinationCanvasAngle * (Math.PI / 180);
-    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].rotate(angle); // rotate unit
-    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].translate(-unit.centerX, -unit.centerY); // translate to rectangle center
-    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].clearRect(unit.x, unit.y, unit.width, unit.height);
-    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].restore();
-};
-/* unused harmony export clearMovementUnit */
-
 
 
 /***/ })
