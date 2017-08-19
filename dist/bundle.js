@@ -552,6 +552,44 @@ const makeMovement = (unit, speedX, speedY) => {
 };
 /* unused harmony export makeMovement */
 
+// draw unit every movement speed until unitCenter position is not equal to
+// moveTo position
+const makeMovement2 = (unit, speedX, speedY) => {
+    Object(__WEBPACK_IMPORTED_MODULE_2__utils_loadImage__["a" /* loadImage */])(unit.imgPath, (err, img) => {
+        let movementSpeed = 50;
+        // movement control
+        if (unit.centerX === unit.moveToX)
+            speedX = 0;
+        if (unit.centerY === unit.moveToY)
+            speedY = 0;
+        __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].save();
+        clearMovementUnit(unit);
+        unit.centerX += speedX;
+        unit.centerY += speedY;
+        __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].translate(unit.centerX, unit.centerY); // translate to rectangle center
+        let angle = unit.destinationCanvasAngle * (Math.PI / 180);
+        __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].rotate(angle);
+        __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].translate(-unit.centerX, -unit.centerY); // translate to rectangle center
+        unit.x = unit.centerX - (unit.width / 2); // change x and y every time when centerX and centerY is changed
+        unit.y = unit.centerY - (unit.height / 2);
+        //console.log('MAKE MOVEMENT ANGLE', angle);
+        //console.log('MAKE MOVEMENT unit x:',unit.x, 'unit y:', unit.y);
+        __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].drawImage(img, unit.x, unit.y, unit.width, unit.height);
+        __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].restore();
+        //console.log('makeMovement');
+        if (unit.centerX === unit.moveToX && unit.centerY === unit.moveToY) {
+            return;
+        }
+        else {
+            Object(__WEBPACK_IMPORTED_MODULE_1__utils_timeout__["a" /* timeout */])(movementSpeed)
+                .then(() => {
+                makeMovement2(unit, speedX, speedY); // recursively call makeMovement
+            });
+        }
+    });
+};
+/* unused harmony export makeMovement2 */
+
 const clearMovementUnit = (unit) => {
     //console.log('clearMovementUnit');
     __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].save();
@@ -594,15 +632,13 @@ const calcSpeed = (unit) => {
 };
 /* unused harmony export calcSpeed */
 
-const makeSoftMovement = (unit, speedX, speedY) => {
+const calcCoefficient = (unit) => {
     let pathX = Math.abs(unit.destX - unit.x);
     let pathY = Math.abs(unit.destY - unit.y);
-    let k;
-    if (pathX >= pathY) {
-        k = Math.abs(pathX / pathY);
-    }
+    if (pathX >= pathY)
+        return Math.round(pathX / pathY);
     if (pathY > pathX)
-        k = Math.abs(pathY / pathX);
+        return Math.round(pathY / pathX);
 };
 
 
