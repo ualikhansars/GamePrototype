@@ -84,6 +84,8 @@ const makeRotation = (unit, img, startAngle, changingAngle, finishAngle, rotatio
       console.error('rotation finished');
       unit.setIsRotating(false);
       move(unit); // make movement
+      console.error('start position x:', unit.centerX, 'y:', unit.centerY);
+      console.error('finish position x:', unit.moveToX, 'y:', unit.moveToY);
       return;
   }
   else {

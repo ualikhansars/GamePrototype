@@ -237,6 +237,7 @@ const calcCanvasAngle = (unitX, unitY, destX, destY) => {
     let a = Math.abs(destY - unitY);
     let b = Math.abs(destX - unitX);
     let angleInRadian = Math.atan(a / b);
+    console.error('Path: ', Math.sqrt(a * a + b * b));
     // check quater of the circle
     let degree = angleInRadian * (180 / Math.PI); // convert radians into degree
     let quater = getQuater(unitX, unitY, destX, destY); // check quater
@@ -482,6 +483,8 @@ const makeRotation = (unit, img, startAngle, changingAngle, finishAngle, rotatio
         console.error('rotation finished');
         unit.setIsRotating(false);
         Object(__WEBPACK_IMPORTED_MODULE_4__unitMovement__["a" /* move */])(unit); // make movement
+        console.error('start position x:', unit.centerX, 'y:', unit.centerY);
+        console.error('finish position x:', unit.moveToX, 'y:', unit.moveToY);
         return;
     }
     else {
@@ -531,11 +534,11 @@ const makeMovement = (unit, speedX, speedY) => {
         __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].translate(-unit.centerX, -unit.centerY); // translate to rectangle center
         unit.x = unit.centerX - (unit.width / 2); // change x and y every time when centerX and centerY is changed
         unit.y = unit.centerY - (unit.height / 2);
-        console.log('MAKE MOVEMENT ANGLE', angle);
-        console.log('MAKE MOVEMENT unit x:', unit.x, 'unit y:', unit.y);
+        //console.log('MAKE MOVEMENT ANGLE', angle);
+        //console.log('MAKE MOVEMENT unit x:',unit.x, 'unit y:', unit.y);
         __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].drawImage(img, unit.x, unit.y, unit.width, unit.height);
         __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].restore();
-        console.log('makeMovement');
+        //console.log('makeMovement');
         if (unit.centerX === unit.moveToX && unit.centerY === unit.moveToY) {
             return;
         }
@@ -550,7 +553,7 @@ const makeMovement = (unit, speedX, speedY) => {
 /* unused harmony export makeMovement */
 
 const clearMovementUnit = (unit) => {
-    console.log('clearMovementUnit');
+    //console.log('clearMovementUnit');
     __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].save();
     __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].translate(unit.centerX, unit.centerY); // translate to rectangle center
     let angle = unit.destinationCanvasAngle * (Math.PI / 180);
@@ -591,6 +594,16 @@ const calcSpeed = (unit) => {
 };
 /* unused harmony export calcSpeed */
 
+const makeSoftMovement = (unit, speedX, speedY) => {
+    let pathX = Math.abs(unit.destX - unit.x);
+    let pathY = Math.abs(unit.destY - unit.y);
+    let k;
+    if (pathX >= pathY) {
+        k = Math.abs(pathX / pathY);
+    }
+    if (pathY > pathX)
+        k = Math.abs(pathY / pathX);
+};
 
 
 /***/ }),

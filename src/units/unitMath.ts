@@ -74,6 +74,7 @@ export const calcCanvasAngle = (unitX:number, unitY:number, destX:number, destY:
   let a = Math.abs(destY - unitY);
   let b = Math.abs(destX - unitX);
   let angleInRadian = Math.atan(a / b);
+  console.error('Path: ', Math.sqrt(a*a+b*b));
   // check quater of the circle
   let degree =  angleInRadian * (180 / Math.PI); // convert radians into degree
   let quater = getQuater(unitX, unitY, destX, destY); // check quater
