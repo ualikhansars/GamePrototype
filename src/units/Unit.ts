@@ -1,4 +1,3 @@
-import {ctx} from '../config/map';
 import {
   calcDestinationAngleInDegrees,
   calcDestinationAngle,
@@ -40,18 +39,6 @@ class Unit {
     this.rotationSpeed = rotationSpeed;
   }
 
-  update(speedX, speedY) {
-    ctx.save();
-    // ctx.translate(this.x + this.width * 0.5, this.y + this.height * 0.5); // translate to rectangle center
-    // ctx.rotate(this.angle);
-    // this.centerX += speedX ;
-    // this.centerY += speedY;
-    // this.x = this.centerX - (this.width / 2); // change x and y every time when centerX and centerY is changed
-    // this.y = this.centerY - (this.height / 2);
-    ctx.fillRect(this.x, this.y, this.width, this.height);
-    ctx.restore();
-  }
-
   assignAngle() {
     this.previousCanvasAngle = this.destinationCanvasAngle;
     this.destinationCanvasAngle = calcCanvasAngle(this.centerX, this.centerY, this.moveToX, this.moveToY);
@@ -88,14 +75,6 @@ class Unit {
     }
     else if(angle >= 0) {
         return angle;
-    }
-  }
-
-  moveToPosition(speedX, speedY) {
-    if(this.centerX !== this.moveToX || this.centerY !== this.moveToY) {
-      ctx.clearRect(this.x, this.y, this.width, this.height);
-      //ctx.clearRect(0, 0, 1224, 768);
-      this.update(speedX, speedY);
     }
   }
 }

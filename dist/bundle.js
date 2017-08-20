@@ -711,9 +711,7 @@ let createUnit = (name, centerX, centerY, width, height, speed, imgPath = '../..
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__config_map__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__unitMath__ = __webpack_require__(4);
-
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__unitMath__ = __webpack_require__(4);
 
 class Unit {
     constructor(name, centerX, centerY, width, height, speed, imgPath, rotationSpeed) {
@@ -732,20 +730,9 @@ class Unit {
         this.imgPath = imgPath;
         this.rotationSpeed = rotationSpeed;
     }
-    update(speedX, speedY) {
-        __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].save();
-        // ctx.translate(this.x + this.width * 0.5, this.y + this.height * 0.5); // translate to rectangle center
-        // ctx.rotate(this.angle);
-        // this.centerX += speedX ;
-        // this.centerY += speedY;
-        // this.x = this.centerX - (this.width / 2); // change x and y every time when centerX and centerY is changed
-        // this.y = this.centerY - (this.height / 2);
-        __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].fillRect(this.x, this.y, this.width, this.height);
-        __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].restore();
-    }
     assignAngle() {
         this.previousCanvasAngle = this.destinationCanvasAngle;
-        this.destinationCanvasAngle = Object(__WEBPACK_IMPORTED_MODULE_1__unitMath__["a" /* calcCanvasAngle */])(this.centerX, this.centerY, this.moveToX, this.moveToY);
+        this.destinationCanvasAngle = Object(__WEBPACK_IMPORTED_MODULE_0__unitMath__["a" /* calcCanvasAngle */])(this.centerX, this.centerY, this.moveToX, this.moveToY);
         console.log('CLASS UNIT: new desctination has been assign, angle =', this.destinationCanvasAngle);
     }
     setAngleToRemove(newAngle) {
@@ -773,13 +760,6 @@ class Unit {
         }
         else if (angle >= 0) {
             return angle;
-        }
-    }
-    moveToPosition(speedX, speedY) {
-        if (this.centerX !== this.moveToX || this.centerY !== this.moveToY) {
-            __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].clearRect(this.x, this.y, this.width, this.height);
-            //ctx.clearRect(0, 0, 1224, 768);
-            this.update(speedX, speedY);
         }
     }
 }
