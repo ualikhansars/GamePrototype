@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Prototype for strategic web game",
   "scripts": {
-    "test": "mocha --compilers ts:ts-node/register,tsx:ts-node/register test"
+    "test": "mocha -r jsdom-global/register --compilers ts:ts-node/register,tsx:ts-node/register test"
   },
   "author": "Ualikhan Sarsenbayev",
   "license": "MIT",
@@ -13,10 +13,11 @@
     "babel-core": "^6.25.0",
     "babel-loader": "^7.1.1",
     "chai": "^4.1.1",
+    "jsdom": "11.1.0",
+    "jsdom-global": "3.0.2",
     "mocha": "^3.5.0",
     "ts-loader": "^2.2.2",
     "ts-node": "^3.3.0",
-    "typings": "^2.1.1",
     "webpack": "^3.2.0"
   },
   "dependencies": {

@@ -1,13 +1,6 @@
 import { expect, should, assert} from 'chai';
-
 import Unit from '../src/units/Unit';
-//import {assignMoveToPosition} from '../src/units/unitActions';
-
-const assignMoveToPosition = (unit, x:number, y:number) => {
-  unit.moveToX = x;
-  unit.moveToY = y;
-  console.log(unit.name + ' is moving to : x:' + unit.moveToX + ' y:' + unit.moveToY);
-}
+import {assignMoveToPosition} from '../src/units/unitActions';
 
 let heavyInfantry = new Unit('HeavyInfantry', 300, 180, 160, 120, 2, 'img', 30);
 
