@@ -67,7 +67,7 @@ const makeRotation = (unit, img, startAngle, changingAngle, finishAngle, rotatio
     return;
   }
 
-  if(checkFinishAngle !== unit.destinationCanvasAngle) {  // if another desctination has been chosen
+  if(checkFinishAngle !== unit.destinationCanvasAngle) {  // if another destination has been chosen
     previousStartAngle = startAngle; // save previous rotation
     previousFinishAngle = finishAngle;
     changingAngle = makeAnglePositive(changingAngle); // argumenent for chooseRotationDirection()

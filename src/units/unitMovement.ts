@@ -1,8 +1,15 @@
-import {ctx} from '../config/map';
 import {units}  from '../store/unitsStore';
 import {rotateUnit} from './unitRotation';
 import {timeout} from '../utils/timeout';
 import {loadImage} from '../utils/loadImage';
+import {
+  ctxSave,
+  ctxRestore,
+  ctxTranslate,
+  ctxRotate,
+  ctxClearRect,
+  ctxDrawImage
+} from '../utils/ctx';
 
 // move unit to the destination position
 export const move = (unit) => {
@@ -18,20 +25,20 @@ export const makeMovement = (unit, speedX:number, speedY:number) => {
     // movement control
     if(unit.centerX === unit.moveToX) speedX = 0;
     if(unit.centerY === unit.moveToY) speedY = 0;
-    ctx.save();
+    ctxSave();
     clearMovementUnit(unit);
     unit.centerX += speedX ;
     unit.centerY += speedY;
-    ctx.translate(unit.centerX, unit.centerY); // translate to rectangle center
+    ctxTranslate(unit.centerX, unit.centerY); // translate to rectangle center
     let angle = unit.destinationCanvasAngle * (Math.PI / 180);
-    ctx.rotate(angle);
-    ctx.translate(-unit.centerX, -unit.centerY); // translate to rectangle center
+    ctxRotate(angle);
+    ctxTranslate(-unit.centerX, -unit.centerY); // translate to rectangle center
     unit.x = unit.centerX - (unit.width / 2); // change x and y every time when centerX and centerY is changed
     unit.y = unit.centerY - (unit.height / 2);
     //console.log('MAKE MOVEMENT ANGLE', angle);
     //console.log('MAKE MOVEMENT unit x:',unit.x, 'unit y:', unit.y);
-    ctx.drawImage(img, unit.x, unit.y, unit.width, unit.height);
-    ctx.restore();
+    ctxDrawImage(img, unit.x, unit.y, unit.width, unit.height);
+    ctxRestore();
     //console.log('makeMovement');
     if(unit.centerX === unit.moveToX && unit.centerY === unit.moveToY) { // unit is reached it's position
       return;
@@ -52,20 +59,20 @@ export const makeMovement2 = (unit, speedX:number, speedY:number) => {
     // movement control
     if(unit.centerX === unit.moveToX) speedX = 0;
     if(unit.centerY === unit.moveToY) speedY = 0;
-    ctx.save();
+    ctxSave();
     clearMovementUnit(unit);
     unit.centerX += speedX ;
     unit.centerY += speedY;
-    ctx.translate(unit.centerX, unit.centerY); // translate to rectangle center
+    ctxTranslate(unit.centerX, unit.centerY); // translate to rectangle center
     let angle = unit.destinationCanvasAngle * (Math.PI / 180);
-    ctx.rotate(angle);
-    ctx.translate(-unit.centerX, -unit.centerY); // translate to rectangle center
+    ctxRotate(angle);
+    ctxTranslate(-unit.centerX, -unit.centerY); // translate to rectangle center
     unit.x = unit.centerX - (unit.width / 2); // change x and y every time when centerX and centerY is changed
     unit.y = unit.centerY - (unit.height / 2);
     //console.log('MAKE MOVEMENT ANGLE', angle);
     //console.log('MAKE MOVEMENT unit x:',unit.x, 'unit y:', unit.y);
-    ctx.drawImage(img, unit.x, unit.y, unit.width, unit.height);
-    ctx.restore();
+    ctxDrawImage(img, unit.x, unit.y, unit.width, unit.height);
+    ctxRestore();
     //console.log('makeMovement');
     if(unit.centerX === unit.moveToX && unit.centerY === unit.moveToY) { // unit is reached it's position
       return;
@@ -81,15 +88,15 @@ export const makeMovement2 = (unit, speedX:number, speedY:number) => {
 
 export const clearMovementUnit = (unit) => {
   //console.log('clearMovementUnit');
-  ctx.save();
-  ctx.translate(unit.centerX, unit.centerY); // translate to rectangle center
+  ctxSave();
+  ctxTranslate(unit.centerX, unit.centerY); // translate to rectangle center
   let angle = unit.destinationCanvasAngle * (Math.PI / 180);
-  ctx.rotate(angle); // rotate unit
-  ctx.translate(-unit.centerX, -unit.centerY); // translate to rectangle center
+  ctxRotate(angle); // rotate unit
+  ctxTranslate(-unit.centerX, -unit.centerY); // translate to rectangle center
   // console.log('CLEAR RECT angle:', angle);
   // console.log('CLEAR RECT unit x:', unit.x, 'unit y:', unit.y);
-  ctx.clearRect(unit.x, unit.y, unit.width, unit.height);
-  ctx.restore();
+  ctxClearRect(unit.x, unit.y, unit.width, unit.height);
+  ctxRestore();
 }
 
 
@@ -120,9 +127,9 @@ export const calcSpeed = (unit) => {
     }
 }
 
-const calcCoefficient = (unit) => {
-  let pathX = Math.abs(unit.destX - unit.x);
-  let pathY = Math.abs(unit.destY - unit.y);
+export const calcCoefficient = (unit) => {
+  let pathX = Math.abs(unit.moveToX - unit.x);
+  let pathY = Math.abs(unit.moveToY - unit.y);
   if(pathX >= pathY) return Math.round(pathX / pathY);
   if(pathY > pathX) return Math.round(pathY / pathX);
 }

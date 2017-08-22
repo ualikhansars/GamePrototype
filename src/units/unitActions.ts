@@ -6,7 +6,16 @@ import {
 
 import {getCanvasAngleQuater} from './unitMath';
 
-import {ctx, WIDTH, HEIGHT} from '../config/map';
+import {WIDTH, HEIGHT} from '../config/map';
+
+import {
+  ctxSave,
+  ctxRestore,
+  ctxTranslate,
+  ctxRotate,
+  ctxClearRect,
+  ctxDrawImage
+} from '../utils/ctx';
 
 import Unit from './Unit';
 
@@ -43,13 +52,13 @@ export const assignMoveToPosition = (unit, x:number, y:number) => {
 
 // draw Units in the canvas
 export let setUnit = (unit) => {
-    ctx.save();
+    ctxSave();
     let img = new Image();
     img.src = unit.imgPath;
     img.onload = () => {
-      ctx.drawImage(img, unit.x, unit.y, unit.width, unit.height);
+      ctxDrawImage(img, unit.x, unit.y, unit.width, unit.height);
     }
-    ctx.restore();
+    ctxRestore();
 }
 
 // create Unit and immediatly push it into units array
