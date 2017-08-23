@@ -554,52 +554,53 @@ const makeRotation = (unit, img, startAngle, changingAngle, finishAngle, rotatio
 // move unit to the destination position
 const move = (unit) => {
     let { speedX, speedY } = calcSpeed(unit);
-    makeMovement(unit, speedX, speedY);
+    let currentMoveToX = unit.moveToX;
+    let currentMoveToY = unit.moveToY;
+    makeMovement2(unit, currentMoveToX, currentMoveToY, speedX, speedY);
 };
 /* harmony export (immutable) */ __webpack_exports__["a"] = move;
 
 // draw unit every movement speed until unitCenter position is not equal to
 // moveTo position
-const makeMovement = (unit, speedX, speedY) => {
-    Object(__WEBPACK_IMPORTED_MODULE_1__utils_loadImage__["a" /* loadImage */])(unit.imgPath, (err, img) => {
-        let movementSpeed = 50;
-        // movement control
-        if (unit.centerX === unit.moveToX)
-            speedX = 0;
-        if (unit.centerY === unit.moveToY)
-            speedY = 0;
-        Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["e" /* ctxSave */])();
-        clearMovementUnit(unit);
-        unit.centerX += speedX;
-        unit.centerY += speedY;
-        Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["f" /* ctxTranslate */])(unit.centerX, unit.centerY); // translate to rectangle center
-        let angle = unit.destinationCanvasAngle * (Math.PI / 180);
-        Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["d" /* ctxRotate */])(angle);
-        Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["f" /* ctxTranslate */])(-unit.centerX, -unit.centerY); // translate to rectangle center
-        unit.x = unit.centerX - (unit.width / 2); // change x and y every time when centerX and centerY is changed
-        unit.y = unit.centerY - (unit.height / 2);
-        //console.log('MAKE MOVEMENT ANGLE', angle);
-        //console.log('MAKE MOVEMENT unit x:',unit.x, 'unit y:', unit.y);
-        Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["b" /* ctxDrawImage */])(img, unit.x, unit.y, unit.width, unit.height);
-        Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["c" /* ctxRestore */])();
-        //console.log('makeMovement');
-        if (unit.centerX === unit.moveToX && unit.centerY === unit.moveToY) {
-            return;
-        }
-        else {
-            Object(__WEBPACK_IMPORTED_MODULE_0__utils_timeout__["a" /* timeout */])(movementSpeed)
-                .then(() => {
-                makeMovement(unit, speedX, speedY); // recursively call makeMovement
-            });
-        }
-    });
-};
-/* unused harmony export makeMovement */
-
+// export const makeMovement = (unit, speedX:number, speedY:number) => {
+//   loadImage(unit.imgPath, (err, img) => {
+//     let movementSpeed = 50;
+//     // movement control
+//     if(unit.centerX === unit.moveToX) speedX = 0;
+//     if(unit.centerY === unit.moveToY) speedY = 0;
+//     ctxSave();
+//     clearMovementUnit(unit);
+//     unit.centerX += speedX ;
+//     unit.centerY += speedY;
+//     ctxTranslate(unit.centerX, unit.centerY); // translate to rectangle center
+//     let angle = unit.destinationCanvasAngle * (Math.PI / 180);
+//     ctxRotate(angle);
+//     ctxTranslate(-unit.centerX, -unit.centerY); // translate to rectangle center
+//     unit.x = unit.centerX - (unit.width / 2); // change x and y every time when centerX and centerY is changed
+//     unit.y = unit.centerY - (unit.height / 2);
+//     //console.log('MAKE MOVEMENT ANGLE', angle);
+//     //console.log('MAKE MOVEMENT unit x:',unit.x, 'unit y:', unit.y);
+//     ctxDrawImage(img, unit.x, unit.y, unit.width, unit.height);
+//     ctxRestore();
+//     //console.log('makeMovement');
+//     if(unit.centerX === unit.moveToX && unit.centerY === unit.moveToY) { // unit is reached it's position
+//       return;
+//     } else { // every movement speed repeat this function
+//       timeout(movementSpeed)
+//       .then(() => {
+//         makeMovement(unit, speedX, speedY); // recursively call makeMovement
+//       });
+//     }
+//   });
+// }
 // draw unit every movement speed until unitCenter position is not equal to
 // moveTo position
-const makeMovement2 = (unit, speedX, speedY) => {
+const makeMovement2 = (unit, currentMoveToX, currentMoveToY, speedX, speedY) => {
     Object(__WEBPACK_IMPORTED_MODULE_1__utils_loadImage__["a" /* loadImage */])(unit.imgPath, (err, img) => {
+        // save previousMoveTo position
+        if (currentMoveToX !== unit.moveToX || currentMoveToY !== unit.moveToY) {
+            return; // new destination position has been chosen
+        }
         let movementSpeed = 50;
         // movement control
         if (unit.centerX === unit.moveToX)
@@ -621,13 +622,13 @@ const makeMovement2 = (unit, speedX, speedY) => {
         Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["b" /* ctxDrawImage */])(img, unit.x, unit.y, unit.width, unit.height);
         Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["c" /* ctxRestore */])();
         //console.log('makeMovement');
-        if (unit.centerX === unit.moveToX && unit.centerY === unit.moveToY) {
+        if (unit.centerX === unit.currentMoveToX && unit.centerY === unit.currentMoveToY) {
             return;
         }
         else {
             Object(__WEBPACK_IMPORTED_MODULE_0__utils_timeout__["a" /* timeout */])(movementSpeed)
                 .then(() => {
-                makeMovement2(unit, speedX, speedY); // recursively call makeMovement
+                makeMovement2(unit, currentMoveToX, currentMoveToY, speedX, speedY); // recursively call makeMovement
             });
         }
     });
