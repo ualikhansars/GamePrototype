@@ -9,4 +9,5 @@ export const loadImage = (imgPath: string, callback) => {
       callback(new Error(msg));
     }
     img.src = imgPath;
+    console.error('image loaded');
 }

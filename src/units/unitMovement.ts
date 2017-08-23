@@ -13,50 +13,18 @@ import {
 
 // move unit to the destination position
 export const move = (unit) => {
-  let {speedX, speedY} = calcSpeed(unit);
-  let currentMoveToX = unit.moveToX;
-  let currentMoveToY = unit.moveToY;
-  makeMovement2(unit, currentMoveToX, currentMoveToY,speedX, speedY);
+  loadImage(unit.imgPath, (err, img) => {
+    let {speedX, speedY} = calcSpeed(unit);
+    let currentMoveToX = unit.moveToX; // save previous moveToPositions
+    let currentMoveToY = unit.moveToY;
+    makeMovement(unit, img, currentMoveToX, currentMoveToY,speedX, speedY);
+  });
 }
 
 // draw unit every movement speed until unitCenter position is not equal to
 // moveTo position
-// export const makeMovement = (unit, speedX:number, speedY:number) => {
-//   loadImage(unit.imgPath, (err, img) => {
-//     let movementSpeed = 50;
-//     // movement control
-//     if(unit.centerX === unit.moveToX) speedX = 0;
-//     if(unit.centerY === unit.moveToY) speedY = 0;
-//     ctxSave();
-//     clearMovementUnit(unit);
-//     unit.centerX += speedX ;
-//     unit.centerY += speedY;
-//     ctxTranslate(unit.centerX, unit.centerY); // translate to rectangle center
-//     let angle = unit.destinationCanvasAngle * (Math.PI / 180);
-//     ctxRotate(angle);
-//     ctxTranslate(-unit.centerX, -unit.centerY); // translate to rectangle center
-//     unit.x = unit.centerX - (unit.width / 2); // change x and y every time when centerX and centerY is changed
-//     unit.y = unit.centerY - (unit.height / 2);
-//     //console.log('MAKE MOVEMENT ANGLE', angle);
-//     //console.log('MAKE MOVEMENT unit x:',unit.x, 'unit y:', unit.y);
-//     ctxDrawImage(img, unit.x, unit.y, unit.width, unit.height);
-//     ctxRestore();
-//     //console.log('makeMovement');
-//     if(unit.centerX === unit.moveToX && unit.centerY === unit.moveToY) { // unit is reached it's position
-//       return;
-//     } else { // every movement speed repeat this function
-//       timeout(movementSpeed)
-//       .then(() => {
-//         makeMovement(unit, speedX, speedY); // recursively call makeMovement
-//       });
-//     }
-//   });
-// }
-
-// draw unit every movement speed until unitCenter position is not equal to
-// moveTo position
-export const makeMovement2 = (unit, currentMoveToX:number, currentMoveToY:number, speedX:number, speedY:number) => {
-  loadImage(unit.imgPath, (err, img) => {
+export const makeMovement = (unit, img, currentMoveToX:number, currentMoveToY:number, speedX:number, speedY:number) => {
+  //loadImage(unit.imgPath, (err, img) => {
     // save previousMoveTo position
     if(currentMoveToX !== unit.moveToX || currentMoveToY !== unit.moveToY) {
       return; // new destination position has been chosen
@@ -85,10 +53,10 @@ export const makeMovement2 = (unit, currentMoveToX:number, currentMoveToY:number
     } else { // every movement speed repeat this function
       timeout(movementSpeed)
       .then(() => {
-        makeMovement2(unit, currentMoveToX, currentMoveToY, speedX, speedY); // recursively call makeMovement
+        makeMovement(unit, img, currentMoveToX, currentMoveToY, speedX, speedY); // recursively call makeMovement
       });
     }
-  });
+  //});
 }
 
 
