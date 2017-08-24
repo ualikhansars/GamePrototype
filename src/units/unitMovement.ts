@@ -43,8 +43,8 @@ export const makeMovement = (unit, img, currentMoveToX:number, currentMoveToY:nu
     ctxTranslate(-unit.centerX, -unit.centerY); // translate to rectangle center
     unit.x = unit.centerX - (unit.width / 2); // change x and y every time when centerX and centerY is changed
     unit.y = unit.centerY - (unit.height / 2);
-    //console.log('MAKE MOVEMENT ANGLE', angle);
-    //console.log('MAKE MOVEMENT unit x:',unit.x, 'unit y:', unit.y);
+    console.log('MAKE MOVEMENT DRAW ANGLE', unit.destinationCanvasAngle);
+    console.log('MAKE MOVEMENT: DRAW: unit x:',unit.x, 'unit y:', unit.y);
     ctxDrawImage(img, unit.x, unit.y, unit.width, unit.height);
     ctxRestore();
     //console.log('makeMovement');
@@ -61,21 +61,20 @@ export const makeMovement = (unit, img, currentMoveToX:number, currentMoveToY:nu
 
 
 export const clearMovementUnit = (unit) => {
-  //console.log('clearMovementUnit');
+  console.log('clearMovementUnit');
   ctxSave();
   ctxTranslate(unit.centerX, unit.centerY); // translate to rectangle center
-  let angle = unit.destinationCanvasAngle * (Math.PI / 180);
+  let angle = (unit.destinationCanvasAngle) * (Math.PI / 180);
   ctxRotate(angle); // rotate unit
   ctxTranslate(-unit.centerX, -unit.centerY); // translate to rectangle center
-  // console.log('CLEAR RECT angle:', angle);
-  // console.log('CLEAR RECT unit x:', unit.x, 'unit y:', unit.y);
+  console.log('MOVEMENT: CLEAR RECT angle:', unit.destinationCanvasAngle);
+  console.log('MOVEMENT: CLEAR RECT unit x:', unit.x, 'unit y:', unit.y);
   ctxClearRect(unit.x, unit.y, unit.width, unit.height);
   ctxRestore();
 }
 
 
 export const calcSpeed = (unit) => {
-  console.log('calcSpeed');
     let speedX, speedY;
     if(unit.centerX !== unit.moveToX || unit.centerY !== unit.moveToY) {
       if(unit.centerX < unit.moveToX && unit.centerY < unit.moveToY) {

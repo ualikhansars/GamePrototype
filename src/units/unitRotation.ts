@@ -15,7 +15,7 @@ export const changeAngle = (unit,img, changingAngle, current) => {
     clearUnit(unit); // delete previos drawing unit
     ctx.translate(unit.centerX, unit.centerY); // translate to rectangle center
     let angle = changingAngle * (Math.PI / 180);
-    //console.log('CHANGE ANGLE: draw unit degree:', changingAngle);
+    console.log('CHANGE ANGLE: draw unit degree:', changingAngle);
     ctx.rotate(angle); // rotate to look straight to the destination position
     ctx.translate(-unit.centerX, -unit.centerY); // translate to rectangle center
     ctx.drawImage(img, unit.x, unit.y, unit.width, unit.height);
@@ -25,7 +25,7 @@ export const changeAngle = (unit,img, changingAngle, current) => {
 }
 
 export const rotateUnit = (unit) => {
-  console.error('rotateUnit');
+  //console.error('rotateUnit');
   return new Promise(resolve => {
     loadImage(unit.imgPath, (err, img) => { // load image, then rotate unit
       if(err) throw err;
@@ -49,7 +49,7 @@ export const clearUnit = (unit) => {
   ctx.save();
   ctx.translate(unit.centerX, unit.centerY); // translate to rectangle center
   let angle = unit.angleToRemove * (Math.PI / 180);
-  //console.log('REMOVE ANGLE: angle to remove:', unit.angleToRemove);
+  console.log('ROTATION: angle to remove:', unit.angleToRemove);
   ctx.rotate(angle); // rotate unit
   ctx.translate(-unit.centerX, -unit.centerY); // translate to rectangle center
   ctx.clearRect(unit.x - 1, unit.y - 1, unit.width + 2, unit.height + 2);
@@ -81,11 +81,12 @@ const makeRotation = (unit, img, startAngle, changingAngle, finishAngle, rotatio
     makeRotation(unit, img, newStartAngle, newChangingAngle, newFinishAngle, newRotationDirection, rotationSpeed, previousStartAngle, previousFinishAngle);
   }
   if(changingAngle === finishAngle) { // rotation is finished
-      console.error('rotation finished');
+      //console.error('rotation finished');
       unit.setIsRotatingToFalse();
-      move(unit); // make movement
-      console.error('start position x:', unit.centerX, 'y:', unit.centerY);
-      console.error('finish position x:', unit.moveToX, 'y:', unit.moveToY);
+      timeout(rotationSpeed).then(() => changeAngle(unit, img, changingAngle, finishAngle)) // now angle === destinationCanvasAngle
+      .then(() => move(unit)) // make movement
+      //console.error('start position x:', unit.centerX, 'y:', unit.centerY);
+      //console.error('finish position x:', unit.moveToX, 'y:', unit.moveToY);
       return;
   }
   else {
