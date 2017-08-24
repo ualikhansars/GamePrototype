@@ -37,7 +37,7 @@ export const rotateUnit = (unit) => {
       let changingAngle = startAngle;
       //console.error('ROTATE UNIT: startAngle:', startAngle, 'finishAngle:', finishAngle, 'direction:', rotationDirection);
       if(!isRotating) {
-        unit.setIsRotating(true);
+        unit.setIsRotatingToTrue();
         makeRotation(unit, img, startAngle, changingAngle, finishAngle, rotationDirection, rotationSpeed);
       }
     });
@@ -82,7 +82,7 @@ const makeRotation = (unit, img, startAngle, changingAngle, finishAngle, rotatio
   }
   if(changingAngle === finishAngle) { // rotation is finished
       console.error('rotation finished');
-      unit.setIsRotating(false);
+      unit.setIsRotatingToFalse();
       move(unit); // make movement
       console.error('start position x:', unit.centerX, 'y:', unit.centerY);
       console.error('finish position x:', unit.moveToX, 'y:', unit.moveToY);

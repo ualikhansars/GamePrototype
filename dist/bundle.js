@@ -127,7 +127,6 @@ const loadImage = (imgPath, callback) => {
         callback(new Error(msg));
     };
     img.src = imgPath;
-    console.error('image loaded');
 };
 /* harmony export (immutable) */ __webpack_exports__["a"] = loadImage;
 
@@ -483,7 +482,7 @@ const rotateUnit = (unit) => {
             let changingAngle = startAngle;
             //console.error('ROTATE UNIT: startAngle:', startAngle, 'finishAngle:', finishAngle, 'direction:', rotationDirection);
             if (!isRotating) {
-                unit.setIsRotating(true);
+                unit.setIsRotatingToTrue();
                 makeRotation(unit, img, startAngle, changingAngle, finishAngle, rotationDirection, rotationSpeed);
             }
         });
@@ -526,7 +525,7 @@ const makeRotation = (unit, img, startAngle, changingAngle, finishAngle, rotatio
     }
     if (changingAngle === finishAngle) {
         console.error('rotation finished');
-        unit.setIsRotating(false);
+        unit.setIsRotatingToFalse();
         Object(__WEBPACK_IMPORTED_MODULE_4__unitMovement__["a" /* move */])(unit); // make movement
         console.error('start position x:', unit.centerX, 'y:', unit.centerY);
         console.error('finish position x:', unit.moveToX, 'y:', unit.moveToY);
@@ -764,8 +763,11 @@ class Unit {
         let updatedAngle = this.makeAnglePositive(newAngle);
         this.previousCanvasAngle = updatedAngle;
     }
-    setIsRotating(newValue) {
-        this.isRotating = newValue;
+    setIsRotatingToTrue() {
+        this.isRotating = true;
+    }
+    setIsRotatingToFalse() {
+        this.isRotating = false;
     }
     setCurrentRotation(startAngle, finishAngle) {
         let updatedStartAngle = this.makeAnglePositive(startAngle);

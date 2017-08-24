@@ -60,8 +60,12 @@ class Unit {
     this.previousCanvasAngle = updatedAngle;
   }
 
-  setIsRotating(newValue: boolean) {
-    this.isRotating = newValue;
+  setIsRotatingToTrue() {
+    this.isRotating = true;
+  }
+
+  setIsRotatingToFalse() {
+    this.isRotating = false;
   }
 
   setCurrentRotation(startAngle: number, finishAngle: number) {
