@@ -12,6 +12,7 @@ import {
 
 // move unit to the destination position
 export const move = (unit) => {
+  console.error('Move');
   loadImage(unit.imgPath, (err, img) => {
     let {speedX, speedY} = calcSpeed(unit);
     let currentMoveToX = unit.moveToX; // save previous moveToPositions
@@ -25,7 +26,9 @@ export const move = (unit) => {
 export const makeMovement = (unit, img, currentMoveToX:number, currentMoveToY:number, speedX:number, speedY:number) => {
   //loadImage(unit.imgPath, (err, img) => {
     // save previousMoveTo position
+    console.error('Make Movement');
     if(currentMoveToX !== unit.moveToX || currentMoveToY !== unit.moveToY) {
+      console.log('new destination has been chosen');
       return; // new destination position has been chosen
     }
     let movementSpeed = 50;
@@ -42,32 +45,37 @@ export const makeMovement = (unit, img, currentMoveToX:number, currentMoveToY:nu
     ctxTranslate(-unit.centerX, -unit.centerY); // translate to rectangle center
     unit.x = unit.centerX - (unit.width / 2); // change x and y every time when centerX and centerY is changed
     unit.y = unit.centerY - (unit.height / 2);
-    console.log('MAKE MOVEMENT DRAW ANGLE', unit.destinationCanvasAngle);
-    console.log('MAKE MOVEMENT: DRAW: unit x:',unit.x, 'unit y:', unit.y);
+    //console.log('MAKE MOVEMENT DRAW ANGLE', unit.destinationCanvasAngle);
+    //console.log('MAKE MOVEMENT: DRAW: unit x:',unit.x, 'unit y:', unit.y);
+    console.log('unit destination x:', currentMoveToX, 'y:', currentMoveToY);
+    console.log('unit center x:', unit.centerX, 'y:',unit.centerY);
     ctxDrawImage(img, unit.x, unit.y, unit.width, unit.height);
     ctxRestore();
     //console.log('makeMovement');
-    if(unit.centerX === unit.currentMoveToX && unit.centerY === unit.currentMoveToY) { // unit is reached it's position
+    if(unit.centerX === currentMoveToX && unit.centerY === currentMoveToY) { // unit is reached it's position
+      console.log('unit reached position');
       return;
-    } else { // every movement speed repeat this function
+    }
+    //else { // every movement speed repeat this function
+      console.log('unit movement recursion');
       timeout(movementSpeed)
       .then(() => {
         makeMovement(unit, img, currentMoveToX, currentMoveToY, speedX, speedY); // recursively call makeMovement
       });
-    }
+    //}
   //});
 }
 
 
 export const clearMovementUnit = (unit) => {
-  console.log('clearMovementUnit');
+  console.error('clearMovementUnit');
   ctxSave();
   ctxTranslate(unit.centerX, unit.centerY); // translate to rectangle center
   let angle = (unit.destinationCanvasAngle) * (Math.PI / 180);
   ctxRotate(angle); // rotate unit
   ctxTranslate(-unit.centerX, -unit.centerY); // translate to rectangle center
-  console.log('MOVEMENT: CLEAR RECT angle:', unit.destinationCanvasAngle);
-  console.log('MOVEMENT: CLEAR RECT unit x:', unit.x, 'unit y:', unit.y);
+  //console.log('MOVEMENT: CLEAR RECT angle:', unit.destinationCanvasAngle);
+  //console.log('MOVEMENT: CLEAR RECT unit x:', unit.x, 'unit y:', unit.y);
   ctxClearRect(unit.x, unit.y, unit.width, unit.height);
   ctxRestore();
 }

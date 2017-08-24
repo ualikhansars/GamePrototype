@@ -1,5 +1,6 @@
 // load image
 export const loadImage = (imgPath: string, callback) => {
+  console.error('loadImage');
     let img = new Image;
     img.onload = () => {
       callback(null, img);

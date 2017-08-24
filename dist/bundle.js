@@ -118,6 +118,7 @@ const assignCurrentlyChosenUnit = (unit) => {
 "use strict";
 // load image
 const loadImage = (imgPath, callback) => {
+    console.error('loadImage');
     let img = new Image;
     img.onload = () => {
         callback(null, img);
@@ -139,6 +140,7 @@ const loadImage = (imgPath, callback) => {
 "use strict";
 // setTimeout as a Promise
 const timeout = (time) => {
+    console.error('timeout');
     return new Promise(resolve => {
         setTimeout(() => {
             resolve();
@@ -187,6 +189,7 @@ A  **************** B
 */
 // get unit's position and destination position and return angle in radians between unit and destination
 const calcDestinationAngle = (unitX, unitY, destX, destY) => {
+    //console.error('calcDestinationAngle');
     let a = Math.abs(destY - unitY);
     let b = Math.abs(destX - unitX);
     let c = Math.sqrt(a * a + b * b);
@@ -202,6 +205,7 @@ const calcDestinationAngle = (unitX, unitY, destX, destY) => {
 
 // get unit's position and destination position and return angle in radians between unit and destination
 const calcDestinationAngleInDegrees = (unitX, unitY, destX, destY) => {
+    //console.error('calcDestinationAngleInDegrees');
     let angle;
     let a = Math.abs(destY - unitY);
     let b = Math.abs(destX - unitX);
@@ -222,6 +226,7 @@ const calcDestinationAngleInDegrees = (unitX, unitY, destX, destY) => {
 /* unused harmony export calcDestinationAngleInDegrees */
 
 const makeAnglePositive = (angle) => {
+    //console.error('makeAnglePositive');
     if (angle < 0) {
         return angle + 360;
     }
@@ -233,11 +238,11 @@ const makeAnglePositive = (angle) => {
 
 // calculate rotate angle in canvas degrees
 const calcCanvasAngle = (unitX, unitY, destX, destY) => {
+    //console.error('calcCanvasAngle');
     let angle;
     let a = Math.abs(destY - unitY);
     let b = Math.abs(destX - unitX);
     let angleInRadian = Math.atan(a / b);
-    console.error('Path: ', Math.sqrt(a * a + b * b));
     // check quater of the circle
     let degree = angleInRadian * (180 / Math.PI); // convert radians into degree
     let quater = getQuater(unitX, unitY, destX, destY); // check quater
@@ -254,6 +259,7 @@ const calcCanvasAngle = (unitX, unitY, destX, destY) => {
 /* harmony export (immutable) */ __webpack_exports__["a"] = calcCanvasAngle;
 
 const getQuater = (unitX, unitY, destX, destY) => {
+    //console.error('getQuater');
     let quater;
     if (destX >= unitX && destY < unitY) {
         quater = 1;
@@ -272,6 +278,7 @@ const getQuater = (unitX, unitY, destX, destY) => {
 /* unused harmony export getQuater */
 
 const getCanvasAngleQuater = (canvasAngle) => {
+    //console.error('getCanvasAngleQuater');
     if (canvasAngle >= 0 && canvasAngle < 90)
         return 1;
     else if (canvasAngle >= 90 && canvasAngle < 180)
@@ -287,6 +294,7 @@ const getCanvasAngleQuater = (canvasAngle) => {
 // and decide in what direction unit has to rotate
 // return startAngle, finishAngle, rotationDirection
 const chooseRotationDirection = (initialStartAngle, initialFinishAngle) => {
+    //console.error('chooseRotationDirection');
     let startQuater, finishQuater;
     let startAngle, finishAngle, rotationDirection;
     let positiveStartAngle, positiveFinishAngle;
@@ -408,6 +416,7 @@ console.log('infantry', infantry);
 let cavalry = Object(__WEBPACK_IMPORTED_MODULE_3__units_unitActions__["c" /* createUnit */])('Cavalry', 100, 300, 50, 30, 5, undefined, 15);
 let heavyInfantry = Object(__WEBPACK_IMPORTED_MODULE_3__units_unitActions__["c" /* createUnit */])('HeavyInfantry', 300, 180, 160, 120, 2, undefined, 30);
 __WEBPACK_IMPORTED_MODULE_0__config_map__["a" /* canvas */].addEventListener('click', (e) => {
+    console.error('Click');
     let x = e.offsetX; // get X
     let y = e.offsetY; // get Y
     console.log('Position x', e.offsetX); // get X
@@ -416,13 +425,14 @@ __WEBPACK_IMPORTED_MODULE_0__config_map__["a" /* canvas */].addEventListener('cl
 });
 // set onClickListener for right mouse event
 __WEBPACK_IMPORTED_MODULE_0__config_map__["a" /* canvas */].addEventListener('contextmenu', (e) => {
+    console.error('Right Mouse Click');
     e.preventDefault();
     let x = e.offsetX; // get X
     let y = e.offsetY; // get Y
     if (__WEBPACK_IMPORTED_MODULE_1__store_unitsStore__["b" /* currentlyChosenUnit */]) {
         Object(__WEBPACK_IMPORTED_MODULE_3__units_unitActions__["a" /* assignMoveToPosition */])(__WEBPACK_IMPORTED_MODULE_1__store_unitsStore__["b" /* currentlyChosenUnit */], x, y); //assign unit's next x and y position
         __WEBPACK_IMPORTED_MODULE_1__store_unitsStore__["b" /* currentlyChosenUnit */].assignAngle(); // assign angle to the unit
-        Object(__WEBPACK_IMPORTED_MODULE_2__units_unitRotation__["a" /* rotateUnit */])(__WEBPACK_IMPORTED_MODULE_1__store_unitsStore__["b" /* currentlyChosenUnit */]); // rotate unit
+        Object(__WEBPACK_IMPORTED_MODULE_2__units_unitRotation__["a" /* rotateAndMove */])(__WEBPACK_IMPORTED_MODULE_1__store_unitsStore__["b" /* currentlyChosenUnit */]); // rotate unit
         // assignMoveToPosition(currentlyChosenUnit, x, y); //assign unit's next x and y position
         // currentlyChosenUnit.assignAngle(); // assign angle to the unit
         // smoothlyRotateUnit(currentlyChosenUnit); // rotate unit
@@ -453,6 +463,7 @@ __WEBPACK_IMPORTED_MODULE_0__config_map__["a" /* canvas */].addEventListener('co
 
 // change angle depends on received data
 const changeAngle = (unit, img, changingAngle, current) => {
+    //console.error('changeAngle');
     return new Promise(resolve => {
         __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].save();
         clearUnit(unit); // delete previos drawing unit
@@ -468,8 +479,8 @@ const changeAngle = (unit, img, changingAngle, current) => {
 };
 /* unused harmony export changeAngle */
 
-const rotateUnit = (unit) => {
-    //console.error('rotateUnit');
+const rotateAndMove = (unit) => {
+    //console.error('rotateAndMove');
     return new Promise(resolve => {
         Object(__WEBPACK_IMPORTED_MODULE_1__utils_loadImage__["a" /* loadImage */])(unit.imgPath, (err, img) => {
             if (err)
@@ -489,9 +500,10 @@ const rotateUnit = (unit) => {
         resolve();
     });
 };
-/* harmony export (immutable) */ __webpack_exports__["a"] = rotateUnit;
+/* harmony export (immutable) */ __webpack_exports__["a"] = rotateAndMove;
 
 const clearUnit = (unit) => {
+    //console.error('clearUnit');
     __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].save();
     __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].translate(unit.centerX, unit.centerY); // translate to rectangle center
     let angle = unit.angleToRemove * (Math.PI / 180);
@@ -504,6 +516,7 @@ const clearUnit = (unit) => {
 /* unused harmony export clearUnit */
 
 const makeRotation = (unit, img, startAngle, changingAngle, finishAngle, rotationDirection, rotationSpeed, previousStartAngle = null, previousFinishAngle = null) => {
+    //console.error('makeRotation');
     let previous = changingAngle - rotationDirection; // previous angle state
     unit.setAngleToRemove(previous); // set angle that has to be removed
     let checkFinishAngle; // angle to compare with unit.destinationCanvasAngle
@@ -554,6 +567,7 @@ const makeRotation = (unit, img, startAngle, changingAngle, finishAngle, rotatio
 
 // move unit to the destination position
 const move = (unit) => {
+    console.error('Move');
     Object(__WEBPACK_IMPORTED_MODULE_1__utils_loadImage__["a" /* loadImage */])(unit.imgPath, (err, img) => {
         let { speedX, speedY } = calcSpeed(unit);
         let currentMoveToX = unit.moveToX; // save previous moveToPositions
@@ -568,7 +582,9 @@ const move = (unit) => {
 const makeMovement = (unit, img, currentMoveToX, currentMoveToY, speedX, speedY) => {
     //loadImage(unit.imgPath, (err, img) => {
     // save previousMoveTo position
+    console.error('Make Movement');
     if (currentMoveToX !== unit.moveToX || currentMoveToY !== unit.moveToY) {
+        console.log('new destination has been chosen');
         return; // new destination position has been chosen
     }
     let movementSpeed = 50;
@@ -587,33 +603,37 @@ const makeMovement = (unit, img, currentMoveToX, currentMoveToY, speedX, speedY)
     Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["f" /* ctxTranslate */])(-unit.centerX, -unit.centerY); // translate to rectangle center
     unit.x = unit.centerX - (unit.width / 2); // change x and y every time when centerX and centerY is changed
     unit.y = unit.centerY - (unit.height / 2);
-    console.log('MAKE MOVEMENT DRAW ANGLE', unit.destinationCanvasAngle);
-    console.log('MAKE MOVEMENT: DRAW: unit x:', unit.x, 'unit y:', unit.y);
+    //console.log('MAKE MOVEMENT DRAW ANGLE', unit.destinationCanvasAngle);
+    //console.log('MAKE MOVEMENT: DRAW: unit x:',unit.x, 'unit y:', unit.y);
+    console.log('unit destination x:', currentMoveToX, 'y:', currentMoveToY);
+    console.log('unit center x:', unit.centerX, 'y:', unit.centerY);
     Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["b" /* ctxDrawImage */])(img, unit.x, unit.y, unit.width, unit.height);
     Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["c" /* ctxRestore */])();
     //console.log('makeMovement');
-    if (unit.centerX === unit.currentMoveToX && unit.centerY === unit.currentMoveToY) {
+    if (unit.centerX === currentMoveToX && unit.centerY === currentMoveToY) {
+        console.log('unit reached position');
         return;
     }
-    else {
-        Object(__WEBPACK_IMPORTED_MODULE_0__utils_timeout__["a" /* timeout */])(movementSpeed)
-            .then(() => {
-            makeMovement(unit, img, currentMoveToX, currentMoveToY, speedX, speedY); // recursively call makeMovement
-        });
-    }
+    //else { // every movement speed repeat this function
+    console.log('unit movement recursion');
+    Object(__WEBPACK_IMPORTED_MODULE_0__utils_timeout__["a" /* timeout */])(movementSpeed)
+        .then(() => {
+        makeMovement(unit, img, currentMoveToX, currentMoveToY, speedX, speedY); // recursively call makeMovement
+    });
+    //}
     //});
 };
 /* unused harmony export makeMovement */
 
 const clearMovementUnit = (unit) => {
-    console.log('clearMovementUnit');
+    console.error('clearMovementUnit');
     Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["e" /* ctxSave */])();
     Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["f" /* ctxTranslate */])(unit.centerX, unit.centerY); // translate to rectangle center
     let angle = (unit.destinationCanvasAngle) * (Math.PI / 180);
     Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["d" /* ctxRotate */])(angle); // rotate unit
     Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["f" /* ctxTranslate */])(-unit.centerX, -unit.centerY); // translate to rectangle center
-    console.log('MOVEMENT: CLEAR RECT angle:', unit.destinationCanvasAngle);
-    console.log('MOVEMENT: CLEAR RECT unit x:', unit.x, 'unit y:', unit.y);
+    //console.log('MOVEMENT: CLEAR RECT angle:', unit.destinationCanvasAngle);
+    //console.log('MOVEMENT: CLEAR RECT unit x:', unit.x, 'unit y:', unit.y);
     Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["a" /* ctxClearRect */])(unit.x, unit.y, unit.width, unit.height);
     Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["c" /* ctxRestore */])();
 };
@@ -676,6 +696,7 @@ const calcCoefficient = (unit) => {
 // x - mouse position X
 // y - mouse position Y
 let chooseUnit = (units, x, y) => {
+    //console.error('chooseUnit');
     let foundedUnit = null;
     for (let unit of units) {
         let unitX0 = unit.x;
@@ -697,6 +718,7 @@ let chooseUnit = (units, x, y) => {
 };
 // change unit's moveToX, moveToY
 const assignMoveToPosition = (unit, x, y) => {
+    //console.error('assignMoveToPosition');
     unit.moveToX = x;
     unit.moveToY = y;
     console.log(unit.name + ' is moving to : x:' + unit.moveToX + ' y:' + unit.moveToY);
@@ -705,6 +727,7 @@ const assignMoveToPosition = (unit, x, y) => {
 
 // draw Units in the canvas
 let setUnit = (unit) => {
+    //console.error('setUnit');
     Object(__WEBPACK_IMPORTED_MODULE_1__utils_ctx__["e" /* ctxSave */])();
     let img = new Image();
     img.src = unit.imgPath;
@@ -715,6 +738,7 @@ let setUnit = (unit) => {
 };
 // create Unit and immediatly push it into units array
 let createUnit = (name, centerX, centerY, width, height, speed, imgPath = '../../img/unit.svg', rotationSpeed) => {
+    //console.error('createUnit');
     let unit = new __WEBPACK_IMPORTED_MODULE_2__Unit__["a" /* default */](name, centerX, centerY, width, height, speed, imgPath, rotationSpeed);
     __WEBPACK_IMPORTED_MODULE_0__store_unitsStore__["c" /* units */].push(unit);
     setUnit(unit);

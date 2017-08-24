@@ -10,6 +10,7 @@ import {move} from './unitMovement';
 
 // change angle depends on received data
 export const changeAngle = (unit,img, changingAngle, current) => {
+  //console.error('changeAngle');
   return new Promise(resolve => {
     ctx.save();
     clearUnit(unit); // delete previos drawing unit
@@ -25,7 +26,7 @@ export const changeAngle = (unit,img, changingAngle, current) => {
 }
 
 export const rotateAndMove = (unit) => {
-  //console.error('rotateUnit');
+  //console.error('rotateAndMove');
   return new Promise(resolve => {
     loadImage(unit.imgPath, (err, img) => { // load image, then rotate unit
       if(err) throw err;
@@ -46,6 +47,7 @@ export const rotateAndMove = (unit) => {
 }
 
 export const clearUnit = (unit) => {
+  //console.error('clearUnit');
   ctx.save();
   ctx.translate(unit.centerX, unit.centerY); // translate to rectangle center
   let angle = unit.angleToRemove * (Math.PI / 180);
@@ -57,6 +59,7 @@ export const clearUnit = (unit) => {
 }
 
 const makeRotation = (unit, img, startAngle, changingAngle, finishAngle, rotationDirection, rotationSpeed, previousStartAngle=null, previousFinishAngle=null) => {
+  //console.error('makeRotation');
   let previous = changingAngle - rotationDirection; // previous angle state
   unit.setAngleToRemove(previous); // set angle that has to be removed
   let checkFinishAngle; // angle to compare with unit.destinationCanvasAngle

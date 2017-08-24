@@ -23,6 +23,7 @@ import Unit from './Unit';
 // x - mouse position X
 // y - mouse position Y
 export let chooseUnit = (units, x, y) => {
+  //console.error('chooseUnit');
   let foundedUnit = null;
   for(let unit of units) {
     let unitX0 = unit.x;
@@ -45,6 +46,7 @@ export let chooseUnit = (units, x, y) => {
 
 // change unit's moveToX, moveToY
 export const assignMoveToPosition = (unit, x:number, y:number) => {
+  //console.error('assignMoveToPosition');
   unit.moveToX = x;
   unit.moveToY = y;
   console.log(unit.name + ' is moving to : x:' + unit.moveToX + ' y:' + unit.moveToY);
@@ -52,6 +54,7 @@ export const assignMoveToPosition = (unit, x:number, y:number) => {
 
 // draw Units in the canvas
 export let setUnit = (unit) => {
+    //console.error('setUnit');
     ctxSave();
     let img = new Image();
     img.src = unit.imgPath;
@@ -63,6 +66,7 @@ export let setUnit = (unit) => {
 
 // create Unit and immediatly push it into units array
 export let createUnit = (name:string, centerX:number, centerY:number, width:number, height:number, speed: number, imgPath: string='../../img/unit.svg', rotationSpeed) => {
+  //console.error('createUnit');
   let unit = new Unit(name, centerX, centerY, width, height, speed, imgPath, rotationSpeed);
   units.push(unit);
   setUnit(unit);

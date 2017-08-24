@@ -20,6 +20,7 @@ let cavalry = createUnit('Cavalry', 100, 300, 50, 30, 5, undefined, 15);
 let heavyInfantry = createUnit('HeavyInfantry', 300, 180, 160, 120, 2, undefined, 30);
 
 canvas.addEventListener('click', (e) => {
+  console.error('Click');
   let x = e.offsetX; // get X
   let y = e.offsetY; // get Y
   console.log('Position x', e.offsetX); // get X
@@ -29,6 +30,7 @@ canvas.addEventListener('click', (e) => {
 
 // set onClickListener for right mouse event
 canvas.addEventListener('contextmenu', (e) => {
+  console.error('Right Mouse Click');
   e.preventDefault();
   let x = e.offsetX; // get X
   let y = e.offsetY; // get Y

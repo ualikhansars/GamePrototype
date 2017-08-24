@@ -33,6 +33,7 @@ A  **************** B
 
 // get unit's position and destination position and return angle in radians between unit and destination
 export const calcDestinationAngle = (unitX:number, unitY:number, destX:number, destY:number):number => {
+  //console.error('calcDestinationAngle');
   let a = Math.abs(destY - unitY);
   let b = Math.abs(destX - unitX);
   let c = Math.sqrt(a * a + b * b);
@@ -45,6 +46,7 @@ export const calcDestinationAngle = (unitX:number, unitY:number, destX:number, d
 
 // get unit's position and destination position and return angle in radians between unit and destination
 export const calcDestinationAngleInDegrees = (unitX:number, unitY:number, destX:number, destY:number):number => {
+  //console.error('calcDestinationAngleInDegrees');
   let angle;
   let a = Math.abs(destY - unitY);
   let b = Math.abs(destX - unitX);
@@ -60,6 +62,7 @@ export const calcDestinationAngleInDegrees = (unitX:number, unitY:number, destX:
 }
 
 export const makeAnglePositive = (angle: number):number => {
+  //console.error('makeAnglePositive');
   if(angle < 0) {
     return angle + 360;
   }
@@ -70,11 +73,11 @@ export const makeAnglePositive = (angle: number):number => {
 
 // calculate rotate angle in canvas degrees
 export const calcCanvasAngle = (unitX:number, unitY:number, destX:number, destY:number):number => {
+  //console.error('calcCanvasAngle');
   let angle;
   let a = Math.abs(destY - unitY);
   let b = Math.abs(destX - unitX);
   let angleInRadian = Math.atan(a / b);
-  console.error('Path: ', Math.sqrt(a*a+b*b));
   // check quater of the circle
   let degree =  angleInRadian * (180 / Math.PI); // convert radians into degree
   let quater = getQuater(unitX, unitY, destX, destY); // check quater
@@ -86,6 +89,7 @@ export const calcCanvasAngle = (unitX:number, unitY:number, destX:number, destY:
 }
 
 export const getQuater = (unitX:number, unitY:number, destX:number, destY:number):number => {
+  //console.error('getQuater');
   let quater;
   if(destX >= unitX && destY < unitY) {
     quater = 1;
@@ -103,6 +107,7 @@ export const getQuater = (unitX:number, unitY:number, destX:number, destY:number
 }
 
 export const getCanvasAngleQuater = (canvasAngle) => {
+  //console.error('getCanvasAngleQuater');
   if(canvasAngle >= 0 && canvasAngle < 90) return 1;
   else if(canvasAngle >= 90 && canvasAngle < 180) return 4;
   else if(canvasAngle >= 180 && canvasAngle < 270) return 3;
@@ -113,6 +118,7 @@ export const getCanvasAngleQuater = (canvasAngle) => {
 // and decide in what direction unit has to rotate
 // return startAngle, finishAngle, rotationDirection
 export const chooseRotationDirection = (initialStartAngle, initialFinishAngle) => {
+  //console.error('chooseRotationDirection');
   let startQuater, finishQuater;
   let startAngle, finishAngle, rotationDirection;
   let positiveStartAngle, positiveFinishAngle;
