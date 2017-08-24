@@ -1,5 +1,4 @@
 import {units}  from '../store/unitsStore';
-import {rotateUnit} from './unitRotation';
 import {timeout} from '../utils/timeout';
 import {loadImage} from '../utils/loadImage';
 import {

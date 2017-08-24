@@ -24,7 +24,7 @@ export const changeAngle = (unit,img, changingAngle, current) => {
   });
 }
 
-export const rotateUnit = (unit) => {
+export const rotateAndMove = (unit) => {
   //console.error('rotateUnit');
   return new Promise(resolve => {
     loadImage(unit.imgPath, (err, img) => { // load image, then rotate unit
