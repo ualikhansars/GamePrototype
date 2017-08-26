@@ -27,3 +27,14 @@ export const ctxRotate = (angle:number) => {
 export const ctxClearRect = (x:number, y:number, width:number, height:number) => {
   ctx.clearRect(x, y, width, height);
 }
+
+export const ctxFillStyle = (color:string) => {
+  ctx.fillStyle = color;
+}
+
+export const ctxTransform = (unit) => {
+  ctxTranslate(unit.centerX, unit.centerY); // translate to rectangle center
+  let angle = unit.destinationCanvasAngle * (Math.PI / 180);
+  ctxRotate(angle);
+  ctxTranslate(-unit.centerX, -unit.centerY); // translate to rectangle center
+}

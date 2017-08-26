@@ -16,7 +16,7 @@ export const changeAngle = (unit,img, changingAngle, current) => {
     clearUnit(unit); // delete previos drawing unit
     ctx.translate(unit.centerX, unit.centerY); // translate to rectangle center
     let angle = changingAngle * (Math.PI / 180);
-    console.log('CHANGE ANGLE: draw unit degree:', changingAngle);
+    //console.log('CHANGE ANGLE: draw unit degree:', changingAngle);
     ctx.rotate(angle); // rotate to look straight to the destination position
     ctx.translate(-unit.centerX, -unit.centerY); // translate to rectangle center
     ctx.drawImage(img, unit.x, unit.y, unit.width, unit.height);
@@ -51,7 +51,7 @@ export const clearUnit = (unit) => {
   ctx.save();
   ctx.translate(unit.centerX, unit.centerY); // translate to rectangle center
   let angle = unit.angleToRemove * (Math.PI / 180);
-  console.log('ROTATION: angle to remove:', unit.angleToRemove);
+  //console.log('ROTATION: angle to remove:', unit.angleToRemove);
   ctx.rotate(angle); // rotate unit
   ctx.translate(-unit.centerX, -unit.centerY); // translate to rectangle center
   ctx.clearRect(unit.x - 1, unit.y - 1, unit.width + 2, unit.height + 2);
