@@ -3,7 +3,8 @@ import { expect, should, assert} from 'chai';
 import Unit from '../src/units/Unit';
 import {
   calcCoefficient,
-  calcSpeed
+  calcSpeed,
+  calcGreaterSpeed
 } from '../src/units/unitMovement';
 import {assignMoveToPosition} from '../src/units/unitActions';
 
@@ -21,6 +22,13 @@ describe('Unit Movement Test', function() {
     it('speedX and speedY should be both equal to 1', function() {
       assert.equal(1, speedX);
       assert.equal(1, speedY);
+    });
+  });
+
+  describe('calcGreaterSpeed', function() {
+    let greaterSpeed = calcGreaterSpeed(heavyInfantry);
+    it('x should be more than y', function() {
+      assert.equal('x', greaterSpeed);
     });
   });
 });

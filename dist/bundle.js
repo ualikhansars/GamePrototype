@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 6);
+/******/ 	return __webpack_require__(__webpack_require__.s = 7);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -357,6 +357,176 @@ const chooseRotationDirection = (initialStartAngle, initialFinishAngle) => {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_timeout__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_loadImage__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_ctx__ = __webpack_require__(6);
+
+
+
+// move unit to the destination position
+const move = (unit) => {
+    console.error('Move');
+    Object(__WEBPACK_IMPORTED_MODULE_1__utils_loadImage__["a" /* loadImage */])(unit.imgPath, (err, img) => {
+        let { speedX, speedY } = calcSpeed(unit);
+        let currentMoveToX = unit.moveToX; // save previous moveToPositions
+        let currentMoveToY = unit.moveToY;
+        makeMovement(unit, img, currentMoveToX, currentMoveToY, speedX, speedY, 0);
+    });
+};
+/* harmony export (immutable) */ __webpack_exports__["a"] = move;
+
+// draw unit every movement speed until unitCenter position is not equal to
+// moveTo position
+const makeMovement = (unit, img, currentMoveToX, currentMoveToY, speedX, speedY, i) => {
+    // save previousMoveTo position
+    //console.error('Make Movement');
+    let prevSpeedX = speedX; // save speedX
+    let prevSpeedY = speedY; // save speedY
+    if (currentMoveToX !== unit.moveToX || currentMoveToY !== unit.moveToY) {
+        console.log('new destination has been chosen');
+        return; // new destination position has been chosen
+    }
+    console.error('speed before x:', speedX, 'y:', speedY);
+    let movementSpeed = 50;
+    // movement control
+    let coefficient = calcCoefficient(unit);
+    let greaterPath = calcGreaterSpeed(unit);
+    if (i <= coefficient) {
+        if (greaterPath === 'x')
+            speedY = 0;
+        if (greaterPath === 'y')
+            speedX = 0;
+    }
+    if (unit.centerX === unit.moveToX)
+        speedX = 0;
+    if (unit.centerY === unit.moveToY)
+        speedY = 0;
+    unit.centerX += speedX;
+    unit.centerY += speedY;
+    console.log('i:', i, 'coefficient:', coefficient);
+    console.log('speed x:', speedX, 'speedY:', speedY);
+    if (i > coefficient) {
+        console.log('i === coefficient');
+        i = 0;
+    }
+    speedX = prevSpeedX; // restore speedX
+    speedY = prevSpeedY; // restore speedY
+    Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["g" /* ctxSave */])();
+    clearMovementUnit(unit);
+    Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["h" /* ctxTransform */])(unit);
+    unit.x = unit.centerX - (unit.width / 2); // change x and y every time when centerX and centerY is changed
+    unit.y = unit.centerY - (unit.height / 2);
+    // console.log('MAKE MOVEMENT DRAW ANGLE', unit.destinationCanvasAngle);
+    // console.log('MAKE MOVEMENT: DRAW: unit x:',unit.x, 'unit y:', unit.y);
+    //console.log('unit destination x:', currentMoveToX, 'y:', currentMoveToY);
+    //console.log('unit center x:', unit.centerX, 'y:',unit.centerY);
+    Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["b" /* ctxDrawImage */])(img, unit.x, unit.y, unit.width, unit.height);
+    Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["e" /* ctxRestore */])();
+    i++;
+    //console.log('makeMovement');
+    if (unit.centerX === currentMoveToX && unit.centerY === currentMoveToY) {
+        console.log('unit reached position');
+        return;
+    }
+    //else { // every movement speed repeat this function
+    Object(__WEBPACK_IMPORTED_MODULE_0__utils_timeout__["a" /* timeout */])(movementSpeed)
+        .then(() => {
+        makeMovement(unit, img, currentMoveToX, currentMoveToY, speedX, speedY, i); // recursively call makeMovement
+    });
+    //}
+};
+/* unused harmony export makeMovement */
+
+// show path
+const showPath = (unit) => {
+    let { speedX, speedY } = calcSpeed(unit);
+    let prevSpeedX = speedX;
+    let prevSpeedY = speedY;
+    let currentX = unit.x;
+    let currentY = unit.y;
+    while (currentX !== unit.moveToX || currentY !== unit.moveToY) {
+        if (currentX === unit.moveToX)
+            speedX = 0;
+        if (currentY === unit.moveToY)
+            speedY = 0;
+        currentX += speedX;
+        currentY += speedY;
+        Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["d" /* ctxFillStyle */])('green');
+        Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["c" /* ctxFillRect */])(currentX, currentY, 1, 1);
+    }
+    Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["d" /* ctxFillStyle */])('red');
+    Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["c" /* ctxFillRect */])(currentX - 10, currentY - 10, 20, 20);
+};
+/* harmony export (immutable) */ __webpack_exports__["b"] = showPath;
+
+const clearMovementUnit = (unit) => {
+    //console.error('clearMovementUnit');
+    Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["g" /* ctxSave */])();
+    Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["i" /* ctxTranslate */])(unit.centerX, unit.centerY); // translate to rectangle center
+    let angle = (unit.destinationCanvasAngle) * (Math.PI / 180);
+    Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["f" /* ctxRotate */])(angle); // rotate unit
+    Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["i" /* ctxTranslate */])(-unit.centerX, -unit.centerY); // translate to rectangle center
+    // console.log('MOVEMENT: CLEAR RECT angle:', unit.destinationCanvasAngle);
+    // console.log('MOVEMENT: CLEAR RECT unit x:', unit.x, 'unit y:', unit.y);
+    Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["a" /* ctxClearRect */])(unit.x, unit.y, unit.width, unit.height);
+    Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["e" /* ctxRestore */])();
+};
+/* unused harmony export clearMovementUnit */
+
+const calcSpeed = (unit) => {
+    let speedX, speedY;
+    if (unit.centerX !== unit.moveToX || unit.centerY !== unit.moveToY) {
+        if (unit.centerX < unit.moveToX && unit.centerY < unit.moveToY) {
+            speedX = 1;
+            speedY = 1;
+        }
+        else if (unit.centerX > unit.moveToX && unit.centerY > unit.moveToY) {
+            speedX = -1;
+            speedY = -1;
+        }
+        else if (unit.centerX < unit.moveToX && unit.centerY > unit.moveToY) {
+            speedX = 1;
+            speedY = -1;
+        }
+        else if (unit.centerX > unit.moveToX && unit.centerY < unit.moveToY) {
+            speedX = -1;
+            speedY = 1;
+        }
+    }
+    return {
+        speedX,
+        speedY
+    };
+};
+/* unused harmony export calcSpeed */
+
+const calcCoefficient = (unit) => {
+    let pathX = Math.abs(unit.moveToX - unit.x);
+    let pathY = Math.abs(unit.moveToY - unit.y);
+    if (pathX >= pathY)
+        return Math.round(pathX / pathY);
+    if (pathY > pathX)
+        return Math.round(pathY / pathX);
+};
+/* unused harmony export calcCoefficient */
+
+const calcGreaterSpeed = (unit) => {
+    let pathX = Math.abs(unit.moveToX - unit.x);
+    let pathY = Math.abs(unit.moveToY - unit.y);
+    if (pathX >= pathY)
+        return 'x';
+    if (pathY > pathX)
+        return 'y';
+};
+/* unused harmony export calcGreaterSpeed */
+
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__config_map__ = __webpack_require__(0);
 
 const ctxSave = () => {
@@ -410,15 +580,15 @@ const ctxTransform = (unit) => {
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__config_map__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__store_unitsStore__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__units_unitRotation__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__units_unitMovement__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__units_unitRotation__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__units_unitMovement__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__units_unitActions__ = __webpack_require__(9);
 
 
@@ -462,7 +632,7 @@ __WEBPACK_IMPORTED_MODULE_0__config_map__["a" /* canvas */].addEventListener('co
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -470,7 +640,7 @@ __WEBPACK_IMPORTED_MODULE_0__config_map__["a" /* canvas */].addEventListener('co
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_loadImage__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_timeout__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__unitMath__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__unitMovement__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__unitMovement__ = __webpack_require__(5);
 
 
 
@@ -570,144 +740,6 @@ const makeRotation = (unit, img, startAngle, changingAngle, finishAngle, rotatio
 
 
 /***/ }),
-/* 8 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_timeout__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_loadImage__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_ctx__ = __webpack_require__(5);
-
-
-
-// move unit to the destination position
-const move = (unit) => {
-    console.error('Move');
-    Object(__WEBPACK_IMPORTED_MODULE_1__utils_loadImage__["a" /* loadImage */])(unit.imgPath, (err, img) => {
-        let { speedX, speedY } = calcSpeed(unit);
-        let currentMoveToX = unit.moveToX; // save previous moveToPositions
-        let currentMoveToY = unit.moveToY;
-        makeMovement(unit, img, currentMoveToX, currentMoveToY, speedX, speedY);
-    });
-};
-/* harmony export (immutable) */ __webpack_exports__["a"] = move;
-
-// draw unit every movement speed until unitCenter position is not equal to
-// moveTo position
-const makeMovement = (unit, img, currentMoveToX, currentMoveToY, speedX, speedY) => {
-    // save previousMoveTo position
-    console.error('Make Movement');
-    if (currentMoveToX !== unit.moveToX || currentMoveToY !== unit.moveToY) {
-        console.log('new destination has been chosen');
-        return; // new destination position has been chosen
-    }
-    let movementSpeed = 50;
-    // movement control
-    if (unit.centerX === unit.moveToX)
-        speedX = 0;
-    if (unit.centerY === unit.moveToY)
-        speedY = 0;
-    Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["g" /* ctxSave */])();
-    clearMovementUnit(unit);
-    unit.centerX += speedX;
-    unit.centerY += speedY;
-    Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["h" /* ctxTransform */])(unit);
-    unit.x = unit.centerX - (unit.width / 2); // change x and y every time when centerX and centerY is changed
-    unit.y = unit.centerY - (unit.height / 2);
-    // console.log('MAKE MOVEMENT DRAW ANGLE', unit.destinationCanvasAngle);
-    // console.log('MAKE MOVEMENT: DRAW: unit x:',unit.x, 'unit y:', unit.y);
-    //console.log('unit destination x:', currentMoveToX, 'y:', currentMoveToY);
-    //console.log('unit center x:', unit.centerX, 'y:',unit.centerY);
-    Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["b" /* ctxDrawImage */])(img, unit.x, unit.y, unit.width, unit.height);
-    Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["e" /* ctxRestore */])();
-    //console.log('makeMovement');
-    if (unit.centerX === currentMoveToX && unit.centerY === currentMoveToY) {
-        console.log('unit reached position');
-        return;
-    }
-    //else { // every movement speed repeat this function
-    Object(__WEBPACK_IMPORTED_MODULE_0__utils_timeout__["a" /* timeout */])(movementSpeed)
-        .then(() => {
-        makeMovement(unit, img, currentMoveToX, currentMoveToY, speedX, speedY); // recursively call makeMovement
-    });
-    //}
-};
-/* unused harmony export makeMovement */
-
-// show path
-const showPath = (unit) => {
-    let { speedX, speedY } = calcSpeed(unit);
-    let currentX = unit.x;
-    let currentY = unit.y;
-    while (currentX !== unit.moveToX || currentY !== unit.moveToY) {
-        if (currentX === unit.moveToX)
-            speedX = 0;
-        if (currentY === unit.moveToY)
-            speedY = 0;
-        currentX += speedX;
-        currentY += speedY;
-        Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["d" /* ctxFillStyle */])('green');
-        Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["c" /* ctxFillRect */])(currentX, currentY, 1, 1);
-    }
-    Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["d" /* ctxFillStyle */])('red');
-    Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["c" /* ctxFillRect */])(currentX - 10, currentY - 10, 20, 20);
-};
-/* harmony export (immutable) */ __webpack_exports__["b"] = showPath;
-
-const clearMovementUnit = (unit) => {
-    console.error('clearMovementUnit');
-    Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["g" /* ctxSave */])();
-    Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["i" /* ctxTranslate */])(unit.centerX, unit.centerY); // translate to rectangle center
-    let angle = (unit.destinationCanvasAngle) * (Math.PI / 180);
-    Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["f" /* ctxRotate */])(angle); // rotate unit
-    Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["i" /* ctxTranslate */])(-unit.centerX, -unit.centerY); // translate to rectangle center
-    // console.log('MOVEMENT: CLEAR RECT angle:', unit.destinationCanvasAngle);
-    // console.log('MOVEMENT: CLEAR RECT unit x:', unit.x, 'unit y:', unit.y);
-    Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["a" /* ctxClearRect */])(unit.x, unit.y, unit.width, unit.height);
-    Object(__WEBPACK_IMPORTED_MODULE_2__utils_ctx__["e" /* ctxRestore */])();
-};
-/* unused harmony export clearMovementUnit */
-
-const calcSpeed = (unit) => {
-    let speedX, speedY;
-    if (unit.centerX !== unit.moveToX || unit.centerY !== unit.moveToY) {
-        if (unit.centerX < unit.moveToX && unit.centerY < unit.moveToY) {
-            speedX = 1;
-            speedY = 1;
-        }
-        else if (unit.centerX > unit.moveToX && unit.centerY > unit.moveToY) {
-            speedX = -1;
-            speedY = -1;
-        }
-        else if (unit.centerX < unit.moveToX && unit.centerY > unit.moveToY) {
-            speedX = 1;
-            speedY = -1;
-        }
-        else if (unit.centerX > unit.moveToX && unit.centerY < unit.moveToY) {
-            speedX = -1;
-            speedY = 1;
-        }
-    }
-    return {
-        speedX,
-        speedY
-    };
-};
-/* unused harmony export calcSpeed */
-
-const calcCoefficient = (unit) => {
-    let pathX = Math.abs(unit.moveToX - unit.x);
-    let pathY = Math.abs(unit.moveToY - unit.y);
-    if (pathX >= pathY)
-        return Math.round(pathX / pathY);
-    if (pathY > pathX)
-        return Math.round(pathY / pathX);
-};
-/* unused harmony export calcCoefficient */
-
-
-
-/***/ }),
 /* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -716,7 +748,7 @@ const calcCoefficient = (unit) => {
 /* unused harmony export setUnit */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return createUnit; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__store_unitsStore__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_ctx__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_ctx__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Unit__ = __webpack_require__(10);
 
 

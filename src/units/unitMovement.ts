@@ -20,27 +20,49 @@ export const move = (unit) => {
     let {speedX, speedY} = calcSpeed(unit);
     let currentMoveToX = unit.moveToX; // save previous moveToPositions
     let currentMoveToY = unit.moveToY;
-    makeMovement(unit, img, currentMoveToX, currentMoveToY,speedX, speedY);
+    makeMovement(unit, img, currentMoveToX, currentMoveToY,speedX, speedY, 0);
   });
 }
 
 // draw unit every movement speed until unitCenter position is not equal to
 // moveTo position
-export const makeMovement = (unit, img, currentMoveToX:number, currentMoveToY:number, speedX:number, speedY:number) => {
+export const makeMovement = (unit, img, currentMoveToX:number, currentMoveToY:number, speedX:number, speedY:number, i:number) => {
     // save previousMoveTo position
-    console.error('Make Movement');
+    //console.error('Make Movement');
+    let prevSpeedX = speedX; // save speedX
+    let prevSpeedY = speedY; // save speedY
     if(currentMoveToX !== unit.moveToX || currentMoveToY !== unit.moveToY) {
       console.log('new destination has been chosen');
       return; // new destination position has been chosen
     }
+    console.error('speed before x:', speedX, 'y:', speedY);
     let movementSpeed = 50;
     // movement control
+    let coefficient = calcCoefficient(unit);
+    let greaterPath = calcGreaterSpeed(unit);
+    if(i <= coefficient) {
+      if(greaterPath === 'x') speedY = 0;
+      if(greaterPath === 'y') speedX = 0;
+    }
     if(unit.centerX === unit.moveToX) speedX = 0;
     if(unit.centerY === unit.moveToY) speedY = 0;
-    ctxSave();
-    clearMovementUnit(unit);
+
     unit.centerX += speedX ;
     unit.centerY += speedY;
+
+    console.log('i:', i, 'coefficient:', coefficient);
+    console.log('speed x:', speedX, 'speedY:', speedY);
+
+    if(i > coefficient) {
+      console.log('i === coefficient');
+      i = 0;
+    }
+
+    speedX = prevSpeedX; // restore speedX
+    speedY = prevSpeedY; // restore speedY
+
+    ctxSave();
+    clearMovementUnit(unit);
     ctxTransform(unit);
     unit.x = unit.centerX - (unit.width / 2); // change x and y every time when centerX and centerY is changed
     unit.y = unit.centerY - (unit.height / 2);
@@ -50,6 +72,7 @@ export const makeMovement = (unit, img, currentMoveToX:number, currentMoveToY:nu
     //console.log('unit center x:', unit.centerX, 'y:',unit.centerY);
     ctxDrawImage(img, unit.x, unit.y, unit.width, unit.height);
     ctxRestore();
+    i++;
     //console.log('makeMovement');
     if(unit.centerX === currentMoveToX && unit.centerY === currentMoveToY) { // unit is reached it's position
       console.log('unit reached position');
@@ -58,7 +81,7 @@ export const makeMovement = (unit, img, currentMoveToX:number, currentMoveToY:nu
     //else { // every movement speed repeat this function
       timeout(movementSpeed)
       .then(() => {
-        makeMovement(unit, img, currentMoveToX, currentMoveToY, speedX, speedY); // recursively call makeMovement
+        makeMovement(unit, img, currentMoveToX, currentMoveToY, speedX, speedY, i); // recursively call makeMovement
       });
     //}
 }
@@ -66,6 +89,8 @@ export const makeMovement = (unit, img, currentMoveToX:number, currentMoveToY:nu
 // show path
 export const showPath = (unit) => {
   let {speedX, speedY} = calcSpeed(unit);
+  let prevSpeedX = speedX;
+  let prevSpeedY = speedY;
   let currentX = unit.x;
   let currentY = unit.y;
   while(currentX !== unit.moveToX || currentY !== unit.moveToY) {
@@ -82,7 +107,7 @@ export const showPath = (unit) => {
 
 
 export const clearMovementUnit = (unit) => {
-  console.error('clearMovementUnit');
+  //console.error('clearMovementUnit');
   ctxSave();
   ctxTranslate(unit.centerX, unit.centerY); // translate to rectangle center
   let angle = (unit.destinationCanvasAngle) * (Math.PI / 180);
@@ -126,4 +151,11 @@ export const calcCoefficient = (unit) => {
   let pathY = Math.abs(unit.moveToY - unit.y);
   if(pathX >= pathY) return Math.round(pathX / pathY);
   if(pathY > pathX) return Math.round(pathY / pathX);
+}
+
+export const calcGreaterSpeed = (unit) => {
+  let pathX = Math.abs(unit.moveToX - unit.x);
+  let pathY = Math.abs(unit.moveToY - unit.y);
+  if(pathX >= pathY) return 'x';
+  if(pathY > pathX) return 'y';
 }
