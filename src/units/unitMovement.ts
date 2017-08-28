@@ -121,6 +121,29 @@ export const showPath = (unit) => {
   ctxFillRect(currentX - 10, currentY - 10, 20, 20);
 }
 
+export const findTurnPoint = (unit) => {
+  let currentX = unit.centerX;
+  let currentY = unit.centerY;
+  let turnPoint;
+  let {speedX, speedY} = calcSpeed(unit);
+  console.log('speedX:', speedX, 'speedY:', speedY);
+  if(unit.centerY <= unit.moveToY) {
+    while(currentX !== unit.moveToX) {
+      currentX += speedX;
+      currentY += speedY;
+    }
+  }
+  else if(unit.centerY > unit.moveToY) {
+    while(currentY !== unit.moveToY) {
+      currentX += speedX;
+      currentY += speedY;
+    }
+  }
+  return {
+    turnPointX: currentX,
+    turnPointY: currentY
+  }
+}
 
 export const clearMovementUnit = (unit) => {
   //console.error('clearMovementUnit');
