@@ -89,18 +89,34 @@ export const makeMovement = (unit, img, currentMoveToX:number, currentMoveToY:nu
 // show path
 export const showPath = (unit) => {
   let {speedX, speedY} = calcSpeed(unit);
-  let prevSpeedX = speedX;
-  let prevSpeedY = speedY;
-  let currentX = unit.x;
-  let currentY = unit.y;
+  let currentX = unit.centerX;
+  let currentY = unit.centerY;
+  let i = 0;
+  let coefficient = calcCoefficient(unit);
+  let greaterPath = calcGreaterSpeed(unit);
   while(currentX !== unit.moveToX || currentY !== unit.moveToY) {
+    let prevSpeedX = speedX;
+    let prevSpeedY = speedY;
+    console.error('PATH speedX:', speedX, 'speedY:', speedY);
+    if(i <= coefficient) {
+      if(greaterPath === 'x') speedY = 0;
+      if(greaterPath === 'y') speedX = 0;
+    }
     if(currentX === unit.moveToX) speedX = 0;
     if(currentY === unit.moveToY) speedY = 0;
+    console.log('speedX:', speedX, 'speedY', speedY);
     currentX += speedX ;
     currentY += speedY;
+    if(i > coefficient) i = 0;
+    speedX = prevSpeedX;
+    speedY = prevSpeedY;
+    console.log('speed after speedX:', speedX, 'speedY', speedY);
     ctxFillStyle('green');
-    ctxFillRect(currentX, currentY, 1, 1);
+    ctxFillRect(currentX - 2, currentY - 2, 4, 4);
+    i++; // increment coefficient
   }
+  console.log('currentX:', currentX, 'currentY', currentY);
+  console.log('moveToX', unit.moveToX, 'moveToY', unit.moveToY);
   ctxFillStyle('red');
   ctxFillRect(currentX - 10, currentY - 10, 20, 20);
 }

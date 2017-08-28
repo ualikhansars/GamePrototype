@@ -71,3 +71,20 @@
 //     }
 //   });
 // }
+
+// show path
+// export const showPath = (unit) => {
+//   let {speedX, speedY} = calcSpeed(unit);
+//   let currentX = unit.x;
+//   let currentY = unit.y;
+//   while(currentX !== unit.moveToX || currentY !== unit.moveToY) {
+//     if(currentX === unit.moveToX) speedX = 0;
+//     if(currentY === unit.moveToY) speedY = 0;
+//     currentX += speedX ;
+//     currentY += speedY;
+//     ctxFillStyle('green');
+//     ctxFillRect(currentX, currentY, 1, 1);
+//   }
+//   ctxFillStyle('red');
+//   ctxFillRect(currentX - 10, currentY - 10, 20, 20);
+// }

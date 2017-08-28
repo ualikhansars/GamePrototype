@@ -39,7 +39,7 @@ canvas.addEventListener('contextmenu', (e) => {
     assignMoveToPosition(currentlyChosenUnit, x, y); //assign unit's next x and y position
     currentlyChosenUnit.assignAngle(); // assign angle to the unit
     showPath(currentlyChosenUnit);
-    rotateAndMove(currentlyChosenUnit); // rotate unit
+    //rotateAndMove(currentlyChosenUnit); // rotate unit
     // assignMoveToPosition(currentlyChosenUnit, x, y); //assign unit's next x and y position
     // currentlyChosenUnit.assignAngle(); // assign angle to the unit
     // smoothlyRotateUnit(currentlyChosenUnit); // rotate unit
