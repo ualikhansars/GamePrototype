@@ -11,12 +11,24 @@ module.exports = {
     path: DIST_DIR,
     filename: 'bundle.js',
   },
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js']
+  },
   module: {
       loaders: [ {
           test: /\.ts$/ ,
           include: SRC_DIR,
           loader: 'ts-loader'
-      } ]
+      },
+      {
+        test: /\.js$/,
+        include: SRC_DIR,
+        loader: "babel-loader",
+        query: {
+          presets: ['es2015']
+        }
+      },
+     ]
   },
   resolve: {
       extensions:[ ".webpack.js", ".web.js", ".ts", ".js" ]

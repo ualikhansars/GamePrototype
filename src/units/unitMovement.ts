@@ -1,3 +1,4 @@
+import {ctx} from '../config/map';
 import {units}  from '../store/unitsStore';
 import {timeout} from '../utils/timeout';
 import {loadImage} from '../utils/loadImage';
@@ -10,7 +11,14 @@ import {
   ctxDrawImage,
   ctxTransform,
   ctxFillRect, // test
-  ctxFillStyle // test
+  ctxFillStyle, // test
+  ctxBeginPath,
+  ctxStrokeStyle,
+  ctxMoveTo,
+  ctxLineTo,
+  ctxStroke,
+  ctxIsPointInPath,
+  ctxIsPointInStroke
 } from '../utils/ctx';
 
 // move unit to the destination position
@@ -20,7 +28,9 @@ export const move = (unit) => {
     let {speedX, speedY} = calcSpeed(unit);
     let currentMoveToX = unit.moveToX; // save previous moveToPositions
     let currentMoveToY = unit.moveToY;
-    makeMovement(unit, img, currentMoveToX, currentMoveToY,speedX, speedY, 0);
+    //makeMovement(unit, img, currentMoveToX, currentMoveToY,speedX, speedY, 0);
+    let path = findPath(unit);
+    makeMovement2(unit, img, path)
   });
 }
 
@@ -119,6 +129,45 @@ export const showPath = (unit) => {
   console.log('moveToX', unit.moveToX, 'moveToY', unit.moveToY);
   ctxFillStyle('red');
   ctxFillRect(currentX - 10, currentY - 10, 20, 20);
+}
+
+export const drawPath = (unit) => {
+  ctxBeginPath();
+  ctxStrokeStyle('green');
+  ctxMoveTo(unit.centerX, unit.centerY);
+  ctxLineTo(unit.moveToX, unit.moveToY);
+  ctxStroke();
+}
+
+export const findPath = (unit) => {
+  ctxBeginPath();
+  let path = [];
+  ctxStrokeStyle('green');
+  ctxMoveTo(unit.centerX, unit.centerY);
+  ctxLineTo(unit.moveToX, unit.moveToY);
+  ctxStroke();
+  for(let x = 0; x <= 1224; ++x) {
+    for(let y = 0; y <= 768; ++y) {
+      if(ctx.isPointInStroke(x, y)) {
+          path.push({x, y});
+      }
+    }
+  }
+  return path;
+}
+
+export const makeMovement2 = (unit, img, path) => {
+  for(let step of path) {
+    unit.centerX = step.x;
+    unit.centerY = step.y;
+    clearMovementUnit(unit);
+    ctxSave();
+    ctxTransform(unit);
+    unit.x = unit.centerX - (unit.width / 2); // change x and y every time when centerX and centerY is changed
+    unit.y = unit.centerY - (unit.height / 2);
+    ctxDrawImage(img, unit.x, unit.y, unit.width, unit.height);
+    ctxRestore();
+  }
 }
 
 export const findTurnPoint = (unit) => {
