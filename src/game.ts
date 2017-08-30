@@ -6,7 +6,7 @@ import {
 } from './store/unitsStore';
 
 import {rotateAndMove} from './units/unitRotation';
-import {showPath, drawPath, findPath} from './units/unitMovement';
+import {showPath, drawPath, findPath, filterPath} from './units/unitMovement';
 
 import {
   setUnit,
@@ -40,7 +40,7 @@ canvas.addEventListener('contextmenu', (e) => {
     currentlyChosenUnit.assignAngle(); // assign angle to the unit
     drawPath(currentlyChosenUnit);
     console.error('PATH:',findPath(currentlyChosenUnit));
-
+    console.log('UPDATED PATH:', filterPath(currentlyChosenUnit, findPath(currentlyChosenUnit)));
     rotateAndMove(currentlyChosenUnit); // rotate unit
     // assignMoveToPosition(currentlyChosenUnit, x, y); //assign unit's next x and y position
     // currentlyChosenUnit.assignAngle(); // assign angle to the unit

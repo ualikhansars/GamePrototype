@@ -62,8 +62,3 @@ export const ctxStroke = () => {
 export const ctxIsPointInPath = (x, y, fillRull) => {
   return ctx.isPointInPath(x, y, fillRull);
 }
-
-export const ctxIsPointInStroke = (x, y) => {
-  console.log('ctxIsPointInStroke');
-  ctx.isPointInStroke(x, y);
-}

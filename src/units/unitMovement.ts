@@ -18,7 +18,6 @@ import {
   ctxLineTo,
   ctxStroke,
   ctxIsPointInPath,
-  ctxIsPointInStroke
 } from '../utils/ctx';
 
 // move unit to the destination position
@@ -30,7 +29,9 @@ export const move = (unit) => {
     let currentMoveToY = unit.moveToY;
     //makeMovement(unit, img, currentMoveToX, currentMoveToY,speedX, speedY, 0);
     let path = findPath(unit);
-    makeMovement2(unit, img, path)
+    let updatedPath = filterPath(unit, path);
+    console.log('updatedPath', updatedPath);
+    makeMovement2(unit, img, updatedPath, 0);
   });
 }
 
@@ -156,10 +157,30 @@ export const findPath = (unit) => {
   return path;
 }
 
-export const makeMovement2 = (unit, img, path) => {
-  for(let step of path) {
-    unit.centerX = step.x;
-    unit.centerY = step.y;
+export const filterPath = (unit, path) => {
+  let startPath = path[0];
+  let finishPath = path[path.length - 1];
+  let startDifference = Math.abs((unit.centerX - startPath.x) + unit.centerY - startPath.y);
+  console.log('startDifference', startDifference);
+  let finishDifference = Math.abs((unit.centerX - finishPath.x) + unit.centerY - finishPath.y);
+  console.log('finishDifference', finishDifference);
+  if(startDifference > finishDifference) { // reverse array
+    let updatedPath = [];
+    for(let i = path.length - 1; i > 0; --i) {
+      updatedPath.push(path[i]);
+    }
+    updatedPath.push({x: unit.moveToX, y: unit.moveToY});
+    path = updatedPath;
+  }
+  return path;
+}
+
+export const makeMovement2 = (unit, img, path, i) => {
+    if(path[i].x === unit.moveToX && path[i].y === unit.moveToY) return;
+    let x = path[i].x;
+    let y = path[i].y;
+    unit.centerX = x;
+    unit.centerY = y;
     clearMovementUnit(unit);
     ctxSave();
     ctxTransform(unit);
@@ -167,7 +188,12 @@ export const makeMovement2 = (unit, img, path) => {
     unit.y = unit.centerY - (unit.height / 2);
     ctxDrawImage(img, unit.x, unit.y, unit.width, unit.height);
     ctxRestore();
-  }
+    i++;
+    console.log('i', i);
+    timeout(50)
+    .then(() => {
+      makeMovement2(unit, img, path, i); // recursively call makeMovement
+    });
 }
 
 export const findTurnPoint = (unit) => {

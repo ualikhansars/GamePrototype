@@ -20,14 +20,6 @@ module.exports = {
           include: SRC_DIR,
           loader: 'ts-loader'
       },
-      {
-        test: /\.js$/,
-        include: SRC_DIR,
-        loader: "babel-loader",
-        query: {
-          presets: ['es2015']
-        }
-      },
      ]
   },
   resolve: {
