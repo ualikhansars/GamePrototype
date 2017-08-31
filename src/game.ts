@@ -6,7 +6,7 @@ import {
 } from './store/unitsStore';
 
 import {rotateAndMove} from './units/unitRotation';
-import {showPath, drawPath, findPath, filterPath} from './units/unitMovement';
+import {showPath, drawPath, findPath, filterPath} from './units/unitPath';
 
 import {
   setUnit,
