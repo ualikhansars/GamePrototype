@@ -781,7 +781,7 @@ const move = (unit) => {
         let path = Object(__WEBPACK_IMPORTED_MODULE_4__unitPath__["c" /* findPath */])(unit);
         let updatedPath = Object(__WEBPACK_IMPORTED_MODULE_4__unitPath__["b" /* filterPath */])(unit, path);
         console.log('updatedPath', updatedPath);
-        makeMovement2(unit, img, updatedPath, 0);
+        makeMovement2(unit, img, updatedPath, 0, currentMoveToX, currentMoveToY);
     });
 };
 /* harmony export (immutable) */ __webpack_exports__["a"] = move;
@@ -848,9 +848,13 @@ const makeMovement = (unit, img, currentMoveToX, currentMoveToY, speedX, speedY,
 };
 /* unused harmony export makeMovement */
 
-const makeMovement2 = (unit, img, path, i) => {
+const makeMovement2 = (unit, img, path, i, currentMoveToX, currentMoveToY) => {
     if (path[i].x === unit.moveToX && path[i].y === unit.moveToY)
-        return;
+        return; // unit reach destination point
+    if (currentMoveToX !== unit.moveToX || currentMoveToY !== unit.moveToY) {
+        console.log('new destination has been chosen');
+        return; // new destination position has been chosen
+    }
     let x = path[i].x;
     let y = path[i].y;
     unit.centerX = x;
@@ -866,7 +870,7 @@ const makeMovement2 = (unit, img, path, i) => {
     console.log('i', i);
     Object(__WEBPACK_IMPORTED_MODULE_0__utils_timeout__["a" /* timeout */])(50)
         .then(() => {
-        makeMovement2(unit, img, path, i); // recursively call makeMovement
+        makeMovement2(unit, img, path, i, currentMoveToX, currentMoveToY); // recursively call makeMovement
     });
 };
 /* unused harmony export makeMovement2 */

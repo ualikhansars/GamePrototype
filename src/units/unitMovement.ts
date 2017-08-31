@@ -41,7 +41,7 @@ export const move = (unit) => {
     let path = findPath(unit);
     let updatedPath = filterPath(unit, path);
     console.log('updatedPath', updatedPath);
-    makeMovement2(unit, img, updatedPath, 0);
+    makeMovement2(unit, img, updatedPath, 0, currentMoveToX, currentMoveToY);
   });
 }
 
@@ -107,8 +107,13 @@ export const makeMovement = (unit, img, currentMoveToX:number, currentMoveToY:nu
     //}
 }
 
-export const makeMovement2 = (unit, img, path, i) => {
-    if(path[i].x === unit.moveToX && path[i].y === unit.moveToY) return;
+export const makeMovement2 = (unit, img, path, i, currentMoveToX:number, currentMoveToY:number) => {
+    if(path[i].x === unit.moveToX && path[i].y === unit.moveToY) return; // unit reach destination point
+
+    if(currentMoveToX !== unit.moveToX || currentMoveToY !== unit.moveToY) {
+      console.log('new destination has been chosen');
+      return; // new destination position has been chosen
+    }
     let x = path[i].x;
     let y = path[i].y;
     unit.centerX = x;
@@ -124,7 +129,7 @@ export const makeMovement2 = (unit, img, path, i) => {
     console.log('i', i);
     timeout(50)
     .then(() => {
-      makeMovement2(unit, img, path, i); // recursively call makeMovement
+      makeMovement2(unit, img, path, i, currentMoveToX, currentMoveToY); // recursively call makeMovement
     });
 }
 
