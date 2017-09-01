@@ -121,22 +121,22 @@ const assignCurrentlyChosenUnit = (unit) => {
 const ctxSave = () => {
     __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].save();
 };
-/* harmony export (immutable) */ __webpack_exports__["h"] = ctxSave;
+/* harmony export (immutable) */ __webpack_exports__["c"] = ctxSave;
 
 const ctxRestore = () => {
     __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].restore();
 };
-/* harmony export (immutable) */ __webpack_exports__["g"] = ctxRestore;
+/* harmony export (immutable) */ __webpack_exports__["b"] = ctxRestore;
 
 const ctxFillRect = (x, y, width, height) => {
     __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].fillRect(x, y, width, height);
 };
-/* harmony export (immutable) */ __webpack_exports__["c"] = ctxFillRect;
+/* unused harmony export ctxFillRect */
 
 const ctxDrawImage = (img, x, y, width, height) => {
     __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].drawImage(img, x, y, width, height);
 };
-/* harmony export (immutable) */ __webpack_exports__["b"] = ctxDrawImage;
+/* harmony export (immutable) */ __webpack_exports__["a"] = ctxDrawImage;
 
 const ctxTranslate = (centerX, centerY) => {
     __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].translate(centerX, centerY);
@@ -156,7 +156,7 @@ const ctxClearRect = (x, y, width, height) => {
 const ctxFillStyle = (color) => {
     __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].fillStyle = color;
 };
-/* harmony export (immutable) */ __webpack_exports__["d"] = ctxFillStyle;
+/* unused harmony export ctxFillStyle */
 
 const ctxTransform = (unit) => {
     ctxTranslate(unit.centerX, unit.centerY); // translate to rectangle center
@@ -169,27 +169,27 @@ const ctxTransform = (unit) => {
 const ctxBeginPath = () => {
     __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].beginPath();
 };
-/* harmony export (immutable) */ __webpack_exports__["a"] = ctxBeginPath;
+/* unused harmony export ctxBeginPath */
 
 const ctxStrokeStyle = (color) => {
     __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].strokeStyle = color;
 };
-/* harmony export (immutable) */ __webpack_exports__["j"] = ctxStrokeStyle;
+/* unused harmony export ctxStrokeStyle */
 
 const ctxMoveTo = (x, y) => {
     __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].moveTo(x, y);
 };
-/* harmony export (immutable) */ __webpack_exports__["f"] = ctxMoveTo;
+/* unused harmony export ctxMoveTo */
 
 const ctxLineTo = (x, y) => {
     __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].lineTo(x, y);
 };
-/* harmony export (immutable) */ __webpack_exports__["e"] = ctxLineTo;
+/* unused harmony export ctxLineTo */
 
 const ctxStroke = () => {
     __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].stroke();
 };
-/* harmony export (immutable) */ __webpack_exports__["i"] = ctxStroke;
+/* unused harmony export ctxStroke */
 
 const ctxIsPointInPath = (x, y, fillRull) => {
     return __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].isPointInPath(x, y, fillRull);
@@ -235,7 +235,7 @@ __WEBPACK_IMPORTED_MODULE_0__config_map__["a" /* canvas */].addEventListener('co
         __WEBPACK_IMPORTED_MODULE_1__store_unitsStore__["b" /* currentlyChosenUnit */].assignAngle(); // assign angle to the unit
         //rotateAndMove(currentlyChosenUnit); // rotate unit
         //drawPath(currentlyChosenUnit);
-        Object(__WEBPACK_IMPORTED_MODULE_2__units_unitPath__["a" /* naiveLineDrawingAlgorithm */])(__WEBPACK_IMPORTED_MODULE_1__store_unitsStore__["b" /* currentlyChosenUnit */]);
+        console.log('PATH:', Object(__WEBPACK_IMPORTED_MODULE_2__units_unitPath__["a" /* findPath */])(__WEBPACK_IMPORTED_MODULE_1__store_unitsStore__["b" /* currentlyChosenUnit */]));
         //bresenhamsLineAlgorithm(currentlyChosenUnit);
         // console.error('PATH:',findPath(currentlyChosenUnit));
         // console.log('UPDATED PATH:', filterPath(currentlyChosenUnit, findPath(currentlyChosenUnit)));
@@ -257,100 +257,8 @@ __WEBPACK_IMPORTED_MODULE_0__config_map__["a" /* canvas */].addEventListener('co
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__config_map__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_ctx__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__unitUtils__ = __webpack_require__(5);
-
-
-
-// show path
-const showPath = (unit) => {
-    let { speedX, speedY } = Object(__WEBPACK_IMPORTED_MODULE_2__unitUtils__["c" /* calcSpeed */])(unit);
-    let currentX = unit.centerX;
-    let currentY = unit.centerY;
-    let i = 0;
-    let coefficient = Object(__WEBPACK_IMPORTED_MODULE_2__unitUtils__["a" /* calcCoefficient */])(unit);
-    let greaterPath = Object(__WEBPACK_IMPORTED_MODULE_2__unitUtils__["b" /* calcGreaterSpeed */])(unit);
-    while (currentX !== unit.moveToX || currentY !== unit.moveToY) {
-        let prevSpeedX = speedX;
-        let prevSpeedY = speedY;
-        console.error('PATH speedX:', speedX, 'speedY:', speedY);
-        if (i <= coefficient) {
-            if (greaterPath === 'x')
-                speedY = 0;
-            if (greaterPath === 'y')
-                speedX = 0;
-        }
-        if (currentX === unit.moveToX)
-            speedX = 0;
-        if (currentY === unit.moveToY)
-            speedY = 0;
-        console.log('speedX:', speedX, 'speedY', speedY);
-        currentX += speedX;
-        currentY += speedY;
-        if (i > coefficient)
-            i = 0;
-        speedX = prevSpeedX;
-        speedY = prevSpeedY;
-        console.log('speed after speedX:', speedX, 'speedY', speedY);
-        Object(__WEBPACK_IMPORTED_MODULE_1__utils_ctx__["d" /* ctxFillStyle */])('green');
-        Object(__WEBPACK_IMPORTED_MODULE_1__utils_ctx__["c" /* ctxFillRect */])(currentX - 2, currentY - 2, 4, 4);
-        i++; // increment coefficient
-    }
-    console.log('currentX:', currentX, 'currentY', currentY);
-    console.log('moveToX', unit.moveToX, 'moveToY', unit.moveToY);
-    Object(__WEBPACK_IMPORTED_MODULE_1__utils_ctx__["d" /* ctxFillStyle */])('red');
-    Object(__WEBPACK_IMPORTED_MODULE_1__utils_ctx__["c" /* ctxFillRect */])(currentX - 10, currentY - 10, 20, 20);
-};
-/* unused harmony export showPath */
-
-const drawPath = (unit) => {
-    Object(__WEBPACK_IMPORTED_MODULE_1__utils_ctx__["a" /* ctxBeginPath */])();
-    Object(__WEBPACK_IMPORTED_MODULE_1__utils_ctx__["j" /* ctxStrokeStyle */])('green');
-    Object(__WEBPACK_IMPORTED_MODULE_1__utils_ctx__["f" /* ctxMoveTo */])(unit.centerX, unit.centerY);
-    Object(__WEBPACK_IMPORTED_MODULE_1__utils_ctx__["e" /* ctxLineTo */])(unit.moveToX, unit.moveToY);
-    Object(__WEBPACK_IMPORTED_MODULE_1__utils_ctx__["i" /* ctxStroke */])();
-};
-/* unused harmony export drawPath */
-
 const findPath = (unit) => {
-    Object(__WEBPACK_IMPORTED_MODULE_1__utils_ctx__["a" /* ctxBeginPath */])();
-    let path = [];
-    Object(__WEBPACK_IMPORTED_MODULE_1__utils_ctx__["j" /* ctxStrokeStyle */])('green');
-    Object(__WEBPACK_IMPORTED_MODULE_1__utils_ctx__["f" /* ctxMoveTo */])(unit.centerX, unit.centerY);
-    Object(__WEBPACK_IMPORTED_MODULE_1__utils_ctx__["e" /* ctxLineTo */])(unit.moveToX, unit.moveToY);
-    Object(__WEBPACK_IMPORTED_MODULE_1__utils_ctx__["i" /* ctxStroke */])();
-    for (let x = 0; x <= 1224; ++x) {
-        for (let y = 0; y <= 768; ++y) {
-            if (__WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].isPointInStroke(x, y)) {
-                path.push({ x, y });
-            }
-        }
-    }
-    return path;
-};
-/* unused harmony export findPath */
-
-const filterPath = (unit, path) => {
-    let startPath = path[0];
-    let finishPath = path[path.length - 1];
-    let startDifference = Math.abs((unit.centerX - startPath.x) + unit.centerY - startPath.y);
-    console.log('startDifference', startDifference);
-    let finishDifference = Math.abs((unit.centerX - finishPath.x) + unit.centerY - finishPath.y);
-    console.log('finishDifference', finishDifference);
-    if (startDifference > finishDifference) {
-        let updatedPath = [];
-        for (let i = path.length - 1; i > 0; --i) {
-            updatedPath.push(path[i]);
-        }
-        updatedPath.push({ x: unit.moveToX, y: unit.moveToY });
-        path = updatedPath;
-    }
-    return path;
-};
-/* unused harmony export filterPath */
-
-const naiveLineDrawingAlgorithm = (unit) => {
+    // naiveLineDrawingAlgorithm
     // algorithm:
     //   dx = x2 - x1
     //   dy = y2 - y1
@@ -364,12 +272,11 @@ const naiveLineDrawingAlgorithm = (unit) => {
     let x2 = unit.moveToX;
     let y1 = unit.centerY;
     let y2 = unit.moveToY;
-    let startX, finishX;
+    let path = [];
     console.log('dx', dx);
     console.log('dy', dy);
     console.error('x1:', x1, 'x2:', x2);
     console.error('y1:', y1, 'y2:', y2);
-    let inc;
     if (x1 <= x2) {
         console.log('x1 <= x2');
         if (Math.abs(dx) >= Math.abs(dy)) {
@@ -378,17 +285,14 @@ const naiveLineDrawingAlgorithm = (unit) => {
                 console.log('y1 > y2');
                 for (let x = x1; x <= x2; ++x) {
                     let y = Math.round(y1 + dy * (x - x1) / dx);
-                    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].fillStyle = "green";
-                    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].fillRect(x, y, 1, 1);
+                    path.push({ x, y });
                 }
             }
             if (y1 <= y2) {
                 console.log('y1 <= y2');
                 for (let x = x1; x <= x2; ++x) {
                     let y = Math.round(y1 + dy * (x - x1) / dx);
-                    //console.log('x:', x, 'y:', y);
-                    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].fillStyle = "green";
-                    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].fillRect(x, y, 1, 1);
+                    path.push({ x, y });
                 }
             }
         }
@@ -398,18 +302,15 @@ const naiveLineDrawingAlgorithm = (unit) => {
                 console.log('y1 > y2'); // work
                 for (let y = y1; y >= y2; --y) {
                     let x = Math.round(x1 + dx * (y - y1) / dy);
-                    //console.log('x:', x, 'y:', y);
-                    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].fillStyle = "green";
-                    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].fillRect(x, y, 1, 1);
+                    path.push({ x, y });
                 }
             }
             if (y1 <= y2) {
                 console.log('y1 <= y2');
                 for (let y = y1; y <= y2; ++y) {
                     let x = Math.round(x1 + dx * (y - y1) / dy);
+                    path.push({ x, y });
                     //console.log('x:', x, 'y:', y);
-                    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].fillStyle = "green";
-                    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].fillRect(x, y, 1, 1);
                 }
             }
         }
@@ -424,18 +325,15 @@ const naiveLineDrawingAlgorithm = (unit) => {
                 console.log('y1 > y2');
                 for (let x = x1; x >= x2; --x) {
                     let y = Math.round(y1 + dy * (x - x1) / dx);
-                    // console.log('x:', x, 'y:', y);
-                    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].fillStyle = "green";
-                    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].fillRect(x, y, 1, 1);
+                    path.push({ x, y });
                 }
             }
             if (y1 <= y2) {
                 console.log('y1 <= y2');
                 for (let x = x1; x >= x2; --x) {
                     let y = Math.round(y1 + dy * (x - x1) / dx);
+                    path.push({ x, y });
                     // console.log('x:', x, 'y:', y);
-                    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].fillStyle = "green";
-                    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].fillRect(x, y, 1, 1);
                 }
             }
         }
@@ -445,121 +343,26 @@ const naiveLineDrawingAlgorithm = (unit) => {
                 console.log('y1 > y2');
                 for (let y = y1; y >= y2; --y) {
                     let x = Math.round(x1 + dx * (y - y1) / dy);
-                    // console.log('x:', x, 'y:', y);
-                    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].fillStyle = "green";
-                    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].fillRect(x, y, 1, 1);
+                    path.push({ x, y });
                 }
             }
             console.log('y1 <= y2'); // not work
             if (y1 <= y2) {
                 for (let y = y1; y <= y2; ++y) {
                     let x = Math.round(x1 + dx * (y - y1) / dy);
-                    // console.log('x:', x, 'y:', y);
-                    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].fillStyle = "green";
-                    __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].fillRect(x, y, 1, 1);
+                    path.push({ x, y });
                 }
             }
         }
     }
+    return path;
 };
-/* harmony export (immutable) */ __webpack_exports__["a"] = naiveLineDrawingAlgorithm;
-
-const bresenhamsLineAlgorithm = (unit) => {
-    // function line(x0, y0, x1, y1)
-    //    real deltax := x1 - x0
-    //    real deltay := y1 - y0
-    //    real deltaerr := abs(deltay / deltax)    // Assume deltax != 0 (line is not vertical),
-    //          // note that this division needs to be done in a way that preserves the fractional part
-    //    real error := 0.0 // No error at start
-    //    int y := y0
-    //    for x from x0 to x1
-    //        plot(x,y)
-    //        error := error + deltaerr
-    //        if error ≥ 0.5 then
-    //            y := y + 1
-    //            error := error - 1.0
-    let x0 = unit.centerX;
-    let x1 = unit.moveToX;
-    let y0 = unit.centerY;
-    let y1 = unit.moveToY;
-    let dx = x1 - x0;
-    let dy = y1 - y0;
-    console.log('x0:', x0, 'x1:', x1);
-    console.log('y0:', y0, 'y1:', y1);
-    console.log('dx:', dx, 'dy:', dy);
-    let deltaError = Math.abs(dy / dx);
-    let error = 0.0;
-    let y = y0;
-    for (let x = x0; x <= x1; ++x) {
-        console.log('for loop');
-        __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].fillStyle = "green";
-        __WEBPACK_IMPORTED_MODULE_0__config_map__["b" /* ctx */].fillRect(x, y, 1, 1);
-        error += deltaError;
-        if (error >= 0.5) {
-            y += y1;
-            error -= 1.0;
-        }
-    }
-};
-/* unused harmony export bresenhamsLineAlgorithm */
+/* harmony export (immutable) */ __webpack_exports__["a"] = findPath;
 
 
 
 /***/ }),
-/* 5 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-const calcSpeed = (unit) => {
-    let speedX, speedY;
-    if (unit.centerX !== unit.moveToX || unit.centerY !== unit.moveToY) {
-        if (unit.centerX < unit.moveToX && unit.centerY < unit.moveToY) {
-            speedX = 1;
-            speedY = 1;
-        }
-        else if (unit.centerX > unit.moveToX && unit.centerY > unit.moveToY) {
-            speedX = -1;
-            speedY = -1;
-        }
-        else if (unit.centerX < unit.moveToX && unit.centerY > unit.moveToY) {
-            speedX = 1;
-            speedY = -1;
-        }
-        else if (unit.centerX > unit.moveToX && unit.centerY < unit.moveToY) {
-            speedX = -1;
-            speedY = 1;
-        }
-    }
-    return {
-        speedX,
-        speedY
-    };
-};
-/* harmony export (immutable) */ __webpack_exports__["c"] = calcSpeed;
-
-const calcCoefficient = (unit) => {
-    let pathX = Math.abs(unit.moveToX - unit.x);
-    let pathY = Math.abs(unit.moveToY - unit.y);
-    if (pathX >= pathY)
-        return Math.round(pathX / pathY);
-    if (pathY > pathX)
-        return Math.round(pathY / pathX);
-};
-/* harmony export (immutable) */ __webpack_exports__["a"] = calcCoefficient;
-
-const calcGreaterSpeed = (unit) => {
-    let pathX = Math.abs(unit.moveToX - unit.x);
-    let pathY = Math.abs(unit.moveToY - unit.y);
-    if (pathX >= pathY)
-        return 'x';
-    if (pathY > pathX)
-        return 'y';
-};
-/* harmony export (immutable) */ __webpack_exports__["b"] = calcGreaterSpeed;
-
-
-
-/***/ }),
+/* 5 */,
 /* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -609,13 +412,13 @@ const assignMoveToPosition = (unit, x, y) => {
 // draw Units in the canvas
 let setUnit = (unit) => {
     //console.error('setUnit');
-    Object(__WEBPACK_IMPORTED_MODULE_1__utils_ctx__["h" /* ctxSave */])();
+    Object(__WEBPACK_IMPORTED_MODULE_1__utils_ctx__["c" /* ctxSave */])();
     let img = new Image();
     img.src = unit.imgPath;
     img.onload = () => {
-        Object(__WEBPACK_IMPORTED_MODULE_1__utils_ctx__["b" /* ctxDrawImage */])(img, unit.x, unit.y, unit.width, unit.height);
+        Object(__WEBPACK_IMPORTED_MODULE_1__utils_ctx__["a" /* ctxDrawImage */])(img, unit.x, unit.y, unit.width, unit.height);
     };
-    Object(__WEBPACK_IMPORTED_MODULE_1__utils_ctx__["g" /* ctxRestore */])();
+    Object(__WEBPACK_IMPORTED_MODULE_1__utils_ctx__["b" /* ctxRestore */])();
 };
 // create Unit and immediatly push it into units array
 let createUnit = (name, centerX, centerY, width, height, speed, imgPath = '../../img/unit.svg', rotationSpeed) => {

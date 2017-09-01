@@ -26,8 +26,7 @@ import {
 } from './unitUtils';
 
 import {
-  findPath,
-  filterPath
+  findPath
 } from './unitPath';
 
 // move unit to the destination position
