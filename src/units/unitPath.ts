@@ -1,3 +1,15 @@
+import {
+  ctxFillRect, // test
+  ctxFillStyle, // test
+  ctxBeginPath,
+  ctxStrokeStyle,
+  ctxMoveTo,
+  ctxLineTo,
+  ctxStroke,
+  ctxArc,
+  ctxFill
+} from '../utils/ctx';
+
 export const findPath = (unit) => {
 // naiveLineDrawingAlgorithm
 // algorithm:
@@ -97,4 +109,18 @@ export const findPath = (unit) => {
     }
   }
   return path;
+}
+
+export const drawPath = (unit) => {
+  ctxBeginPath();
+  ctxStrokeStyle('green');
+  ctxMoveTo(unit.centerX, unit.centerY);
+  ctxLineTo(unit.moveToX, unit.moveToY);
+  ctxStroke();
+  ctxBeginPath();
+  ctxArc(unit.moveToX, unit.moveToY, 8, 0 , 2*Math.PI, false);
+  ctxFillStyle('red');
+  ctxFill();
+  ctxStrokeStyle('red');
+  ctxStroke()
 }

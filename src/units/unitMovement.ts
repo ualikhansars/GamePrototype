@@ -52,11 +52,21 @@ export const makeMovement = (unit, img, path, i, currentMoveToX:number, currentM
       console.log('new destination has been chosen');
       return; // new destination position has been chosen
     }
+    // delete previous state
+    let deleteX, deleteY;
+    if(i > 0) {
+      deleteX = path[i - 1].x - (unit.width / 2);
+      deleteY = path[i - 1].y - (unit.height / 2);
+    } else {
+      deleteX = path[i].x  - (unit.width / 2);
+      deleteY = path[i].y - (unit.height / 2);
+    }
+    clearMovementUnit(unit, deleteX, deleteY);
     let x = path[i].x;
     let y = path[i].y;
     unit.centerX = x;
     unit.centerY = y;
-    clearMovementUnit(unit);
+
     ctxSave();
     ctxTransform(unit);
     unit.x = unit.centerX - (unit.width / 2); // change x and y every time when centerX and centerY is changed
@@ -64,46 +74,19 @@ export const makeMovement = (unit, img, path, i, currentMoveToX:number, currentM
     ctxDrawImage(img, unit.x, unit.y, unit.width, unit.height);
     ctxRestore();
     i++;
-    console.log('i', i);
     timeout(50)
     .then(() => {
       makeMovement(unit, img, path, i, currentMoveToX, currentMoveToY); // recursively call makeMovement
     });
 }
 
-export const findTurnPoint = (unit) => {
-  let currentX = unit.centerX;
-  let currentY = unit.centerY;
-  let turnPoint;
-  let {speedX, speedY} = calcSpeed(unit);
-  console.log('speedX:', speedX, 'speedY:', speedY);
-  if(unit.centerY <= unit.moveToY) {
-    while(currentX !== unit.moveToX) {
-      currentX += speedX;
-      currentY += speedY;
-    }
-  }
-  else if(unit.centerY > unit.moveToY) {
-    while(currentY !== unit.moveToY) {
-      currentX += speedX;
-      currentY += speedY;
-    }
-  }
-  return {
-    turnPointX: currentX,
-    turnPointY: currentY
-  }
-}
-
-export const clearMovementUnit = (unit) => {
+export const clearMovementUnit = (unit, deleteX:number, deleteY:number) => {
   //console.error('clearMovementUnit');
   ctxSave();
   ctxTranslate(unit.centerX, unit.centerY); // translate to rectangle center
   let angle = (unit.destinationCanvasAngle) * (Math.PI / 180);
   ctxRotate(angle); // rotate unit
   ctxTranslate(-unit.centerX, -unit.centerY); // translate to rectangle center
-  // console.log('MOVEMENT: CLEAR RECT angle:', unit.destinationCanvasAngle);
-  // console.log('MOVEMENT: CLEAR RECT unit x:', unit.x, 'unit y:', unit.y);
-  ctxClearRect(unit.x, unit.y, unit.width, unit.height);
+  ctxClearRect(deleteX - 1, deleteY - 1, unit.width + 2, unit.height + 2);
   ctxRestore();
 }

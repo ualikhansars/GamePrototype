@@ -59,6 +59,14 @@ export const ctxStroke = () => {
   ctx.stroke();
 }
 
-export const ctxIsPointInPath = (x, y, fillRull) => {
+export const ctxIsPointInPath = (x:number, y:number, fillRull) => {
   return ctx.isPointInPath(x, y, fillRull);
+}
+
+export const ctxArc = (x:number, y:number, radius:number, startAngle:number, endAngle:number, anticlockwise=true) => {
+  ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise);
+}
+
+export const ctxFill = () => {
+  ctx.fill();
 }
