@@ -6,7 +6,14 @@ import {
 } from './store/unitsStore';
 
 import {rotateAndMove} from './units/unitRotation';
-import {showPath, drawPath, findPath, filterPath} from './units/unitPath';
+import {
+  showPath,
+  drawPath,
+  findPath,
+  filterPath,
+  naiveLineDrawingAlgorithm,
+  bresenhamsLineAlgorithm
+} from './units/unitPath';
 
 import {
   setUnit,
@@ -38,10 +45,13 @@ canvas.addEventListener('contextmenu', (e) => {
   if(currentlyChosenUnit) {
     assignMoveToPosition(currentlyChosenUnit, x, y); //assign unit's next x and y position
     currentlyChosenUnit.assignAngle(); // assign angle to the unit
-    drawPath(currentlyChosenUnit);
-    console.error('PATH:',findPath(currentlyChosenUnit));
-    console.log('UPDATED PATH:', filterPath(currentlyChosenUnit, findPath(currentlyChosenUnit)));
-    rotateAndMove(currentlyChosenUnit); // rotate unit
+    //rotateAndMove(currentlyChosenUnit); // rotate unit
+    //drawPath(currentlyChosenUnit);
+    naiveLineDrawingAlgorithm(currentlyChosenUnit);
+    //bresenhamsLineAlgorithm(currentlyChosenUnit);
+    // console.error('PATH:',findPath(currentlyChosenUnit));
+    // console.log('UPDATED PATH:', filterPath(currentlyChosenUnit, findPath(currentlyChosenUnit)));
+
     // assignMoveToPosition(currentlyChosenUnit, x, y); //assign unit's next x and y position
     // currentlyChosenUnit.assignAngle(); // assign angle to the unit
     // smoothlyRotateUnit(currentlyChosenUnit); // rotate unit

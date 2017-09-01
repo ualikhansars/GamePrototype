@@ -101,3 +101,155 @@ export const filterPath = (unit, path) => {
   }
   return path;
 }
+
+export const naiveLineDrawingAlgorithm = (unit) => {
+// algorithm:
+//   dx = x2 - x1
+//   dy = y2 - y1
+//   for x from x1 to x2 {
+//    y = y1 + dy * (x - x1) / dx
+//    plot(x, y)
+// }
+  let dx = unit.moveToX - unit.centerX;
+  let dy = unit.moveToY - unit.centerY;
+  let x1 = unit.centerX;
+  let x2 = unit.moveToX;
+  let y1 = unit.centerY;
+  let y2 = unit.moveToY;
+  let startX, finishX;
+  console.log('dx', dx);
+  console.log('dy', dy);
+  console.error('x1:', x1, 'x2:', x2);
+  console.error('y1:', y1, 'y2:', y2);
+  let inc;
+  if(x1 <= x2) {
+    console.log('x1 <= x2');
+    if(Math.abs(dx) >= Math.abs(dy)) {
+      console.log('dx > dy')
+      if(y1 > y2) {
+        console.log('y1 > y2')
+        for(let x = x1; x <= x2; ++x) {
+          let y = Math.round(y1 + dy * (x - x1) / dx);
+          ctx.fillStyle = "green";
+          ctx.fillRect(x, y, 1, 1);
+        }
+      }
+      if(y1 <= y2) { // work
+        console.log('y1 <= y2')
+        for(let x = x1; x <= x2; ++x) {
+          let y = Math.round(y1 + dy * (x - x1) / dx);
+          //console.log('x:', x, 'y:', y);
+          ctx.fillStyle = "green";
+          ctx.fillRect(x, y, 1, 1);
+        }
+      }
+    }
+    if(Math.abs(dx) < Math.abs(dy)) {
+      console.log('dx < dy');
+      if(y1 > y2) {
+        console.log('y1 > y2'); // work
+        for(let y = y1; y >= y2; --y) {
+          let x = Math.round(x1 + dx * (y - y1) / dy);
+          //console.log('x:', x, 'y:', y);
+          ctx.fillStyle = "green";
+          ctx.fillRect(x, y, 1, 1);
+        }
+      }
+      if(y1 <= y2) {
+        console.log('y1 <= y2')
+        for(let y = y1; y <= y2; ++y) {
+          let x = Math.round(x1 + dx * (y - y1) / dy);
+          //console.log('x:', x, 'y:', y);
+          ctx.fillStyle = "green";
+          ctx.fillRect(x, y, 1, 1);
+        }
+      }
+    }
+  } // end if x1 < x2
+  ///////////////////
+  ///////////////////
+  if(x1 > x2) {
+    console.log('x1 > x2');
+    if(Math.abs(dx) >= Math.abs(dy)) {
+      console.log('dx >= dy');
+      if(y1 > y2) {
+        console.log('y1 > y2');
+        for(let x = x1; x >= x2; --x) {
+          let y = Math.round(y1 + dy * (x - x1) / dx);
+          // console.log('x:', x, 'y:', y);
+          ctx.fillStyle = "green";
+          ctx.fillRect(x, y, 1, 1);
+        }
+      }
+      if(y1 <= y2) {
+        console.log('y1 <= y2');
+        for(let x = x1; x >= x2; --x) {
+          let y = Math.round(y1 + dy * (x - x1) / dx);
+          // console.log('x:', x, 'y:', y);
+          ctx.fillStyle = "green";
+          ctx.fillRect(x, y, 1, 1);
+        }
+      }
+    }
+    if(Math.abs(dx) < Math.abs(dy)) {
+      console.log('dy > dx');
+      if(y1 > y2) {
+        console.log('y1 > y2');
+        for(let y = y1; y >= y2; --y) {
+          let x = Math.round(x1 + dx * (y - y1) / dy);
+          // console.log('x:', x, 'y:', y);
+          ctx.fillStyle = "green";
+          ctx.fillRect(x, y, 1, 1);
+        }
+      }
+      console.log('y1 <= y2'); // not work
+      if(y1 <= y2) {
+        for(let y = y1; y <= y2; ++y) {
+          let x = Math.round(x1 + dx * (y - y1) / dy);
+          // console.log('x:', x, 'y:', y);
+          ctx.fillStyle = "green";
+          ctx.fillRect(x, y, 1, 1);
+        }
+      }
+    }
+  }
+
+}
+
+export const bresenhamsLineAlgorithm = (unit) => {
+  // function line(x0, y0, x1, y1)
+  //    real deltax := x1 - x0
+  //    real deltay := y1 - y0
+  //    real deltaerr := abs(deltay / deltax)    // Assume deltax != 0 (line is not vertical),
+  //          // note that this division needs to be done in a way that preserves the fractional part
+  //    real error := 0.0 // No error at start
+  //    int y := y0
+  //    for x from x0 to x1
+  //        plot(x,y)
+  //        error := error + deltaerr
+  //        if error ≥ 0.5 then
+  //            y := y + 1
+  //            error := error - 1.0
+  let x0 = unit.centerX;
+  let x1 = unit.moveToX;
+  let y0 = unit.centerY;
+  let y1 = unit.moveToY;
+  let dx = x1 - x0;
+  let dy = y1 - y0;
+  console.log('x0:', x0, 'x1:', x1);
+  console.log('y0:', y0, 'y1:', y1);
+  console.log('dx:', dx, 'dy:', dy);
+  let deltaError = Math.abs(dy / dx);
+  let error = 0.0;
+  let y = y0;
+  for(let x = x0; x <= x1; ++x) {
+    console.log('for loop');
+    ctx.fillStyle = "green";
+    ctx.fillRect(x, y, 1, 1);
+    error += deltaError;
+    if(error >= 0.5) {
+      y += y1;
+      error -= 1.0;
+    }
+  }
+}

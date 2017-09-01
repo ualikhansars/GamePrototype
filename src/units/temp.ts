@@ -88,3 +88,58 @@
 //   ctxFillStyle('red');
 //   ctxFillRect(currentX - 10, currentY - 10, 20, 20);
 // }
+
+// draw unit every movement speed until unitCenter position is not equal to
+// moveTo position
+// export const makeMovement = (unit, img, currentMoveToX:number, currentMoveToY:number, speedX:number, speedY:number, i:number) => {
+//     // save previousMoveTo position
+//     //console.error('Make Movement');
+//     let prevSpeedX = speedX; // save speedX
+//     let prevSpeedY = speedY; // save speedY
+//     if(currentMoveToX !== unit.moveToX || currentMoveToY !== unit.moveToY) {
+//       console.log('new destination has been chosen');
+//       return; // new destination position has been chosen
+//     }
+//     console.error('speed before x:', speedX, 'y:', speedY);
+//     let movementSpeed = 50;
+//     // movement control
+//     let coefficient = calcCoefficient(unit);
+//     let greaterPath = calcGreaterSpeed(unit);
+//     if(i <= coefficient) {
+//       if(greaterPath === 'x') speedY = 0;
+//       if(greaterPath === 'y') speedX = 0;
+//     }
+//     if(unit.centerX === unit.moveToX) speedX = 0;
+//     if(unit.centerY === unit.moveToY) speedY = 0;
+//
+//     unit.centerX += speedX ;
+//     unit.centerY += speedY;
+//
+//     console.log('i:', i, 'coefficient:', coefficient);
+//     console.log('speed x:', speedX, 'speedY:', speedY);
+//
+//     if(i > coefficient) {
+//       console.log('i === coefficient');
+//       i = 0;
+//     }
+//
+//     speedX = prevSpeedX; // restore speedX
+//     speedY = prevSpeedY; // restore speedY
+//
+//     ctxSave();
+//     clearMovementUnit(unit);
+//     ctxTransform(unit);
+//     unit.x = unit.centerX - (unit.width / 2); // change x and y every time when centerX and centerY is changed
+//     unit.y = unit.centerY - (unit.height / 2);
+//     ctxDrawImage(img, unit.x, unit.y, unit.width, unit.height);
+//     ctxRestore();
+//     i++;
+//     if(unit.centerX === currentMoveToX && unit.centerY === currentMoveToY) { // unit is reached it's position
+//       console.log('unit reached position');
+//       return;
+//     }
+//       timeout(movementSpeed)
+//       .then(() => {
+//         makeMovement(unit, img, currentMoveToX, currentMoveToY, speedX, speedY, i); // recursively call makeMovement
+//       });
+// }

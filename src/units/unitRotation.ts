@@ -8,6 +8,8 @@ import {
 
 import {move} from './unitMovement';
 
+import {findPath, filterPath} from './unitPath';
+
 // change angle depends on received data
 export const changeAngle = (unit,img, changingAngle, current) => {
   //console.error('changeAngle');
@@ -85,11 +87,11 @@ const makeRotation = (unit, img, startAngle, changingAngle, finishAngle, rotatio
   }
   if(changingAngle === finishAngle) { // rotation is finished
       //console.error('rotation finished');
+      let path = findPath(unit);
+      let updatedPath = filterPath(unit, path);
       unit.setIsRotatingToFalse();
       timeout(rotationSpeed).then(() => changeAngle(unit, img, changingAngle, finishAngle)) // now angle === destinationCanvasAngle
-      .then(() => move(unit)) // make movement
-      //console.error('start position x:', unit.centerX, 'y:', unit.centerY);
-      //console.error('finish position x:', unit.moveToX, 'y:', unit.moveToY);
+      .then(() => move(unit, updatedPath)) // make movement
       return;
   }
   else {
