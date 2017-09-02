@@ -1,14 +1,4 @@
-import {
-  ctxFillRect, // test
-  ctxFillStyle, // test
-  ctxBeginPath,
-  ctxStrokeStyle,
-  ctxMoveTo,
-  ctxLineTo,
-  ctxStroke,
-  ctxArc,
-  ctxFill
-} from '../utils/ctx';
+import {context2D} from '../utils/ctx';
 
 export const findPath = (unit) => {
 // naiveLineDrawingAlgorithm
@@ -112,15 +102,15 @@ export const findPath = (unit) => {
 }
 
 export const drawPath = (unit) => {
-  ctxBeginPath();
-  ctxStrokeStyle('green');
-  ctxMoveTo(unit.centerX, unit.centerY);
-  ctxLineTo(unit.moveToX, unit.moveToY);
-  ctxStroke();
-  ctxBeginPath();
-  ctxArc(unit.moveToX, unit.moveToY, 8, 0 , 2*Math.PI, false);
-  ctxFillStyle('red');
-  ctxFill();
-  ctxStrokeStyle('red');
-  ctxStroke()
+  context2D.beginPath();
+  context2D.strokeStyle('green');
+  context2D.moveTo(unit.centerX, unit.centerY);
+  context2D.lineTo(unit.moveToX, unit.moveToY);
+  context2D.stroke();
+  context2D.beginPath();
+  context2D.arc(unit.moveToX, unit.moveToY, 8, 0 , 2*Math.PI, false);
+  context2D.fillStyle('red');
+  context2D.fill();
+  context2D.strokeStyle('red');
+  context2D.stroke();
 }

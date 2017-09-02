@@ -1,72 +1,97 @@
 import {ctx} from '../config/map';
 
-export const ctxSave = () => {
+const save = () => {
   ctx.save();
 }
 
-export const ctxRestore = () => {
+const restore = () => {
   ctx.restore();
 }
 
-export const ctxFillRect = (x, y, width, height) => {
+const fillRect = (x, y, width, height) => {
   ctx.fillRect(x, y, width, height);
 }
 
-export const ctxDrawImage = (img, x, y, width, height) => {
+const drawImage = (img, x, y, width, height) => {
   ctx.drawImage(img, x, y, width, height);
 }
 
-export const ctxTranslate = (centerX, centerY) => {
+const translate = (centerX, centerY) => {
   ctx.translate(centerX, centerY);
 }
 
-export const ctxRotate = (angle) => {
+const rotate = (angle) => {
   ctx.rotate(angle);
 }
 
-export const ctxClearRect = (x, y, width, height) => {
+const clearRect = (x, y, width, height) => {
   ctx.clearRect(x, y, width, height);
 }
 
-export const ctxFillStyle = (color) => {
+const fillStyle = (color) => {
   ctx.fillStyle = color;
 }
 
-export const ctxTransform = (unit) => {
-  ctxTranslate(unit.centerX, unit.centerY); // translate to rectangle center
+export const transform = (unit) => {
+  translate(unit.centerX, unit.centerY); // translate to rectangle center
   let angle = unit.destinationCanvasAngle * (Math.PI / 180);
-  ctxRotate(angle);
-  ctxTranslate(-unit.centerX, -unit.centerY); // translate to rectangle center
+  rotate(angle);
+  translate(-unit.centerX, -unit.centerY); // translate to rectangle center
 }
 
-export const ctxBeginPath = () => {
+const beginPath = () => {
   ctx.beginPath();
 }
 
-export const ctxStrokeStyle = (color) => {
+const strokeStyle = (color) => {
   ctx.strokeStyle = color;
 }
 
-export const ctxMoveTo = (x, y) => {
+const moveTo = (x, y) => {
   ctx.moveTo(x, y);
 }
 
-export const ctxLineTo = (x, y) => {
+const lineTo = (x, y) => {
   ctx.lineTo(x, y);
 }
 
-export const ctxStroke = () => {
+const stroke = () => {
   ctx.stroke();
 }
 
-export const ctxIsPointInPath = (x:number, y:number, fillRull) => {
+const isPointInPath = (x:number, y:number, fillRull) => {
   return ctx.isPointInPath(x, y, fillRull);
 }
 
-export const ctxArc = (x:number, y:number, radius:number, startAngle:number, endAngle:number, anticlockwise=true) => {
+const arc = (x:number, y:number, radius:number, startAngle:number, endAngle:number, anticlockwise=true) => {
   ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise);
 }
 
-export const ctxFill = () => {
+const fill = () => {
   ctx.fill();
+}
+
+const rect = (x:number, y:number, width: number, height: number) => {
+  ctx.rect(x, y, width, height);
+}
+
+export const context2D = {
+  save,
+  restore,
+  fillRect,
+  drawImage,
+  translate,
+  rotate,
+  clearRect,
+  fillStyle,
+  transform,
+  beginPath,
+  strokeStyle,
+  moveTo,
+  lineTo,
+  stroke,
+  isPointInPath,
+  arc,
+  fill,
+  rect
 }

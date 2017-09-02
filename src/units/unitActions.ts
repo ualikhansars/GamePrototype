@@ -3,19 +3,12 @@ import {
   currentlyChosenUnit,
   assignCurrentlyChosenUnit
 } from '../store/unitsStore';
-
+import {ctx} from '../config/map';
 import {getCanvasAngleQuater} from './unitMath';
 
 import {WIDTH, HEIGHT} from '../config/map';
 
-import {
-  ctxSave,
-  ctxRestore,
-  ctxTranslate,
-  ctxRotate,
-  ctxClearRect,
-  ctxDrawImage
-} from '../utils/ctx';
+import {context2D} from '../utils/ctx';
 
 import Unit from './Unit';
 
@@ -26,19 +19,19 @@ export let chooseUnit = (units, x, y) => {
   //console.error('chooseUnit');
   let foundedUnit = null;
   for(let unit of units) {
-    let unitX0 = unit.x;
-    let unitY0 = unit.y;
-    let unitX1 = unitX0 + unit.width;
-    let unitY1 = unitY0 + unit.height;
-    // check if coordinates is equal to unit position
-    if(x >= unitX0 && x <= unitX1 && y >= unitY0 && y <= unitY1) {
+    context2D.save();
+    context2D.transform(unit);
+    context2D.beginPath();
+    if (ctx.isPointInPath(x, y)) {
+      console.log('unit clicked');
       foundedUnit = unit;
-      break;
+      context2D.restore();
     }
+    context2D.restore();
   }
   // if unit was found in units array
   // currentlyChosenUnit is equal to foundedUnit
-  // else is unit is not founded, then
+  // else if unit is not founded, then
   // currentlyChosenUnit will be null
   assignCurrentlyChosenUnit(foundedUnit);
   console.log('currentlyChosenUnit', currentlyChosenUnit);
@@ -55,13 +48,13 @@ export const assignMoveToPosition = (unit, x:number, y:number) => {
 // draw Units in the canvas
 export let setUnit = (unit) => {
     //console.error('setUnit');
-    ctxSave();
+    context2D.save();
     let img = new Image();
     img.src = unit.imgPath;
     img.onload = () => {
-      ctxDrawImage(img, unit.x, unit.y, unit.width, unit.height);
+      context2D.drawImage(img, unit.x, unit.y, unit.width, unit.height);
     }
-    ctxRestore();
+    context2D.restore();
 }
 
 // create Unit and immediatly push it into units array

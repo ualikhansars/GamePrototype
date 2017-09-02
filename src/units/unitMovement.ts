@@ -1,23 +1,7 @@
 import {units}  from '../store/unitsStore';
 import {timeout} from '../utils/timeout';
 import {loadImage} from '../utils/loadImage';
-import {
-  ctxSave,
-  ctxRestore,
-  ctxTranslate,
-  ctxRotate,
-  ctxClearRect,
-  ctxDrawImage,
-  ctxTransform,
-  ctxFillRect, // test
-  ctxFillStyle, // test
-  ctxBeginPath,
-  ctxStrokeStyle,
-  ctxMoveTo,
-  ctxLineTo,
-  ctxStroke,
-  ctxIsPointInPath,
-} from '../utils/ctx';
+import {context2D} from '../utils/ctx';
 
 import {
   calcSpeed,
@@ -67,12 +51,12 @@ export const makeMovement = (unit, img, path, i, currentMoveToX:number, currentM
     unit.centerX = x;
     unit.centerY = y;
 
-    ctxSave();
-    ctxTransform(unit);
+    context2D.save();
+    context2D.transform(unit);
     unit.x = unit.centerX - (unit.width / 2); // change x and y every time when centerX and centerY is changed
     unit.y = unit.centerY - (unit.height / 2);
-    ctxDrawImage(img, unit.x, unit.y, unit.width, unit.height);
-    ctxRestore();
+    context2D.drawImage(img, unit.x, unit.y, unit.width, unit.height);
+    context2D.restore();
     i++;
     timeout(50)
     .then(() => {
@@ -82,11 +66,11 @@ export const makeMovement = (unit, img, path, i, currentMoveToX:number, currentM
 
 export const clearMovementUnit = (unit, deleteX:number, deleteY:number) => {
   //console.error('clearMovementUnit');
-  ctxSave();
-  ctxTranslate(unit.centerX, unit.centerY); // translate to rectangle center
+  context2D.save();
+  context2D.translate(unit.centerX, unit.centerY); // translate to rectangle center
   let angle = (unit.destinationCanvasAngle) * (Math.PI / 180);
-  ctxRotate(angle); // rotate unit
-  ctxTranslate(-unit.centerX, -unit.centerY); // translate to rectangle center
-  ctxClearRect(deleteX - 1, deleteY - 1, unit.width + 2, unit.height + 2);
-  ctxRestore();
+  context2D.rotate(angle); // rotate unit
+  context2D.translate(-unit.centerX, -unit.centerY); // translate to rectangle center
+  context2D.clearRect(deleteX - 1, deleteY - 1, unit.width + 2, unit.height + 2);
+  context2D.restore();
 }
